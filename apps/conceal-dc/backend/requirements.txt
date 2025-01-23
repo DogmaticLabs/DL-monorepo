@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+boto3
+pydantic
+pydantic[email]
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+uuid-extensions 
+PyJWT
+email-validator

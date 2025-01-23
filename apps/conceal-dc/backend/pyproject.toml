@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "appointment-tracker"
+version = "1.0.0"
+description = "Appointment tracking system with FastAPI backend and DynamoDB"
+authors = ["Your Name <your.email@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.109.0"
+uvicorn = "^0.27.0"
+boto3 = "^1.34.0"
+requests = "^2.31.0"
+beautifulsoup4 = "^4.12.0"
+python-dateutil = "^2.8.2"
+pyjwt = "^2.10.1"
+email-validator = "^2.2.0"
+pydantic = {extras = ["email"], version = "^2.10.5"}
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.1.0"
+isort = "^5.13.0"
+pytest = "^8.0.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ['py39']
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
