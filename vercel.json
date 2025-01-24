@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "projects": {
+    "web": {
+      "root": "apps/conceal-dc",
+      "buildCommand": "pnpm build",
+      "outputDirectory": "apps/conceal-dc/.next",
+      "installCommand": "pnpm install --frozen-lockfile",
+      "framework": "nextjs"
+    }
+  },
+  "installCommand": "pnpm install --frozen-lockfile"
+}
