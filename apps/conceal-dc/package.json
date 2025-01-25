@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "vercel-build": "pnpm install && turbo run build --filter=web",
-    "postinstall": "corepack enable && corepack prepare pnpm@latest --activate"
+    "postinstall": "corepack enable && corepack prepare pnpm@latest --activate && pnpm install --save-dev typescript"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
