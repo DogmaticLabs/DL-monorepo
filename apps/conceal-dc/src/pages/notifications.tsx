@@ -27,7 +27,7 @@ import { cn } from '@workspace/ui/lib/utils'
 import { addMonths, format, parseISO } from 'date-fns'
 import { debounce } from 'lodash'
 import { BellIcon, CalendarIcon } from 'lucide-react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { z, ZodIssue } from 'zod'
 
@@ -83,15 +83,10 @@ const DEFAULT_PREFERENCE = {
 const NotificationsPage = () => {
   const [errors, setErrors] = useState<ValidationError[]>([])
   const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false)
-  const [isDeleting, setIsDeleting] = useState<string | null>(null)
-  const [isCreating, setIsCreating] = useState<boolean>(false)
   const [pendingNotificationCreate, setPendingNotificationCreate] = useState(false)
-  const accordionTriggerRef = useRef<HTMLButtonElement>(null)
   const { data: dailyAppointments } = useDailyAppointments()
   const nextAppointment = dailyAppointments?.open[0]
   const queryClient = useQueryClient()
-  const [isAdvancedOpen, setIsAdvancedOpen] = useState<boolean>(false)
-  const [isUpdating, setIsUpdating] = useState<boolean>(false)
   const [userEmail, setUserEmail] = useState<string>('')
 
   const { data: preferences = [], isLoading } = useQuery({
@@ -125,7 +120,6 @@ const NotificationsPage = () => {
     const handleAuthStateChange = async () => {
       if (pendingNotificationCreate && localStorage.getItem('accessToken')) {
         try {
-          setIsCreating(true)
           await createNotification(DEFAULT_PREFERENCE)
           queryClient.invalidateQueries({ queryKey: ['notifications'] })
           toast.success('Notifications enabled')
@@ -134,7 +128,6 @@ const NotificationsPage = () => {
           console.error('Failed to enable notifications:', error)
           toast.error('Failed to enable notifications')
         } finally {
-          setIsCreating(false)
         }
       }
     }
@@ -164,19 +157,14 @@ const NotificationsPage = () => {
     if (!validatePreference(updatedPreference)) return
 
     try {
-      setIsUpdating(true)
       queryClient.setQueryData(['notifications'], [updatedPreference])
       await updateNotification(existingPreference.notificationId, updatedPreference)
       debouncedToastSuccess()
     } catch (error) {
       console.error('Failed to update notification preference:', error)
       toast.error('Failed to update notification preferences')
-    } finally {
-      setIsUpdating(false)
     }
   }
-
-  console.log('pref', preferences)
 
   // Set initial end date to nextAppointment when it becomes available
   useEffect(() => {
@@ -222,11 +210,9 @@ const NotificationsPage = () => {
 
   const handleDeletePreference = async (id: string) => {
     try {
-      setIsDeleting(id)
       await deleteNotification(id)
       queryClient.invalidateQueries({ queryKey: ['notifications'] })
       toast.success('Notifications disabled')
-      setIsDeleting(null)
     } catch (error) {
       console.error('Failed to delete notification preference:', error)
     }
@@ -268,19 +254,6 @@ const NotificationsPage = () => {
     }
   }, [])
 
-  // if (isLoading || isUpdating) {
-  //   return (
-  //     <MainLayout>
-  //       <div className='flex items-center justify-center min-h-[400px]'>
-  //         <div className='animate-pulse flex flex-col items-center space-y-4'>
-  //           <BellIcon className='h-8 w-8 text-gray-400' />
-  //           <div className='h-4 w-48 bg-gray-200 rounded'></div>
-  //         </div>
-  //       </div>
-  //     </MainLayout>
-  //   )
-  // }
-
   return (
     <MainLayout title='Notification Preferences'>
       <div className='container mx-auto py-8 px-4'>
@@ -317,7 +290,7 @@ const NotificationsPage = () => {
                 <div className='flex items-center gap-1'>
                   <Switch
                     id='notifications'
-                    checked={!!existingPreference || pendingNotificationCreate}
+                    checked={!!existingPreference}
                     onCheckedChange={async checked => {
                       if (checked) {
                         if (!localStorage.getItem('accessToken')) {
@@ -326,7 +299,6 @@ const NotificationsPage = () => {
                         }
 
                         try {
-                          setIsCreating(true)
                           await createNotification(DEFAULT_PREFERENCE)
                           queryClient.invalidateQueries({ queryKey: ['notifications'] })
                           toast.success('Notifications enabled')
@@ -334,7 +306,6 @@ const NotificationsPage = () => {
                           console.error('Failed to enable notifications:', error)
                           toast.error('Failed to enable notifications')
                         } finally {
-                          setIsCreating(false)
                         }
                       } else {
                         setPendingNotificationCreate(false)
@@ -516,64 +487,13 @@ const NotificationsPage = () => {
                           </span>
                           .
                         </p>
-                        {/* <p className='text-sm text-muted-foreground'>
-                          Active from{' '}
-                          <span className='font-semibold text-foreground'>
-                          {format(parseISO(existingPreference.startDate), 'MMMM d, yyyy')}
-                          </span>{' '}
-                          to{' '}
-                          <span className='font-semibold text-foreground'>
-                          {format(parseISO(existingPreference.endDate), 'MMMM d, yyyy')}
-                          </span>
-                          </p> */}
                       </div>
                     </div>
                   </div>
                 )}
               </div>
-              {/* <div className='absolute flex items-center justify-end bottom-1 right-6'>
-                <div className='text-xs text-muted-foreground'>
-                  Updated:{' '}
-                  {formatDistanceToNow(parseISO(existingPreference.updatedAt), {
-                    addSuffix: true,
-                  })}
-                </div>
-              </div> */}
             </CardContent>
           </Card>
-
-          {/* {preferences.map(preference => (
-            <button
-              key={preference.notificationId}
-              onClick={() => handleDeletePreference(preference.notificationId)}
-            >
-              Delete
-            </button>
-          ))} */}
-
-          {/* Notification Settings Card */}
-          {/* Action Buttons */}
-          {/* <div className='flex gap-2'>
-            <Button
-            className='w-full sm:w-auto'
-            onClick={handleAddPreference}
-            loading={isCreating}
-            disabled={isSaveDisabled || !notificationsEnabled}
-            >
-            <BellIcon className='w-4 h-4 mr-2' />
-            Save
-            </Button>
-            {existingPreference && (
-              <Button
-              variant='outline'
-              onClick={() => handleDeletePreference(existingPreference.id)}
-              loading={isDeleting === existingPreference.id}
-              >
-              <MegaphoneOff className='w-4 h-4 mr-2' />
-              Disable Notifications
-              </Button>
-            )}
-            </div> */}
         </div>
       </div>
 
