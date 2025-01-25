@@ -1,4 +1,4 @@
-import { camelCaseKeys } from '@/lib/util/transform'
+import { camelCaseKeys } from '../util/transform'
 
 interface StatusChange {
   status: 'available' | 'booked' | 'pending'
