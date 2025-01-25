@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "vercel-build": "pnpm install && pnpm install --save-dev typescript && turbo run build --filter=web",
+    "vercel-build": "pnpm install && pnpm build",
     "postinstall": "corepack enable && corepack prepare pnpm@latest --activate"
   },
   "dependencies": {
