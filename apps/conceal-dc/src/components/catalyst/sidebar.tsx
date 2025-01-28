@@ -17,7 +17,7 @@ export function SidebarHeader({ className, ...props }: React.ComponentPropsWitho
       {...props}
       className={clsx(
         className,
-        'flex flex-col border-b border-zinc-950/5 p-4 dark:border-white/5 [&>[data-slot=section]+[data-slot=section]]:mt-2.5'
+        'flex flex-col border-b border-zinc-950/5 p-4 dark:border-white/5 [&>[data-slot=section]+[data-slot=section]]:mt-2.5',
       )}
     />
   )
@@ -29,7 +29,7 @@ export function SidebarBody({ className, ...props }: React.ComponentPropsWithout
       {...props}
       className={clsx(
         className,
-        'flex flex-1 flex-col overflow-y-auto p-4 [&>[data-slot=section]+[data-slot=section]]:mt-8'
+        'flex flex-1 flex-col overflow-y-auto p-4 [&>[data-slot=section]+[data-slot=section]]:mt-8',
       )}
     />
   )
@@ -41,7 +41,7 @@ export function SidebarFooter({ className, ...props }: React.ComponentPropsWitho
       {...props}
       className={clsx(
         className,
-        'flex flex-col border-t border-zinc-950/5 p-4 dark:border-white/5 [&>[data-slot=section]+[data-slot=section]]:mt-2.5'
+        'flex flex-col border-t border-zinc-950/5 p-4 dark:border-white/5 [&>[data-slot=section]+[data-slot=section]]:mt-2.5',
       )}
     />
   )
@@ -76,7 +76,7 @@ export function SidebarHeading({ className, ...props }: React.ComponentPropsWith
       {...props}
       className={clsx(
         className,
-        'mb-1 px-2 text-xs/6 font-medium text-zinc-500 dark:text-zinc-400'
+        'mb-1 px-2 text-xs/6 font-medium text-zinc-500 dark:text-zinc-400',
       )}
     />
   )
@@ -87,12 +87,13 @@ export const SidebarItem = forwardRef(function SidebarItem(
     current,
     className,
     children,
+    onClick,
     ...props
-  }: { current?: boolean; className?: string; children: React.ReactNode } & (
+  }: { current?: boolean; className?: string; children: React.ReactNode; onClick?: () => void } & (
     | Omit<Headless.ButtonProps, 'as' | 'className'>
     | Omit<Headless.ButtonProps<typeof Link>, 'as' | 'className'>
   ),
-  ref: React.ForwardedRef<HTMLAnchorElement | HTMLButtonElement>
+  ref: React.ForwardedRef<HTMLAnchorElement | HTMLButtonElement>,
 ) {
   const classes = clsx(
     // Base
@@ -113,7 +114,9 @@ export const SidebarItem = forwardRef(function SidebarItem(
     'dark:text-white dark:data-[slot=icon]:*:fill-zinc-400',
     'dark:data-[hover]:bg-white/5 dark:data-[slot=icon]:*:data-[hover]:fill-white',
     'dark:data-[active]:bg-white/5 dark:data-[slot=icon]:*:data-[active]:fill-white',
-    'dark:data-[slot=icon]:*:data-[current]:fill-white'
+    'dark:data-[slot=icon]:*:data-[current]:fill-white',
+    // Cursor
+    onClick || 'href' in props ? 'cursor-pointer' : 'cursor-default',
   )
 
   return (
@@ -137,7 +140,8 @@ export const SidebarItem = forwardRef(function SidebarItem(
       ) : (
         <Headless.Button
           {...props}
-          className={clsx('cursor-default', classes)}
+          onClick={onClick}
+          className={classes}
           data-current={current ? 'true' : undefined}
           ref={ref}
         >

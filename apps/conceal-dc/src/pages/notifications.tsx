@@ -534,8 +534,8 @@ const DatePicker = ({
             setOpen(false)
           }}
           defaultMonth={value}
-          fromDate={new Date()}
-          initialFocus
+          hidden={{ before: new Date() }}
+          autoFocus
         />
       </PopoverContent>
     </Popover>
