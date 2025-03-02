@@ -1,5 +1,5 @@
 import type { Config } from 'tailwindcss'
-import defaultTheme from 'tailwindcss/defaultTheme'
+import { fontFamily as defaultFontFamily } from 'tailwindcss/defaultTheme'
 
 export default {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}', '../../apps/**/src/**/*.{js,ts,jsx,tsx,mdx}'],
@@ -86,7 +86,9 @@ export default {
       },
     },
     fontFamily: {
-      sans: ['Inter', ...defaultTheme.fontFamily.sans],
+      sans: ['Inter', ...defaultFontFamily.sans],
+      roboto: ['Roboto', ...defaultFontFamily.sans],
+      athletic: ['Athletic', ...defaultFontFamily.sans],
     },
   },
   plugins: [require('tailwindcss-animate')],

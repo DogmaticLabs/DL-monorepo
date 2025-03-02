@@ -12,6 +12,7 @@ import {
   CalendarDaysIcon,
   CheckCircle2,
   Clock,
+  Dog,
   ShieldCheck,
 } from 'lucide-react'
 import { GetStaticProps } from 'next'
@@ -38,7 +39,7 @@ export default function Home({
   return (
     <MainLayout noHeader>
       <OnboardingTour open={showTour} onOpenChange={setShowTour} />
-      <div className='min-h-screen'>
+      <div className='min-h-screen bg-red-500'>
         {/* Hero Section */}
         <div className='relative isolate overflow-hidden'>
           <div className='mx-auto max-w-7xl px-6 pb-12 lg:pb-32 pt-12 lg:pt-24 sm:pb-40 sm:pt-32 lg:px-8 min-h-[60vh] flex items-center'>
@@ -177,6 +178,15 @@ export default function Home({
               when a suitable time becomes available.
             </AlertDescription>
           </Alert>
+        </div>
+
+        {/* Branding */}
+        <div className='flex items-center justify-center gap-2 py-8 text-muted-foreground'>
+          <span>Built with ♥️ by</span>
+          <div className='flex items-center gap-1.5'>
+            <Dog className='h-5 w-5' />
+            <span className='font-semibold'>Dogmatic Labs</span>
+          </div>
         </div>
       </div>
     </MainLayout>
