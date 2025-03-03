@@ -1,8 +1,15 @@
 'use client'
 
 import LandingPage from '@/components/LandingPage'
-import BracketTwinStorySlide from '@/components/story-slides/BracketTwinStorySlide'
+import BracketCinderellaSlide from '@/components/story-slides/BracketCinderellaSlide'
+import BracketSummarySlide from '@/components/story-slides/BracketSummarySlide'
+import BracketTwinSlide from '@/components/story-slides/BracketTwinSlide'
+import CelebrityTwinBracketSlide from '@/components/story-slides/CelebrityTwinBracketSlide'
+import GroupBracketChalkScoreSlide from '@/components/story-slides/GroupBracketChalkScoreSlide'
+import GroupBracketStatsSlide from '@/components/story-slides/GroupBracketStatsSlide'
+import GroupNemesisSlide from '@/components/story-slides/GroupNemesisSlide'
 import GroupOverviewSlide from '@/components/story-slides/GroupOverviewSlide'
+import NationalBracketStatsSlide from '@/components/story-slides/NationalBracketStatsSlide'
 import Particles, { initParticlesEngine } from '@tsparticles/react'
 import { loadSlim } from '@tsparticles/slim'
 import { Button } from '@workspace/ui/components/button'
@@ -13,7 +20,7 @@ import StorySlide from '../components/StorySlide'
 
 export default function Page() {
   // Define your slides here - we'll create 4 example slides (excluding the landing page)
-  const totalSlides = 4
+  const totalSlides = 9
 
   const [init, setInit] = useState(false)
   const [showStory, setShowStory] = useState(false)
@@ -54,9 +61,23 @@ export default function Page() {
         <StoryProvider totalSlides={totalSlides}>
           <div className='flex-1 flex'>
             <StoryContainer>
-              <BracketTwinStorySlide bracketId={bracketId} />
-
               <GroupOverviewSlide />
+
+              <BracketTwinSlide bracketId={bracketId} />
+
+              <NationalBracketStatsSlide />
+
+              <GroupBracketStatsSlide />
+
+              <GroupBracketChalkScoreSlide />
+
+              <GroupNemesisSlide />
+
+              <BracketCinderellaSlide />
+
+              <CelebrityTwinBracketSlide />
+
+              <BracketSummarySlide />
 
               <StorySlide bgColor='bg-gradient-to-br from-pink-800 to-orange-800'>
                 <div className='flex flex-col items-center justify-center gap-6'>
