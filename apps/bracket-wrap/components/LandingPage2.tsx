@@ -306,7 +306,7 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
   }
 
   return (
-    <div className='relative inset-0 z-[-1] bg-[#1e293b] min-h-[100dvh] flex flex-col md:justify-center'>
+    <div className='relative container mx-auto max-w-md inset-0 z-[-1] bg-[#1e293b] min-h-[100dvh] flex flex-col md:justify-center'>
       <div className=''>
         <div className='container mx-auto px-4 py-0 max-w-md'>
           {/* Logo */}
