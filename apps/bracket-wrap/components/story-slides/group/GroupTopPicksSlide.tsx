@@ -1,7 +1,7 @@
 import StorySlide from '@/components/StorySlide'
 import { motion } from 'motion/react'
 import { useEffect, useState } from 'react'
-import GroupBanner from './GroupBanner'
+import GroupSlideBanner from './GroupSlideBanner'
 
 const GroupTopPicksSlide = () => {
   // Stub data for group's most popular champion picks
@@ -35,7 +35,7 @@ const GroupTopPicksSlide = () => {
   return (
     <StorySlide
       bgColor='bg-gradient-to-br from-pink-800 to-orange-800'
-      footer={<GroupBanner groupName={groupInfo.name} memberCount={groupInfo.memberCount} />}
+      footer={<GroupSlideBanner groupName={groupInfo.name} memberCount={groupInfo.memberCount} />}
     >
       <div className='flex flex-col w-full h-full'>
         {/* Content container with padding */}

@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import saintPeters from '../../../public/saint-peters.png' // You'll need to add this image
 import StorySlide from '../../StorySlide'
-import GroupBanner from './GroupBanner'
+import GroupSlideBanner from './GroupSlideBanner'
 
 interface GroupCinderellaSlideProps {
   groupId?: string
@@ -45,7 +45,7 @@ const GroupCinderellaSlide = ({ groupId }: GroupCinderellaSlideProps) => {
   return (
     <StorySlide
       bgColor='bg-gradient-to-br from-blue-900 to-teal-800'
-      footer={<GroupBanner groupName={groupInfo.name} memberCount={groupInfo.memberCount} />}
+      footer={<GroupSlideBanner groupName={groupInfo.name} memberCount={groupInfo.memberCount} />}
     >
       <div className='flex flex-col w-full h-full'>
         {/* Content container with padding */}

@@ -306,11 +306,10 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
       }
     }, 0)
   }
-  console.log('showGroupDropdown', showGroupDropdown)
 
   return (
-    <div className='fixed inset-0 z-[-1] bg-[#1e293b] min-h-[100dvh] flex flex-col'>
-      <div className='flex-1 overflow-auto'>
+    <div className='relative inset-0 z-[-1] bg-[#1e293b] min-h-[100dvh] flex flex-col md:justify-center'>
+      <div className=''>
         <div className='container mx-auto px-4 py-0 max-w-md'>
           {/* Logo */}
           <div className='flex justify-center -mt-2'>
@@ -324,7 +323,7 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
           </div>
 
           {/* Main Content */}
-          <div className='space-y-1 -mt-4 pb-32'>
+          <div className='space-y-1 -mt-4 md:min-w-[400px]'>
             <div className='text-center'>
               <h1 className='text-3xl font-bold text-white mb-1'>Find Your Bracket</h1>
               <p className='text-[#94a3b8]'>Paste your bracket or search for your group</p>
@@ -397,7 +396,10 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                         onChange={e => handleSearchChange(e.target.value)}
                         onFocus={() => {
                           if (searchMode === 'group') {
+                            setSelectedGroup(null)
+                            setSelectedBracket(null)
                             setShowGroupDropdown(true)
+                            inputRef.current?.select()
                           }
                           if (searchMode === 'bracket' && bracketSearchValue) {
                             inputRef.current?.select()
@@ -737,7 +739,7 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
       </div>
 
       {/* Start Button - Outside the scroll container */}
-      <div className='fixed bottom-0 left-0 right-0 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-[#1e293b]'>
+      <div className='fixed md:static bottom-0 left-0 right-0 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]'>
         <div className='container mx-auto max-w-md'>
           <button
             className={`w-full bg-[#ff6b35] font-bold py-3 px-6 rounded-xl transition-colors duration-200 flex items-center justify-center ${

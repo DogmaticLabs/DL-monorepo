@@ -2,13 +2,13 @@ import { motion } from 'motion/react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import StorySlide from '../../StorySlide'
-import GroupBanner from './GroupBanner'
+import GroupSlideBanner from './GroupSlideBanner'
 
 interface GroupBracketNemesisProps {
   groupId?: string
 }
 
-const GroupBracketNemesis = ({ groupId }: GroupBracketNemesisProps) => {
+const GroupBracketNemesisSlide = ({ groupId }: GroupBracketNemesisProps) => {
   // Placeholder data - would be replaced with actual data in production
   const nemesisData = {
     person1: {
@@ -50,7 +50,7 @@ const GroupBracketNemesis = ({ groupId }: GroupBracketNemesisProps) => {
   return (
     <StorySlide
       bgColor='bg-gradient-to-br from-red-900 to-orange-800'
-      footer={<GroupBanner groupName={groupInfo.name} memberCount={groupInfo.memberCount} />}
+      footer={<GroupSlideBanner groupName={groupInfo.name} memberCount={groupInfo.memberCount} />}
     >
       <div className='flex flex-col w-full h-full'>
         {/* Content container with padding */}
@@ -249,4 +249,4 @@ const GroupBracketNemesis = ({ groupId }: GroupBracketNemesisProps) => {
   )
 }
 
-export default GroupBracketNemesis
+export default GroupBracketNemesisSlide

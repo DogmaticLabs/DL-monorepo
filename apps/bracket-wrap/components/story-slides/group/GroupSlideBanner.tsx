@@ -5,7 +5,7 @@ interface GroupBannerProps {
   className?: string
 }
 
-const GroupBanner = ({
+const GroupSlideBanner = ({
   groupName,
   memberCount,
   variant = 'default',
@@ -47,4 +47,4 @@ const GroupBanner = ({
   )
 }
 
-export default GroupBanner
+export default GroupSlideBanner

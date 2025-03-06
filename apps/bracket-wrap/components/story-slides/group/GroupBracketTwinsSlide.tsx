@@ -2,13 +2,13 @@ import { motion } from 'motion/react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import StorySlide from '../../StorySlide'
-import GroupBanner from './GroupBanner'
+import GroupSlideBanner from './GroupSlideBanner'
 
 interface GroupBracketTwinsProps {
   groupId?: string
 }
 
-const GroupBracketTwins = ({ groupId }: GroupBracketTwinsProps) => {
+const GroupBracketTwinsSlide = ({ groupId }: GroupBracketTwinsProps) => {
   // Placeholder data - would be replaced with actual data in production
   const twinsData = {
     person1: {
@@ -49,7 +49,7 @@ const GroupBracketTwins = ({ groupId }: GroupBracketTwinsProps) => {
   return (
     <StorySlide
       bgColor='bg-gradient-to-br from-indigo-900 to-violet-800'
-      footer={<GroupBanner groupName={groupInfo.name} memberCount={groupInfo.memberCount} />}
+      footer={<GroupSlideBanner groupName={groupInfo.name} memberCount={groupInfo.memberCount} />}
     >
       <div className='flex flex-col w-full h-full'>
         {/* Content container with padding */}
@@ -217,4 +217,4 @@ const GroupBracketTwins = ({ groupId }: GroupBracketTwinsProps) => {
   )
 }
 
-export default GroupBracketTwins
+export default GroupBracketTwinsSlide

@@ -5,9 +5,11 @@ import BracketCinderellaSlide from '@/components/story-slides/BracketCinderellaS
 import BracketSummarySlide from '@/components/story-slides/BracketSummarySlide'
 import BracketTwinSlide from '@/components/story-slides/BracketTwinSlide'
 import CelebrityTwinBracketSlide from '@/components/story-slides/CelebrityTwinBracketSlide'
-import GroupBracketNemesis from '@/components/story-slides/group/GroupBracketNemesis'
-import GroupBracketTwins from '@/components/story-slides/group/GroupBracketTwins'
+import GroupBracketNemesisSlide from '@/components/story-slides/group/GroupBracketNemesisSlide'
+import GroupBracketTwinsSlide from '@/components/story-slides/group/GroupBracketTwinsSlide'
+import GroupChalkScoreSlide from '@/components/story-slides/group/GroupChalkScoreSlide'
 import GroupCinderellaSlide from '@/components/story-slides/group/GroupCinderellaSlide'
+import GroupFinalFourSlide from '@/components/story-slides/group/GroupFinalFourSlide'
 import GroupTopPicksSlide from '@/components/story-slides/group/GroupTopPicksSlide'
 import GroupBracketChalkScoreSlide from '@/components/story-slides/GroupBracketChalkScoreSlide'
 import GroupBracketStatsSlide from '@/components/story-slides/GroupBracketStatsSlide'
@@ -70,7 +72,13 @@ export default function Page() {
 
               <GroupCinderellaSlide />
 
-              <GroupBracketTwins />
+              <GroupBracketTwinsSlide />
+
+              <GroupBracketNemesisSlide />
+
+              <GroupFinalFourSlide />
+
+              <GroupChalkScoreSlide />
 
               <BracketTwinSlide bracketId={bracketId} />
 
