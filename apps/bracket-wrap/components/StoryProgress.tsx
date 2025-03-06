@@ -53,7 +53,7 @@ export default function StoryProgress() {
                   if (isCurrent) return `${animationProgress}%`
                   return '0%'
                 })(),
-                transition: isCurrent && isAnimating ? 'width 2s linear' : 'none',
+                transition: isCurrent && isAnimating ? 'width 4s linear' : 'none',
               }}
             />
           </div>
