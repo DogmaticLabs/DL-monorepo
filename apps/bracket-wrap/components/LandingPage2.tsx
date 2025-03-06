@@ -202,8 +202,6 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
     group.name.toLowerCase().includes(groupSearchValue.toLowerCase()),
   )
 
-  console.log('fg', filteredGroups)
-
   const handleSearchChange = (value: string) => {
     if (searchMode === 'group') {
       setGroupSearchValue(value)
@@ -383,6 +381,7 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                       )}
                       <input
                         ref={inputRef}
+                        autoFocus
                         type='text'
                         inputMode='text'
                         autoComplete='off'
