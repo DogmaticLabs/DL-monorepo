@@ -1,5 +1,3 @@
-import { motion } from 'motion/react'
-
 interface GroupBannerProps {
   groupName: string
   memberCount?: number
@@ -14,13 +12,8 @@ const GroupBanner = ({
   className = '',
 }: GroupBannerProps) => {
   return (
-    <motion.div
-      className={`sticky top-0 z-10 flex items-center justify-center w-full ${className}`}
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
-      <div className='bg-white/15 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2 border border-white/20 shadow-sm'>
+    <div className='w-full flex justify-center'>
+      <div className='mx-auto bg-white/15 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2 border border-white/20 shadow-sm'>
         <div className='w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -50,7 +43,7 @@ const GroupBanner = ({
           <span className='font-semibold text-white text-sm'>{groupName}</span>
         )}
       </div>
-    </motion.div>
+    </div>
   )
 }
 

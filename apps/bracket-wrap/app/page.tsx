@@ -5,6 +5,8 @@ import BracketCinderellaSlide from '@/components/story-slides/BracketCinderellaS
 import BracketSummarySlide from '@/components/story-slides/BracketSummarySlide'
 import BracketTwinSlide from '@/components/story-slides/BracketTwinSlide'
 import CelebrityTwinBracketSlide from '@/components/story-slides/CelebrityTwinBracketSlide'
+import GroupBracketTwins from '@/components/story-slides/group/GroupBracketTwins'
+import GroupCinderellaSlide from '@/components/story-slides/group/GroupCinderellaSlide'
 import GroupTopPicksSlide from '@/components/story-slides/group/GroupTopPicksSlide'
 import GroupBracketChalkScoreSlide from '@/components/story-slides/GroupBracketChalkScoreSlide'
 import GroupBracketStatsSlide from '@/components/story-slides/GroupBracketStatsSlide'
@@ -18,7 +20,6 @@ import { StoryProvider } from '../components/providers'
 import StoryContainer from '../components/StoryContainer'
 import StorySlide from '../components/StorySlide'
 import './globals.css'
-
 export default function Page() {
   // Define your slides here - we'll create 4 example slides (excluding the landing page)
   const totalSlides = 9
@@ -48,7 +49,7 @@ export default function Page() {
       {/* Particles background */}
       {/* <CoolParticles /> */}
 
-      {showStory ? (
+      {!showStory ? (
         // Landing page with MainStorySlide
         <div className='flex-1 flex items-center justify-center z-10'>
           <LandingPage2
@@ -65,6 +66,10 @@ export default function Page() {
               {/* <GroupOverviewSlide /> */}
 
               <GroupTopPicksSlide />
+
+              <GroupCinderellaSlide />
+
+              <GroupBracketTwins />
 
               <BracketTwinSlide bracketId={bracketId} />
 

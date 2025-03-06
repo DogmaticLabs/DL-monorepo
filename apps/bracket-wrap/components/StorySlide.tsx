@@ -14,7 +14,7 @@ export default function StorySlide({ children, footer }: StorySlideProps) {
       className={`flex flex-col w-full h-screen min-h-[100svh] items-center justify-center bg-transparent`}
     >
       <div className='flex items-center flex-1 w-full max-w-md p-6 text-white'>{children}</div>
-      <div className='sticky bottom-0 w-full m-4'>{footer}</div>
+      <div className='fixed bottom-0 w-full m-4'>{footer}</div>
     </div>
   )
 }
