@@ -381,7 +381,7 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                       )}
                       <input
                         ref={inputRef}
-                        autoFocus
+                        autoFocus={!selectedBracket && !selectedGroup}
                         type='text'
                         inputMode='text'
                         autoComplete='off'
