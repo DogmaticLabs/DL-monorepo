@@ -98,7 +98,7 @@ const GroupTopPicksSlide = () => {
                     >
                       {/* Team info and percentage */}
                       <div className='flex items-center mb-1'>
-                        <div className='w-8 h-8 rounded-full bg-yellow-500/80 flex items-center justify-center mr-3'>
+                        <div className='w-8 h-8 rounded-full bg-muted flex items-center justify-center mr-3'>
                           <span className='font-bold text-sm'>{pick.rank}</span>
                         </div>
                         <div className='flex-1'>

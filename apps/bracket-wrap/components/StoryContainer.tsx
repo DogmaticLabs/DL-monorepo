@@ -1,6 +1,7 @@
 'use client'
 
-import { BotIcon, PauseIcon, PlayIcon, VolumeIcon, X } from 'lucide-react'
+import { PauseIcon, PlayIcon, VolumeIcon, X } from 'lucide-react'
+import Image from 'next/image'
 import React, { useState } from 'react'
 import { useStoryNavigation } from '../hooks/useStoryNavigation'
 import { useStory } from './providers'
@@ -8,13 +9,9 @@ import StoryProgress from './StoryProgress'
 
 interface StoryContainerProps {
   children: React.ReactNode
-  logoSrc?: string
 }
 
-export default function StoryContainer({
-  children,
-  logoSrc = '/spotify-logo.png',
-}: StoryContainerProps) {
+export default function StoryContainer({ children }: StoryContainerProps) {
   const { currentSlide, nextSlide, prevSlide } = useStory()
   const [isPaused, setIsPaused] = useState(false)
   useStoryNavigation()
@@ -45,10 +42,10 @@ export default function StoryContainer({
       <StoryProgress />
 
       {/* Top controls bar */}
-      <div className='absolute top-0 left-0 right-0 z-20 p-4 flex justify-between items-center'>
+      <div className='fixed top-0 left-0 right-0 z-20 p-4 flex justify-between items-center'>
         {/* Logo */}
         <div className='w-10 h-10 rounded-full flex items-center justify-center'>
-          <BotIcon />
+          <Image src='/icon.png' alt='Spotify Logo' width={40} height={40} />
         </div>
 
         {/* Controls */}

@@ -41,19 +41,27 @@ export default function StoryProgress() {
 
   return (
     <div className='fixed top-0 left-0 right-0 z-10 flex gap-1 p-2'>
-      {Array.from({ length: totalSlides }).map((_, index) => (
-        <div key={index} className={`h-1.5 rounded-full flex-1 bg-muted`}>
-          <div
-            className={`h-full rounded-full ${
-              index === currentSlide ? 'bg-white' : 'bg-gray-400 bg-opacity-50'
-            }`}
-            style={{
-              width: init && index === currentSlide ? animationWidths[index] || '0%' : '0%',
-              transition: index === currentSlide ? 'width 2s linear' : 'none',
-            }}
-          />
-        </div>
-      ))}
+      {Array.from({ length: totalSlides }).map((_, index) => {
+        // Slide is active if it's before or equal to the current slide
+        const isActive = index <= currentSlide
+
+        return (
+          <div key={index} className={`h-1.5 rounded-full flex-1 bg-gray-600`}>
+            <div
+              className={`h-full rounded-full ${isActive ? 'bg-white' : ''}`}
+              style={{
+                width: (() => {
+                  if (!init) return '0%'
+                  if (index === currentSlide) return animationWidths[index] || '0%'
+                  if (index < currentSlide) return '100%'
+                  return '0%'
+                })(),
+                transition: index === currentSlide ? 'width 2s linear' : 'none',
+              }}
+            />
+          </div>
+        )
+      })}
     </div>
   )
 }

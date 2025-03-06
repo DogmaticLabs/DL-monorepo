@@ -1,5 +1,5 @@
 import type { Config } from 'tailwindcss'
-import defaultTheme from 'tailwindcss/defaultTheme'
+const defaultTheme = require('tailwindcss/defaultTheme')
 
 export default {
   content: [
@@ -9,6 +9,7 @@ export default {
     '../../apps/**/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    ...defaultTheme,
     extend: {
       colors: {
         background: 'hsl(var(--background))',

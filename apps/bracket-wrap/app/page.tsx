@@ -17,6 +17,7 @@ import { memo, useEffect, useState } from 'react'
 import { StoryProvider } from '../components/providers'
 import StoryContainer from '../components/StoryContainer'
 import StorySlide from '../components/StorySlide'
+import './globals.css'
 
 export default function Page() {
   // Define your slides here - we'll create 4 example slides (excluding the landing page)
@@ -47,7 +48,7 @@ export default function Page() {
       {/* Particles background */}
       {/* <CoolParticles /> */}
 
-      {!showStory ? (
+      {showStory ? (
         // Landing page with MainStorySlide
         <div className='flex-1 flex items-center justify-center z-10'>
           <LandingPage2
