@@ -42,7 +42,7 @@ export default function StoryContainer({ children }: StoryContainerProps) {
       <StoryProgress />
 
       {/* Top controls bar */}
-      <div className='fixed top-0 left-0 right-0 z-20 p-4 flex justify-between items-center'>
+      <div className='fixed top-2 left-0 right-0 z-20 p-4 flex justify-between items-center'>
         {/* Logo */}
         <div className='w-10 h-10 rounded-full flex items-center justify-center'>
           <Image src='/icon.png' alt='Spotify Logo' width={40} height={40} />
