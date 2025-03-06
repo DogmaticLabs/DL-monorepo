@@ -5,12 +5,6 @@ import Image from 'next/image'
 import { Dispatch, SetStateAction } from 'react'
 import basketballLogo from '../public/bracket-wrap-2.png'
 
-enum LandingPageState {
-  Intro = 'intro',
-  SelectGroup = 'selectGroup',
-  Complete = 'complete',
-}
-
 interface LandingPageProps {
   bracketId: string
   setBracketId: Dispatch<SetStateAction<string>>

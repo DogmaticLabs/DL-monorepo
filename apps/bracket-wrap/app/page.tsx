@@ -1,14 +1,14 @@
 'use client'
 
-import LandingPage from '@/components/LandingPage'
+import LandingPage2 from '@/components/LandingPage2'
 import BracketCinderellaSlide from '@/components/story-slides/BracketCinderellaSlide'
 import BracketSummarySlide from '@/components/story-slides/BracketSummarySlide'
 import BracketTwinSlide from '@/components/story-slides/BracketTwinSlide'
 import CelebrityTwinBracketSlide from '@/components/story-slides/CelebrityTwinBracketSlide'
+import GroupTopPicksSlide from '@/components/story-slides/group/GroupTopPicksSlide'
 import GroupBracketChalkScoreSlide from '@/components/story-slides/GroupBracketChalkScoreSlide'
 import GroupBracketStatsSlide from '@/components/story-slides/GroupBracketStatsSlide'
 import GroupNemesisSlide from '@/components/story-slides/GroupNemesisSlide'
-import GroupOverviewSlide from '@/components/story-slides/GroupOverviewSlide'
 import NationalBracketStatsSlide from '@/components/story-slides/NationalBracketStatsSlide'
 import Particles, { initParticlesEngine } from '@tsparticles/react'
 import { loadSlim } from '@tsparticles/slim'
@@ -43,16 +43,16 @@ export default function Page() {
   if (!init) return null
 
   return (
-    <div className='relative w-full min-h-svh flex flex-col'>
+    <div className='relative w-full min-h-svh flex flex-col bg-[#1e293b]'>
       {/* Particles background */}
-      <CoolParticles />
+      {/* <CoolParticles /> */}
 
       {!showStory ? (
         // Landing page with MainStorySlide
         <div className='flex-1 flex items-center justify-center z-10'>
-          <LandingPage
-            bracketId={bracketId}
-            setBracketId={setBracketId}
+          <LandingPage2
+            // bracketId={bracketId}
+            // setBracketId={setBracketId}
             onSubmit={handleBracketSubmit}
           />
         </div>
@@ -61,7 +61,9 @@ export default function Page() {
         <StoryProvider totalSlides={totalSlides}>
           <div className='flex-1 flex'>
             <StoryContainer>
-              <GroupOverviewSlide />
+              {/* <GroupOverviewSlide /> */}
+
+              <GroupTopPicksSlide />
 
               <BracketTwinSlide bracketId={bracketId} />
 
