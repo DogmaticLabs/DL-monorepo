@@ -171,18 +171,6 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
   const dropdownRef = React.useRef<HTMLDivElement>(null)
   const inputRef = React.useRef<HTMLInputElement>(null)
 
-  // // Add preload effect for images
-  // React.useEffect(() => {
-  //   // Get unique logo URLs
-  //   const logoUrls = [...new Set(mockBrackets.map(bracket => bracket.logo))]
-
-  //   // Preload all images
-  //   logoUrls.forEach(url => {
-  //     const img = new Image()
-  //     img.src = url
-  //   })
-  // }, []) // Only run once on mount
-
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -306,18 +294,12 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
   }
 
   return (
-    <div className='relative container mx-auto max-w-md inset-0 z-[-1] bg-[#1e293b] min-h-[100dvh] flex flex-col md:justify-center'>
-      <div className=''>
+    <div className='relative container mx-auto max-w-md inset-0 z-[-1] bg-[#1e293b] min-h-[100dvh] flex flex-col md:pt-[10%]'>
+      <div>
         <div className='container mx-auto px-4 py-0 max-w-md'>
           {/* Logo */}
           <div className='flex justify-center -mt-2'>
-            <Image
-              src='/logo.png'
-              alt='BracketWrap Logo'
-              width={192}
-              height={192}
-              // className='w-48 h-auto'
-            />
+            <Image src='/logo.png' alt='BracketWrap Logo' width={192} height={192} />
           </div>
 
           {/* Main Content */}
