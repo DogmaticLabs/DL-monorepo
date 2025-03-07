@@ -10,7 +10,6 @@ export type Group = {
   size: number
   brackets: Bracket[]
   logo?: string
-  groupId?: string
 }
 
 export type Bracket = {
@@ -34,7 +33,7 @@ export type BracketWithGroups = {
   }
   winnerId?: string
   groups: {
-    groupId: string
+    id: string
     name: string
     creatorMemberId: string
     public: boolean

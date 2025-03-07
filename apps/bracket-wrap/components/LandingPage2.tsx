@@ -150,7 +150,7 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                       <div className='max-h-[264px] overflow-y-auto'>
                         {groups?.map(group => (
                           <div
-                            key={group.id ?? group.groupId}
+                            key={group.id}
                             className={`p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors flex justify-between items-center ${
                               group.name.toLowerCase() === groupSearchValue.toLowerCase()
                                 ? 'bg-gray-50'
@@ -185,7 +185,7 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                               </div>
                               <div className='ml-7 mt-1'>
                                 <span className='text-[10px] text-gray-400'>
-                                  ID: {group.id ?? group.groupId}
+                                  ID: {group.id}
                                 </span>
                               </div>
                             </div>
@@ -275,7 +275,7 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                           // )
                           .map(group => (
                             <div
-                              key={group.groupId!}
+                              key={group.id!}
                               className='p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors'
                               onClick={() => handleGroupSelect(group)}
                             >
@@ -300,7 +300,7 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                                 </div>
                                 <div className='ml-7 mt-1'>
                                   <span className='text-[10px] text-gray-400'>
-                                    ID: {group.groupId}
+                                    ID: {group.id}
                                   </span>
                                 </div>
                               </div>
@@ -494,7 +494,7 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                         </span>
                       </div>
                       <p className='text-[10px] text-[#6b7280] truncate'>
-                        ID: {selectedGroup.id ?? selectedGroup.groupId}
+                        ID: {selectedGroup.id}
                       </p>
                     </div>
                   )}

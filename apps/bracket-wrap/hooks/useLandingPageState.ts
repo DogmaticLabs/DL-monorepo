@@ -46,9 +46,9 @@ const useLandingPageState = () => {
   })
 
   const groupQuery = useQuery({
-    queryKey: ['group', selectedGroup?.id ?? selectedGroup?.groupId],
-    queryFn: () => getBracketsForGroup(selectedGroup?.id ?? selectedGroup?.groupId ?? ''),
-    enabled: !!selectedGroup?.id || !!selectedGroup?.groupId,
+    queryKey: ['group', selectedGroup?.id],
+    queryFn: () => getBracketsForGroup(selectedGroup?.id ?? ''),
+    enabled: !!selectedGroup?.id,
   })
 
   const groupsForBracketQuery = useQuery({
