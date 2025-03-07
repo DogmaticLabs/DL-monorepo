@@ -333,7 +333,8 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                         .filter(
                           bracket =>
                             !bracketFilterValue ||
-                            bracket.name.toLowerCase().includes(bracketFilterValue.toLowerCase()),
+                            bracket.name.toLowerCase().includes(bracketFilterValue.toLowerCase()) ||
+                            bracket.member.displayName.toLowerCase().includes(bracketFilterValue.toLowerCase()),
                         )
                         .map(bracket => (
                           <div
@@ -399,13 +400,13 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
             >
               {searchMode === 'bracket' ? (
                 <div className='flex items-center transition-colors'>
-                  <CornerLeftUp className='h-5 w-5 mr-2' />
+                  <CornerLeftUp className='h-4 w-4 mr-2' />
                   <span>Switch to Group Search</span>
                   <CornerRightUp className='h-4 w-4 ml-2' />
                 </div>
               ) : (
                 <div className='flex items-center transition-colors'>
-                  <CornerLeftUp className='h-5 w-5 mr-2' />
+                  <CornerLeftUp className='h-4 w-4 mr-2' />
                   <span>Switch to Bracket Search</span>
                   <CornerRightUp className='h-4 w-4 ml-2' />
                 </div>
