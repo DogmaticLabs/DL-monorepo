@@ -17,12 +17,14 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
     bracketSearchValue,
     bracketFilterValue,
     selectedGroup,
+    selectedBracket,
     showGroupDropdown,
     showBracketDropdown,
-    selectedBracket,
     showGroupSelection,
     dropdownRef,
     inputRef,
+    bracketFilterInputRef,
+    groupFilterInputRef,
     handleSearchChange,
     handleGroupSelect,
     toggleSearchMode,
@@ -36,7 +38,9 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
     groups,
     groupsLoading,
     groupQuery,
+    teams,
   } = useLandingPageState()
+
 
   return (
     <div className='relative container mx-auto max-w-md inset-0 z-[-1] bg-[#1e293b] min-h-[100dvh] flex flex-col md:pt-[10%]'>
@@ -161,7 +165,12 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                               setGroupSearchValue(group.name)
                               setShowGroupDropdown(false)
                               setShowBracketDropdown(true)
-                              // focus on the group search input and select the text
+                              // focus on the bracket search input and dont select the text
+                              setTimeout(() => {
+                                if (bracketFilterInputRef && bracketFilterInputRef.current) {
+                                  bracketFilterInputRef.current.focus()
+                                }
+                              }, 0)
                             }}
                           >
                             <div className='flex flex-col'>
@@ -216,15 +225,15 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                     <div className='mb-3 flex items-start justify-between bg-[#2d3a4f] p-3 rounded-xl header-card'>
                       <div className='flex items-start min-w-0'>
                         {/* TODO: Lookup winner logo using winnerId */}
-                        {/* {selectedBracket.winnerId && (
+                        {selectedBracket.winnerId && (
                           <Image
-                            src={selectedBracket.winnerId}
+                            src={teams[selectedBracket.winnerId]?.images.primary || '/placeholder-team.png'}
                             alt='Winner'
                             width={28}
                             height={28}
                             className='h-7 w-7 mr-2 mt-0.5 shrink-0'
                           />
-                        )} */}
+                        )}
                         <div className='min-w-0 flex-1'>
                           <h3 className='text-white font-medium break-words'>
                             {selectedBracket.name}
@@ -242,6 +251,13 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                           setShowBracketDropdown(true)
                           setShowGroupSelection(false)
                           setBracketFilterValue('')
+                          // focus on the bracket search input and dont select the text
+                          setTimeout(() => {
+                            if (bracketFilterInputRef && bracketFilterInputRef.current) {
+
+                              bracketFilterInputRef.current.focus()
+                            }
+                          }, 0)
                         }}
                         className='px-3 py-2 bg-[#3d4a61] hover:bg-[#4d5a71] text-white text-xs rounded-full transition-colors shrink-0 ml-4'
                       >
@@ -260,6 +276,7 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                             placeholder='Search groups...'
                             value={groupSearchValue}
                             onChange={e => setGroupSearchValue(e.target.value)}
+                            ref={groupFilterInputRef}
                           />
                         </div>
                       </div>
@@ -320,11 +337,13 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                       <div className='relative'>
                         <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4' />
                         <input
+
                           type='text'
                           className='w-full pl-9 pr-3 py-2 bg-white text-gray-900 placeholder-gray-400 rounded-lg border border-gray-200 focus:outline-none focus:border-[#ff6b35] text-base'
                           placeholder='Search brackets...'
                           value={bracketFilterValue}
                           onChange={e => setBracketFilterValue(e.target.value)}
+                          ref={bracketFilterInputRef}
                         />
                       </div>
                     </div>
@@ -362,16 +381,15 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                                 </div>
                               </div>
                               <div className='flex items-center'>
-                                {/* TODO: Lookup winner logo using winnerId */}
-                                {/* {bracket.winnerId && (
+                                {bracket.winnerId && (
                                   <Image
-                                    src={bracket.winnerId}
+                                    src={teams[bracket.winnerId]?.images.primary || '/placeholder-team.png'}
                                     alt='Team Logo'
                                     width={32}
                                     height={32}
                                     className='h-8 w-8'
                                   />
-                                )} */}
+                                )}
                               </div>
                             </div>
                           </div>
@@ -425,34 +443,42 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                   <div className='pb-3 border-b border-[#3d4a61]'>
                     <div className='flex items-start justify-between mb-3'>
                       <div className='flex items-start min-w-0 pr-3'>
-                        {/* TODO: Lookup winner logo using winnerId */}
-                        {/* <Image
-                          src={selectedBracket.logo}
+                        <Image
+                          src={teams[selectedBracket.winnerId]?.images.primary || '/placeholder-team.png'}
                           alt='Winner'
-                          className='h-7 w-7 mr-2 mt-0.5'
+                          className='h-7 w-7 mr-2 -mt-1'
                           width={28}
                           height={28}
-                        /> */}
+                        />
                         <div className='min-w-0'>
-                          <h3 className='text-white font-medium break-words'>
+                          <h3 className='text-white font-medium break-words truncate'>
                             {selectedBracket.name}
                           </h3>
-                          <p className='text-sm text-[#94a3b8] mt-0.5'>
-                            {selectedBracket.member.displayName}
-                          </p>
+                         
                         </div>
                       </div>
                       <button
                         onClick={() => {
                           setShowBracketDropdown(true)
                           setBracketFilterValue('') // Clear filter when changing groups
+                          setTimeout(() => {
+                            if (bracketFilterInputRef && bracketFilterInputRef.current) {
+
+                              bracketFilterInputRef.current.focus()
+                            }
+                          }, 0)
                         }}
                         className='px-3 py-2 bg-[#3d4a61] hover:bg-[#4d5a71] text-white text-xs rounded-full transition-colors shrink-0 ml-4'
                       >
                         Change Bracket
                       </button>
                     </div>
-                    <p className='text-[10px] text-[#6b7280] truncate'>ID: {selectedBracket.id}</p>
+                    <div className='flex items-center -mt-3.5'>
+                      <span className='text-sm text-[#94a3b8]'>
+                        {selectedBracket.member.displayName}
+                      </span>
+                    </div>
+                    <p className='text-[10px] text-[#6b7280] truncate mt-1.5'>ID: {selectedBracket.id}</p>
                   </div>
 
                   {selectedGroup && (
@@ -460,15 +486,21 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                       <div className='flex items-start justify-between mb-3'>
                         <div className='flex items-start min-w-0 pr-3'>
                           <Users className='h-5 w-5 text-[#94a3b8] mr-2 mt-0.5' />
-                          <span className='text-white font-medium break-words'>
+                          <span className='text-white font-medium break-words truncate'>
                             {selectedGroup.name}
                           </span>
                         </div>
                         {(selectedBracket?.groups?.length ?? 0) > 1 && (
                           <button
                             onClick={() => {
-                              setShowGroupSelection(true)
                               setGroupSearchValue('')
+                              setShowGroupSelection(true)
+                              // focus on the group search input but dont select the text
+                              setTimeout(() => {
+                                if (groupFilterInputRef && groupFilterInputRef.current) {
+                                  groupFilterInputRef.current.focus()
+                                }
+                              }, 0)
                             }}
                             className='px-3 py-2 bg-[#3d4a61] hover:bg-[#4d5a71] text-white text-xs rounded-full transition-colors shrink-0'
                           >

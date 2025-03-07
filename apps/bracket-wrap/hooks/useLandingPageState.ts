@@ -2,11 +2,12 @@ import {
   Bracket,
   getBracketsForGroup,
   getGroupsForBracket,
+  getTeams,
   Group,
   searchGroupsByQuery,
 } from '@/app/api/bracket-data'
 import { useQuery } from '@tanstack/react-query'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 const useLandingPageState = () => {
   const [searchMode, setSearchMode] = useState<'bracket' | 'group'>('group')
@@ -27,8 +28,10 @@ const useLandingPageState = () => {
     selectedBracket: Bracket | null
     groupSearchValue: string
   } | null>(null)
-  const dropdownRef = React.useRef<HTMLDivElement>(null)
-  const inputRef = React.useRef<HTMLInputElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const bracketFilterInputRef = useRef<HTMLInputElement>(null)
+  const groupFilterInputRef = useRef<HTMLInputElement>(null)
 
   // Add debounce effect for group search
   useEffect(() => {
@@ -57,9 +60,16 @@ const useLandingPageState = () => {
     enabled: !!selectedBracket?.id,
   })
 
+  const teamsQuery = useQuery({
+    queryKey: ['teams'],
+    queryFn: () => getTeams(),
+  })
+
   if (selectedBracket && groupsForBracketQuery.data) {
     selectedBracket.groups = groupsForBracketQuery.data?.groups
   }
+
+
 
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -198,6 +208,8 @@ const useLandingPageState = () => {
     lastGroupSearchState,
     dropdownRef,
     inputRef,
+    bracketFilterInputRef,
+    groupFilterInputRef,
     handleSearchChange,
     handleGroupSelect,
     toggleSearchMode,
@@ -214,6 +226,8 @@ const useLandingPageState = () => {
       groupsQuery.isLoading ||
       (groupSearchValue.length >= 3 && debouncedGroupSearchValue !== groupSearchValue),
     groupQuery,
+    teams: teamsQuery.data || {},
+    teamsLoading: teamsQuery.isLoading,
   }
 }
 

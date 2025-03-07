@@ -6,6 +6,7 @@ const nextConfig = {
       // ... any existing domains
       'a.espncdn.com',
       'chui-assets-cdn.espn.com',
+      'g.espncdn.com'
     ],
   },
 }

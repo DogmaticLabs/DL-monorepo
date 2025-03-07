@@ -19,7 +19,7 @@ export type Bracket = {
     id: string
     displayName: string
   }
-  winnerId?: string
+  winnerId: string
   groups: Group[]
 }
 
@@ -41,6 +41,25 @@ export type BracketWithGroups = {
   }[]
 }
 
+export type Team = {
+  id: string
+  name: string
+  description: string
+  abbreviation: string
+  colors: {
+    primary: string
+    secondary: string
+  }
+  images: {
+    primary: string
+    secondary: string
+  }
+  seed: number
+  regionId: number
+}
+
+export type TeamMap = Record<string, Team>
+
 export const searchGroupsByQuery = async (query: string, year = 2024): Promise<Group[]> => {
   const response = await fetch(
     `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/groups/search?q=${query}&year=${year}`,
@@ -61,6 +80,12 @@ export const getGroupsForBracket = async (bracketId: string, year = 2024): Promi
   const response = await fetch(
     `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/brackets/${bracketId}/groups?year=${year}`,
   )
+  const data = await response.json()
+  return data
+}
+
+export const getTeams = async (year = 2024): Promise<TeamMap> => {
+  const response = await fetch(`https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/teams?year=${year}`)
   const data = await response.json()
   return data
 }
