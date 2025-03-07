@@ -169,7 +169,7 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                                 <Users className='h-5 w-5 text-gray-500 mr-2' />
                                 <span className='font-medium text-gray-900'>{group.name}</span>
                               </div>
-                              <div className='flex items-center mt-1 ml-7'>
+                              <div className='flex items-center mt-2'>
                                 <span
                                   className={`px-2 py-0.5 rounded-full text-xs ${
                                     group.public
@@ -183,7 +183,7 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                                   {group.size} members
                                 </span>
                               </div>
-                              <div className='ml-7 mt-1'>
+                              <div className='mt-1'>
                                 <span className='text-[10px] text-gray-400'>
                                   ID: {group.id}
                                 </span>
@@ -284,7 +284,7 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                                   <Users className='h-5 w-5 text-gray-500 mr-2' />
                                   <span className='font-medium text-gray-900'>{group.name}</span>
                                 </div>
-                                <div className='flex items-center mt-1 ml-7'>
+                                <div className='flex items-center mt-2'>
                                   <span
                                     className={`px-2 py-1 rounded-full text-xs ${
                                       group.public
@@ -298,7 +298,7 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                                     {group.size} members
                                   </span>
                                 </div>
-                                <div className='ml-7 mt-1'>
+                                <div className='mt-1'>
                                   <span className='text-[10px] text-gray-400'>
                                     ID: {group.id}
                                   </span>
