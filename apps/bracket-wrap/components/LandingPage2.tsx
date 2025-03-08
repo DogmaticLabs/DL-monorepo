@@ -6,6 +6,7 @@ import {
   Loader2,
   Search,
   Trophy,
+  User,
   Users,
 } from 'lucide-react'
 import Image from 'next/image'
@@ -38,9 +39,11 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
     groups,
     groupsLoading,
     groupQuery,
+    bracketsLoading,
     teams,
   } = useLandingPageState()
 
+  console.log(selectedGroup)
 
   return (
     <div className='relative container mx-auto max-w-md inset-0 z-[-1] bg-[#1e293b] min-h-[100dvh] flex flex-col md:pt-[10%]'>
@@ -193,9 +196,7 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                                 </span>
                               </div>
                               <div className='mt-1'>
-                                <span className='text-[10px] text-gray-400'>
-                                  ID: {group.id}
-                                </span>
+                                <span className='text-[10px] text-gray-400'>ID: {group.id}</span>
                               </div>
                             </div>
                             {group.logo && (
@@ -227,7 +228,10 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                         {/* TODO: Lookup winner logo using winnerId */}
                         {selectedBracket.winnerId && (
                           <Image
-                            src={teams[selectedBracket.winnerId]?.images.primary || '/placeholder-team.png'}
+                            src={
+                              teams[selectedBracket.winnerId]?.images.primary ||
+                              '/placeholder-team.png'
+                            }
                             alt='Winner'
                             width={28}
                             height={28}
@@ -254,7 +258,6 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                           // focus on the bracket search input and dont select the text
                           setTimeout(() => {
                             if (bracketFilterInputRef && bracketFilterInputRef.current) {
-
                               bracketFilterInputRef.current.focus()
                             }
                           }, 0)
@@ -281,48 +284,37 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                         </div>
                       </div>
                       <div className='max-h-[264px] overflow-y-auto'>
-                        {/* TODO: Fix the groups available for the selected bracket */}
-                        {selectedBracket.groups
-                          // .filter(
-                          //   group =>
-                          //     selectedBracket.groups.includes(group.groupId) &&
-                          //     group.groupSettings.name
-                          //       .toLowerCase()
-                          //       .includes(groupSearchValue.toLowerCase()),
-                          // )
-                          .map(group => (
-                            <div
-                              key={group.id!}
-                              className='p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors'
-                              onClick={() => handleGroupSelect(group)}
-                            >
-                              <div className='flex flex-col'>
-                                <div className='flex items-center'>
-                                  <Users className='h-5 w-5 text-gray-500 mr-2' />
-                                  <span className='font-medium text-gray-900'>{group.name}</span>
-                                </div>
-                                <div className='flex items-center mt-2'>
-                                  <span
-                                    className={`px-2 py-1 rounded-full text-xs ${
-                                      group.public
-                                        ? 'bg-[#ff6b35] text-white'
-                                        : 'bg-gray-100 text-gray-600'
-                                    }`}
-                                  >
-                                    {group.public ? 'Public' : 'Private'}
-                                  </span>
-                                  <span className='text-xs text-gray-600 ml-2'>
-                                    {group.size} members
-                                  </span>
-                                </div>
-                                <div className='mt-1'>
-                                  <span className='text-[10px] text-gray-400'>
-                                    ID: {group.id}
-                                  </span>
-                                </div>
+                        {selectedBracket.groups.map(group => (
+                          <div
+                            key={group.id!}
+                            className='p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors'
+                            onClick={() => handleGroupSelect(group)}
+                          >
+                            <div className='flex flex-col'>
+                              <div className='flex items-center'>
+                                <Users className='h-5 w-5 text-gray-500 mr-2' />
+                                <span className='font-medium text-gray-900'>{group.name}</span>
+                              </div>
+                              <div className='flex items-center mt-2'>
+                                <span
+                                  className={`px-2 py-1 rounded-full text-xs ${
+                                    group.public
+                                      ? 'bg-[#ff6b35] text-white'
+                                      : 'bg-gray-100 text-gray-600'
+                                  }`}
+                                >
+                                  {group.public ? 'Public' : 'Private'}
+                                </span>
+                                <span className='text-xs text-gray-600 ml-2'>
+                                  {group.size} members
+                                </span>
+                              </div>
+                              <div className='mt-1'>
+                                <span className='text-[10px] text-gray-400'>ID: {group.id}</span>
                               </div>
                             </div>
-                          ))}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </>
@@ -337,7 +329,6 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                       <div className='relative'>
                         <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4' />
                         <input
-
                           type='text'
                           className='w-full pl-9 pr-3 py-2 bg-white text-gray-900 placeholder-gray-400 rounded-lg border border-gray-200 focus:outline-none focus:border-[#ff6b35] text-base'
                           placeholder='Search brackets...'
@@ -345,6 +336,11 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                           onChange={e => setBracketFilterValue(e.target.value)}
                           ref={bracketFilterInputRef}
                         />
+                        {bracketsLoading && (
+                          <div className='absolute right-4 top-1/2 transform -translate-y-1/2 text-[#94a3b8] h-5 w-5 z-50 pointer-events-none'>
+                            <Loader2 className='animate-spin' />
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className='max-h-[264px] overflow-y-auto'>
@@ -353,7 +349,9 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                           bracket =>
                             !bracketFilterValue ||
                             bracket.name.toLowerCase().includes(bracketFilterValue.toLowerCase()) ||
-                            bracket.member.displayName.toLowerCase().includes(bracketFilterValue.toLowerCase()),
+                            bracket.member.displayName
+                              .toLowerCase()
+                              .includes(bracketFilterValue.toLowerCase()),
                         )
                         .map(bracket => (
                           <div
@@ -383,7 +381,10 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                               <div className='flex items-center'>
                                 {bracket.winnerId && (
                                   <Image
-                                    src={teams[bracket.winnerId]?.images.primary || '/placeholder-team.png'}
+                                    src={
+                                      teams[bracket.winnerId]?.images.primary ||
+                                      '/placeholder-team.png'
+                                    }
                                     alt='Team Logo'
                                     width={32}
                                     height={32}
@@ -441,10 +442,13 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
               !showGroupDropdown && (
                 <div className='bg-[#2d3a4f] rounded-xl p-4 space-y-3 outline outline-white outline-1'>
                   <div className='pb-3 border-b border-[#3d4a61]'>
-                    <div className='flex items-start justify-between mb-3'>
+                    <div className='flex items-start justify-between mb-1'>
                       <div className='flex items-start min-w-0 pr-3'>
                         <Image
-                          src={teams[selectedBracket.winnerId]?.images.primary || '/placeholder-team.png'}
+                          src={
+                            teams[selectedBracket.winnerId]?.images.primary ||
+                            '/placeholder-team.png'
+                          }
                           alt='Winner'
                           className='h-7 w-7 mr-2 -mt-1'
                           width={28}
@@ -454,8 +458,20 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                           <h3 className='text-white font-medium break-words truncate'>
                             {selectedBracket.name}
                           </h3>
-                         
                         </div>
+                      </div>
+                    </div>
+                    <div className='flex items-end justify-between'>
+                      <div className='flex flex-col'>
+                        <div className='flex items-center'>
+                          <User className='h-4 w-4 text-[#94a3b8] mr-2' />
+                          <span className='text-sm text-[#94a3b8]'>
+                            {selectedBracket.member.displayName}
+                          </span>
+                        </div>
+                        <p className='text-[10px] text-[#6b7280] truncate mt-3'>
+                          ID: {selectedBracket.id}
+                        </p>
                       </div>
                       <button
                         onClick={() => {
@@ -463,7 +479,6 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                           setBracketFilterValue('') // Clear filter when changing groups
                           setTimeout(() => {
                             if (bracketFilterInputRef && bracketFilterInputRef.current) {
-
                               bracketFilterInputRef.current.focus()
                             }
                           }, 0)
@@ -473,22 +488,49 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                         Change Bracket
                       </button>
                     </div>
-                    <div className='flex items-center -mt-3.5'>
-                      <span className='text-sm text-[#94a3b8]'>
-                        {selectedBracket.member.displayName}
-                      </span>
-                    </div>
-                    <p className='text-[10px] text-[#6b7280] truncate mt-1.5'>ID: {selectedBracket.id}</p>
                   </div>
 
                   {selectedGroup && (
-                    <div>
-                      <div className='flex items-start justify-between mb-3'>
+                    <div className=' border-[#3d4a61]'>
+                      <div className='flex items-start justify-between mb-1'>
                         <div className='flex items-start min-w-0 pr-3'>
-                          <Users className='h-5 w-5 text-[#94a3b8] mr-2 mt-0.5' />
-                          <span className='text-white font-medium break-words truncate'>
-                            {selectedGroup.name}
-                          </span>
+                          {selectedGroup.logo ? (
+                            <Image
+                              src={selectedGroup.logo}
+                              alt='group logo'
+                              width={28}
+                              height={28}
+                              className='h-7 w-7 mr-2 -mt-1 shrink-0'
+                            />
+                          ) : (
+                            <Users className='h-5 w-5 text-[#94a3b8] mr-2 -mt-1' />
+                          )}
+                          <div className='min-w-0'>
+                            <h3 className='text-white font-medium break-words truncate'>
+                              {selectedGroup.name}
+                            </h3>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='flex items-end justify-between'>
+                        <div className='flex flex-col'>
+                          <div className='flex items-center'>
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-xs ${
+                                selectedGroup.public
+                                  ? 'bg-[#ff6b35] text-white'
+                                  : 'bg-[#3d4a61] text-[#94a3b8]'
+                              }`}
+                            >
+                              {selectedGroup.public ? 'Public' : 'Private'}
+                            </span>
+                            <span className='text-xs text-[#94a3b8] ml-2'>
+                              {selectedGroup.size} members
+                            </span>
+                          </div>
+                          <p className='text-[10px] text-[#6b7280] truncate mt-3'>
+                            ID: {selectedGroup.id}
+                          </p>
                         </div>
                         {(selectedBracket?.groups?.length ?? 0) > 1 && (
                           <button
@@ -502,33 +544,12 @@ const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                                 }
                               }, 0)
                             }}
-                            className='px-3 py-2 bg-[#3d4a61] hover:bg-[#4d5a71] text-white text-xs rounded-full transition-colors shrink-0'
+                            className='px-3 py-2 bg-[#3d4a61] hover:bg-[#4d5a71] text-white text-xs rounded-full transition-colors shrink-0 ml-4'
                           >
                             Switch Group
                           </button>
                         )}
                       </div>
-                      <div
-                        className={`flex items-center mb-3 ${
-                          (selectedBracket?.groups?.length ?? 0) > 1 ? '-mt-2.5' : 'mt-0'
-                        }`}
-                      >
-                        <span
-                          className={`px-2 py-0.5 rounded-full text-xs ${
-                            selectedGroup.public
-                              ? 'bg-[#ff6b35] text-white'
-                              : 'bg-[#3d4a61] text-[#94a3b8]'
-                          }`}
-                        >
-                          {selectedGroup.public ? 'Public' : 'Private'}
-                        </span>
-                        <span className='text-xs text-[#94a3b8] ml-2'>
-                          {selectedGroup.size} members
-                        </span>
-                      </div>
-                      <p className='text-[10px] text-[#6b7280] truncate'>
-                        ID: {selectedGroup.id}
-                      </p>
                     </div>
                   )}
                 </div>

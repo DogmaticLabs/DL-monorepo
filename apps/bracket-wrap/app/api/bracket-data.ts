@@ -85,7 +85,9 @@ export const getGroupsForBracket = async (bracketId: string, year = 2024): Promi
 }
 
 export const getTeams = async (year = 2024): Promise<TeamMap> => {
-  const response = await fetch(`https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/teams?year=${year}`)
+  const response = await fetch(
+    `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/teams?year=${year}`,
+  )
   const data = await response.json()
   return data
 }

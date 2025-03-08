@@ -7,7 +7,7 @@ import {
   searchGroupsByQuery,
 } from '@/app/api/bracket-data'
 import { useQuery } from '@tanstack/react-query'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 const useLandingPageState = () => {
   const [searchMode, setSearchMode] = useState<'bracket' | 'group'>('group')
@@ -68,8 +68,6 @@ const useLandingPageState = () => {
   if (selectedBracket && groupsForBracketQuery.data) {
     selectedBracket.groups = groupsForBracketQuery.data?.groups
   }
-
-
 
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -226,6 +224,7 @@ const useLandingPageState = () => {
       groupsQuery.isLoading ||
       (groupSearchValue.length >= 3 && debouncedGroupSearchValue !== groupSearchValue),
     groupQuery,
+    bracketsLoading: groupQuery.isLoading,
     teams: teamsQuery.data || {},
     teamsLoading: teamsQuery.isLoading,
   }
