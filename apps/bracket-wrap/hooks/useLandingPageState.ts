@@ -100,8 +100,8 @@ const useLandingPageState = () => {
         setSelectedBracket(bracket)
         // TODO: Fix this
         // Auto-select the first group the bracket belongs to
-        // const firstGroup = mockGroups.find(g => g.id === bracket.groups[0])
-        // setSelectedGroup(firstGroup || null)
+        const firstGroup = groupsQuery.data?.find(g => g.id === bracket.groups[0]?.id)
+        setSelectedGroup(firstGroup || null)
         setShowGroupSelection(false)
         // Dismiss keyboard after successful bracket paste
         inputRef.current?.blur()
