@@ -1,6 +1,6 @@
 'use client'
 
-import LandingPage2 from '@/components/LandingPage2'
+import LandingPage from '@/components/LandingPage'
 import BracketCinderellaSlide from '@/components/story-slides/BracketCinderellaSlide'
 import BracketSummarySlide from '@/components/story-slides/BracketSummarySlide'
 import BracketTwinSlide from '@/components/story-slides/BracketTwinSlide'
@@ -55,7 +55,7 @@ export default function Page() {
       {!showStory ? (
         // Landing page with MainStorySlide
         <div className='flex-1 flex items-center justify-center z-10'>
-          <LandingPage2
+          <LandingPage
             // bracketId={bracketId}
             // setBracketId={setBracketId}
             onSubmit={handleBracketSubmit}

@@ -13,7 +13,7 @@ import Image from 'next/image'
 
 const randomBracketId = '44998d59-f64c-4a0e-98c3-6ef1578dcc1c'
 
-const LandingPage2 = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
+const LandingPage = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
   const landingPageState = useLandingPageState()
 
   const {
@@ -627,4 +627,4 @@ const SelectedGroup = ({
     </div>
   ) : null
 
-export default LandingPage2
+export default LandingPage
