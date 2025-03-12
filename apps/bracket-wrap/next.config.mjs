@@ -9,6 +9,14 @@ const nextConfig = {
       'g.espncdn.com'
     ],
   },
-}
+  async rewrites() {
+    return [
+      {
+        source: "/share/:shortCode",
+        destination: "http://localhost:8000/share/:shortCode",
+      },
+    ];
+  },
+} 
 
 export default nextConfig

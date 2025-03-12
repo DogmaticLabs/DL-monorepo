@@ -68,6 +68,7 @@ export const searchGroupsByQuery = async (query: string, year = 2024): Promise<G
   return data
 }
 
+
 export const getBracketsForGroup = async (groupId: string, year = 2024): Promise<Group> => {
   const response = await fetch(
     `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/groups/${groupId}?year=${year}`,
