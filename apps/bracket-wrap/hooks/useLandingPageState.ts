@@ -16,8 +16,8 @@ const useLandingPageState = () => {
   const [searchMode, setSearchMode] = useUrlParam<SearchMode>('mode', 'group', {
     persistDefault: true,
   })
-  const [groupId, setGroupId] = useUrlParam<string>('groupId')
-  const [bracketId, setBracketId] = useUrlParam<string>('bracketId')
+  const [groupId, setGroupId] = useUrlParam<string>('group_id')
+  const [bracketId, setBracketId] = useUrlParam<string>('bracket_id')
   const [groupSearchValue, setGroupSearchValue] = useState('')
   const [debouncedGroupSearchValue, setDebouncedGroupSearchValue] = useState('')
   const [bracketSearchValue, setBracketSearchValue] = useState(bracketId)
