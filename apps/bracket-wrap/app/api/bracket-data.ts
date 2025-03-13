@@ -60,7 +60,7 @@ export type Team = {
 
 export type TeamMap = Record<string, Team>
 
-export const searchGroupsByQuery = async (query: string, year = 2024): Promise<Group[]> => {
+export const searchGroupsByQuery = async (query: string, year = 2025): Promise<Group[]> => {
   const response = await fetch(
     `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/groups/search?q=${query}&year=${year}`,
   )

@@ -73,7 +73,7 @@ const LandingPage = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                 )}
 
                 {/* Bracket Selection with Search */}
-                {searchMode === 'group' && selectedGroup && showBracketDropdown && (
+                {selectedGroup && showBracketDropdown && (
                   <div
                     className={`w-full ${searchMode === 'group' && !selectedBracket ? 'absolute' : 'relative'}`}
                   >
@@ -450,6 +450,7 @@ const BracketDropdown = ({
   setSelectedBracket,
   setShowBracketDropdown,
   teams,
+  handleBracketSelect,
 }: ReturnType<typeof useLandingPageState>) => {
   return (
     <div
@@ -489,6 +490,7 @@ const BracketDropdown = ({
                 setSelectedBracket(bracket)
                 setShowBracketDropdown(false)
                 setBracketFilterValue('') // Clear filter when selecting a bracket
+                handleBracketSelect(bracket)
               }}
             >
               <div className='flex items-center justify-between ml-1'>

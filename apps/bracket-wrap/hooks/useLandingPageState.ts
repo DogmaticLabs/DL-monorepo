@@ -33,6 +33,10 @@ const useLandingPageState = () => {
   const bracketFilterInputRef = useRef<HTMLInputElement>(null)
   const groupFilterInputRef = useRef<HTMLInputElement>(null)
 
+  const isValidBracketId = (id: string) => {
+    return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(id)
+  }
+
   // Add debounce effect for group search
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -55,9 +59,9 @@ const useLandingPageState = () => {
   })
 
   const groupsForBracketQuery = useQuery({
-    queryKey: ['groups-for-bracket', selectedBracket?.id],
-    queryFn: () => getGroupsForBracket(selectedBracket?.id ?? ''),
-    enabled: !!selectedBracket?.id,
+    queryKey: ['groups-for-bracket', selectedBracket?.id ?? bracketSearchValue],
+    queryFn: () => getGroupsForBracket(selectedBracket?.id ?? bracketSearchValue),
+    enabled: !!selectedBracket?.id || isValidBracketId(bracketSearchValue),
   })
 
   const teamsQuery = useQuery({
@@ -93,14 +97,12 @@ const useLandingPageState = () => {
     } else {
       // Handle bracket ID search
       setBracketSearchValue(value)
-      const bracket = groupQuery.data?.brackets.find(
-        b => b.id.toLowerCase() === value.toLowerCase(),
-      )
+      const bracket = groupsForBracketQuery.data
       if (bracket) {
         setSelectedBracket(bracket)
         // TODO: Fix this
         // Auto-select the first group the bracket belongs to
-        const firstGroup = groupsQuery.data?.find(g => g.id === bracket.groups[0]?.id)
+        const firstGroup = bracket.groups.find(g => g.id === bracket.groups[0]?.id)
         setSelectedGroup(firstGroup || null)
         setShowGroupSelection(false)
         // Dismiss keyboard after successful bracket paste
@@ -123,6 +125,13 @@ const useLandingPageState = () => {
         [selectedBracket.id]: group.id,
       }))
     }
+  }
+
+  const handleBracketSelect = (bracket: Bracket) => {
+    setSelectedBracket(bracket)
+    setBracketSearchValue(bracket.id)
+    setShowGroupSelection(false)
+    setShowBracketDropdown(false)
   }
 
   const toggleSearchMode = () => {
@@ -219,6 +228,7 @@ const useLandingPageState = () => {
     setShowBracketDropdown,
     setShowGroupSelection,
     setSelectedBracket,
+    handleBracketSelect,
     groups: groupsQuery.data,
     groupsLoading:
       groupsQuery.isLoading ||
