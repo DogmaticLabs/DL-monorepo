@@ -131,7 +131,7 @@ const useLandingPageState = () => {
     bracket: (bracket: Bracket) => {
       setBracketId(bracket.id)
       setBracketSearchValue(bracket.id)
-      if (!groupId || !bracket.groups.find(g => g.id === groupId)) {
+      if (!groupId || (!bracket.groups?.find(g => g.id === groupId) && bracket.groups?.length)) {
         setGroupId(bracket.groups[0]?.id)
       }
       setShowBracketDropdown(false)
