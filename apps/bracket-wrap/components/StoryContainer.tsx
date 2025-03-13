@@ -38,7 +38,7 @@ export default function StoryContainer({ children }: StoryContainerProps) {
   }
 
   return (
-    <div className='relative w-full h-full min-h-svh overflow-hidden flex flex-col'>
+    <div className='relative w-full h-full overflow-hidden flex flex-col'>
       <StoryProgress />
 
       {/* Top controls bar */}

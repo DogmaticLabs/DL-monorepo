@@ -11,8 +11,6 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 
-const randomBracketId = '44998d59-f64c-4a0e-98c3-6ef1578dcc1c'
-
 const LandingPage = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
   const landingPageState = useLandingPageState()
 
@@ -27,11 +25,13 @@ const LandingPage = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
     showGroupSelection,
     dropdownRef,
     toggleSearchMode,
+    bracketId,
+    groupId,
   } = landingPageState
 
   return (
-    <div className='relative container mx-auto max-w-md inset-0 z-[-1] bg-[#1e293b] min-h-[100dvh] flex flex-col md:pt-[10%]'>
-      <div>
+    <div className='relative container mx-auto max-w-md inset-0 z-[-1] bg-[#1e293b] flex flex-col'>
+      <div className='md:pt-[10%]'>
         <div className='container mx-auto px-4 py-0 max-w-md'>
           {/* Logo */}
           <div className='flex justify-center -mt-2'>
@@ -52,7 +52,7 @@ const LandingPage = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
               <div className='relative' ref={dropdownRef}>
                 <div className='relative'>
                   {/* Group header when selecting bracket */}
-                  {searchMode === 'group' && selectedGroup && showBracketDropdown && (
+                  {searchMode === 'group' && groupId && !bracketId && (
                     <GroupHeader {...landingPageState} />
                   )}
                   {/* Only show search bar for initial group search or bracket ID */}
@@ -62,20 +62,19 @@ const LandingPage = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                 </div>
 
                 {/* Group Dropdown */}
-                {searchMode === 'group' &&
-                  showGroupDropdown &&
-                  !selectedGroup &&
-                  groupSearchValue && <GroupDropdown {...landingPageState} />}
+                {searchMode === 'group' && showGroupDropdown && !groupId && groupSearchValue && (
+                  <GroupDropdown {...landingPageState} />
+                )}
 
                 {/* Group Selection for Bracket */}
-                {showGroupSelection && selectedBracket && (
+                {showGroupSelection && bracketId && (
                   <GroupSelectionForBracket {...landingPageState} />
                 )}
 
                 {/* Bracket Selection with Search */}
-                {selectedGroup && showBracketDropdown && (
+                {groupId && !bracketId && (
                   <div
-                    className={`w-full ${searchMode === 'group' && !selectedBracket ? 'absolute' : 'relative'}`}
+                    className={`w-full ${searchMode === 'group' && !bracketId ? 'absolute' : 'relative'}`}
                   >
                     <BracketDropdown {...landingPageState} />
                   </div>
@@ -118,7 +117,8 @@ const LandingPage = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
             <div className='h-4'></div>
 
             {/* Selected Bracket + Group Details */}
-            {selectedBracket &&
+            {bracketId &&
+              groupId &&
               !showGroupSelection &&
               !showBracketDropdown &&
               !showGroupDropdown && (
@@ -166,13 +166,13 @@ const LandingPage = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
 const SearchInput = ({
   searchMode,
   inputRef,
-  selectedBracket,
-  selectedGroup,
   groupSearchValue,
   bracketSearchValue,
   handleSearchChange,
-  setSelectedGroup,
-  setSelectedBracket,
+  bracketId,
+  groupId,
+  setGroupId,
+  setBracketId,
   setShowGroupDropdown,
   groupsLoading,
 }: ReturnType<typeof useLandingPageState>) => {
@@ -185,7 +185,7 @@ const SearchInput = ({
       )}
       <input
         ref={inputRef}
-        autoFocus={!selectedBracket && !selectedGroup}
+        autoFocus={!bracketId && !groupId}
         type='text'
         inputMode='text'
         autoComplete='off'
@@ -199,12 +199,12 @@ const SearchInput = ({
         onChange={e => handleSearchChange(e.target.value)}
         onFocus={() => {
           if (searchMode === 'group') {
-            setSelectedGroup(null)
-            setSelectedBracket(null)
             setShowGroupDropdown(true)
             inputRef.current?.select()
+            setBracketId(undefined)
+            setGroupId(undefined)
           }
-          if (searchMode === 'bracket' && bracketSearchValue) {
+          if (searchMode === 'bracket' && bracketId) {
             inputRef.current?.select()
           }
         }}
@@ -224,7 +224,7 @@ const GroupHeader = ({
   setGroupSearchValue,
   setShowBracketDropdown,
   setShowGroupDropdown,
-  setSelectedGroup,
+  setGroupId,
 }: ReturnType<typeof useLandingPageState>) => {
   return selectedGroup ? (
     <div className='mb-3 flex items-center justify-between bg-[#374151] p-3 rounded-xl header-card'>
@@ -251,7 +251,7 @@ const GroupHeader = ({
           }
           setShowBracketDropdown(false)
           setShowGroupDropdown(true)
-          setSelectedGroup(null)
+          setGroupId(undefined)
         }}
         className='px-3 py-2 bg-[#3d4a61] hover:bg-[#4d5a71] text-white text-xs rounded-full transition-colors shrink-0 ml-4'
       >
@@ -265,11 +265,7 @@ const GroupHeader = ({
 const GroupDropdown = ({
   groups,
   groupSearchValue,
-  setSelectedGroup,
-  setGroupSearchValue,
-  setShowGroupDropdown,
-  setShowBracketDropdown,
-  bracketFilterInputRef,
+  handleGroupSelect,
 }: ReturnType<typeof useLandingPageState>) => {
   return (
     <div className='absolute w-full mt-2 bg-white rounded-xl shadow-lg overflow-hidden z-20'>
@@ -280,18 +276,7 @@ const GroupDropdown = ({
             className={`p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors flex justify-between items-center ${
               group.name.toLowerCase() === groupSearchValue.toLowerCase() ? 'bg-gray-50' : ''
             }`}
-            onClick={() => {
-              setSelectedGroup(group)
-              setGroupSearchValue(group.name)
-              setShowGroupDropdown(false)
-              setShowBracketDropdown(true)
-              // focus on the bracket search input and dont select the text
-              setTimeout(() => {
-                if (bracketFilterInputRef && bracketFilterInputRef.current) {
-                  bracketFilterInputRef.current.focus()
-                }
-              }, 0)
-            }}
+            onClick={() => handleGroupSelect(group)}
           >
             <div className='flex flex-col'>
               <div className='flex items-center'>
@@ -447,8 +432,6 @@ const BracketDropdown = ({
   setBracketFilterValue,
   bracketFilterInputRef,
   bracketsLoading,
-  setSelectedBracket,
-  setShowBracketDropdown,
   teams,
   handleBracketSelect,
 }: ReturnType<typeof useLandingPageState>) => {
@@ -486,12 +469,7 @@ const BracketDropdown = ({
             <div
               key={bracket.id}
               className='p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors'
-              onClick={() => {
-                setSelectedBracket(bracket)
-                setShowBracketDropdown(false)
-                setBracketFilterValue('') // Clear filter when selecting a bracket
-                handleBracketSelect(bracket)
-              }}
+              onClick={() => handleBracketSelect(bracket)}
             >
               <div className='flex items-center justify-between ml-1'>
                 <div>
@@ -528,6 +506,7 @@ const SelectedBracket = ({
   setShowBracketDropdown,
   setBracketFilterValue,
   bracketFilterInputRef,
+  setBracketId,
   teams,
 }: ReturnType<typeof useLandingPageState>) =>
   selectedBracket ? (
@@ -558,6 +537,7 @@ const SelectedBracket = ({
           onClick={() => {
             setShowBracketDropdown(true)
             setBracketFilterValue('') // Clear filter when changing groups
+            setBracketId(undefined)
             setTimeout(() => {
               bracketFilterInputRef?.current?.focus()
             }, 0)

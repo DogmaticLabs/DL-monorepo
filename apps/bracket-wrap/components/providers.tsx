@@ -24,6 +24,13 @@ type StoryContextType = {
 
 const StoryContext = createContext<StoryContextType | undefined>(undefined)
 
+// Create a context for search params
+type SearchParamsContextType = {
+  params: Record<string, string>
+}
+
+const SearchParamsContext = createContext<SearchParamsContextType | undefined>(undefined)
+
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <NextThemesProvider
@@ -36,6 +43,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </NextThemesProvider>
   )
+}
+
+export function SearchParamsProvider({
+  children,
+  params,
+}: {
+  children: ReactNode
+  params: Record<string, string>
+}) {
+  return <SearchParamsContext.Provider value={{ params }}>{children}</SearchParamsContext.Provider>
 }
 
 export function StoryProvider({
@@ -78,4 +95,12 @@ export const useStory = () => {
     throw new Error('useStory must be used within a StoryProvider')
   }
   return context
+}
+
+export const useSearchParams = () => {
+  const context = useContext(SearchParamsContext)
+  if (context === undefined) {
+    throw new Error('useSearchParams must be used within a SearchParamsProvider')
+  }
+  return context.params
 }

@@ -68,7 +68,6 @@ export const searchGroupsByQuery = async (query: string, year = 2025): Promise<G
   return data
 }
 
-
 export const getBracketsForGroup = async (groupId: string, year = 2024): Promise<Group> => {
   const response = await fetch(
     `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/groups/${groupId}?year=${year}`,
@@ -77,9 +76,9 @@ export const getBracketsForGroup = async (groupId: string, year = 2024): Promise
   return data
 }
 
-export const getGroupsForBracket = async (bracketId: string, year = 2024): Promise<Bracket> => {
+export const getBracket = async (bracketId: string, year = 2024): Promise<Bracket> => {
   const response = await fetch(
-    `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/brackets/${bracketId}/groups?year=${year}`,
+    `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/brackets/${bracketId}/groups`,
   )
   const data = await response.json()
   return data
