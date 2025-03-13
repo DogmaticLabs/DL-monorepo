@@ -52,7 +52,7 @@ const LandingPage = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
               <div className='relative' ref={dropdownRef}>
                 <div className='relative'>
                   {/* Group header when selecting bracket */}
-                  {searchMode === 'group' && groupId && !bracketId && (
+                  {searchMode === 'group' && groupId && showBracketDropdown && (
                     <GroupHeader {...landingPageState} />
                   )}
                   {/* Only show search bar for initial group search or bracket ID */}
@@ -72,7 +72,7 @@ const LandingPage = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                 )}
 
                 {/* Bracket Selection with Search */}
-                {groupId && !bracketId && (
+                {groupId && showBracketDropdown && (
                   <div
                     className={`w-full ${searchMode === 'group' && !bracketId ? 'absolute' : 'relative'}`}
                   >
@@ -225,6 +225,7 @@ const GroupHeader = ({
   setShowBracketDropdown,
   setShowGroupDropdown,
   setGroupId,
+  inputRef,
 }: ReturnType<typeof useLandingPageState>) => {
   return selectedGroup ? (
     <div className='mb-3 flex items-center justify-between bg-[#374151] p-3 rounded-xl header-card'>
@@ -252,6 +253,12 @@ const GroupHeader = ({
           setShowBracketDropdown(false)
           setShowGroupDropdown(true)
           setGroupId(undefined)
+          setTimeout(() => {
+            if (inputRef && inputRef.current) {
+              inputRef.current.focus()
+              inputRef.current.select()
+            }
+          }, 0)
         }}
         className='px-3 py-2 bg-[#3d4a61] hover:bg-[#4d5a71] text-white text-xs rounded-full transition-colors shrink-0 ml-4'
       >
@@ -434,6 +441,7 @@ const BracketDropdown = ({
   bracketsLoading,
   teams,
   handleBracketSelect,
+  setShowBracketDropdown,
 }: ReturnType<typeof useLandingPageState>) => {
   return (
     <div
@@ -448,6 +456,9 @@ const BracketDropdown = ({
             placeholder='Search brackets...'
             value={bracketFilterValue}
             onChange={e => setBracketFilterValue(e.target.value)}
+            onBlur={() => {
+              setTimeout(() => setShowBracketDropdown(false), 100)
+            }}
             ref={bracketFilterInputRef}
           />
           {bracketsLoading && (
@@ -537,7 +548,6 @@ const SelectedBracket = ({
           onClick={() => {
             setShowBracketDropdown(true)
             setBracketFilterValue('') // Clear filter when changing groups
-            setBracketId(undefined)
             setTimeout(() => {
               bracketFilterInputRef?.current?.focus()
             }, 0)

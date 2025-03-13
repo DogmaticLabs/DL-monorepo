@@ -130,6 +130,7 @@ const useLandingPageState = () => {
   const handleBracketSelect = {
     bracket: (bracket: Bracket) => {
       setBracketId(bracket.id)
+      setBracketSearchValue(bracket.id)
       if (!groupId || !bracket.groups.find(g => g.id === groupId)) {
         setGroupId(bracket.groups[0]?.id)
       }
