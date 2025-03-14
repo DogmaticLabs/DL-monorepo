@@ -80,6 +80,8 @@ export const getBracket = async (bracketId: string, year = 2024): Promise<Bracke
   const response = await fetch(
     `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/brackets/${bracketId}/groups`,
   )
+  if (!response.ok) throw new Error('Failed to fetch bracket')
+
   const data = await response.json()
   return data
 }

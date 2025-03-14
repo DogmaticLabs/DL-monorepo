@@ -37,7 +37,7 @@ const useLandingPageState = () => {
   const inputRef = useRef<HTMLInputElement>(null)
   const bracketFilterInputRef = useRef<HTMLInputElement>(null)
   const groupFilterInputRef = useRef<HTMLInputElement>(null)
-
+  const buttonRef = useRef<HTMLButtonElement>(null)
   const isValidBracketId = (id: string) => {
     return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(id)
   }
@@ -135,6 +135,9 @@ const useLandingPageState = () => {
         setGroupId(bracket.groups[0]?.id)
       }
       setShowBracketDropdown(false)
+      setTimeout(() => {
+        if (buttonRef && buttonRef.current) buttonRef.current.focus()
+      }, 0)
     },
     group: (bracket: Bracket) => {
       setBracketId(bracket.id)
@@ -269,9 +272,11 @@ const useLandingPageState = () => {
       (groupsQuery.isLoading ||
         (groupSearchValue.length >= 3 && debouncedGroupSearchValue !== groupSearchValue)),
     groupQuery,
+    bracketQuery,
     bracketsLoading: groupQuery.isLoading,
     teams: teamsQuery.data || {},
     teamsLoading: teamsQuery.isLoading,
+    buttonRef,
   }
 }
 

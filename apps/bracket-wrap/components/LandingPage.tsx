@@ -27,6 +27,7 @@ const LandingPage = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
     toggleSearchMode,
     bracketId,
     groupId,
+    buttonRef,
   } = landingPageState
 
   return (
@@ -152,6 +153,7 @@ const LandingPage = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
               }
             }}
             disabled={!selectedBracket}
+            ref={buttonRef}
           >
             <span className='mr-2'>Let's Go!</span>
             <ArrowRight className='h-5 w-5' />
@@ -175,11 +177,12 @@ const SearchInput = ({
   setBracketId,
   setShowGroupDropdown,
   groupsLoading,
+  bracketQuery,
 }: ReturnType<typeof useLandingPageState>) => {
   return (
     <>
       {searchMode !== 'group' ? (
-        <Trophy className='absolute left-4 top-1/2 transform -translate-y-1/2 text-[#94a3b8] h-5 w-5 z-50 pointer-events-none' />
+        <Trophy className='absolute left-4 top-[26px] transform -translate-y-1/2 text-[#94a3b8] h-5 w-5 z-50 pointer-events-none' />
       ) : (
         <Search className='absolute left-4 top-1/2 transform -translate-y-1/2 text-[#94a3b8] h-5 w-5 z-50 pointer-events-none' />
       )}
@@ -209,6 +212,9 @@ const SearchInput = ({
           }
         }}
       />
+      {searchMode === 'bracket' && bracketQuery.isError && (
+        <div className='text-red-500 text-xs'>Bracket not found. Please try a different ID.</div>
+      )}
       {groupsLoading && (
         <div className='absolute right-4 top-1/2 transform -translate-y-1/2 text-[#94a3b8] h-5 w-5 z-50 pointer-events-none'>
           <Loader2 className='animate-spin' />
