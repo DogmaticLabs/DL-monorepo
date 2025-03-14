@@ -499,7 +499,7 @@ const BracketDropdown = ({
             value={bracketFilterValue}
             onChange={e => setBracketFilterValue(e.target.value)}
             onBlur={() => {
-              setTimeout(() => setShowBracketDropdown(false), 100)
+              setTimeout(() => setShowBracketDropdown(false), 150)
             }}
             ref={bracketFilterInputRef}
           />
