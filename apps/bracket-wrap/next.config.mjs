@@ -6,17 +6,18 @@ const nextConfig = {
       // ... any existing domains
       'a.espncdn.com',
       'chui-assets-cdn.espn.com',
-      'g.espncdn.com'
+      'g.espncdn.com',
     ],
   },
   async rewrites() {
     return [
       {
-        source: "/share/:shortCode",
-        destination: "http://localhost:8000/share/:shortCode",
+        source: '/share/:shortCode',
+        destination:
+          'https://bracket-wrap-qaj2wo7wh-ryan-marcus-projects.vercel.app/share/:shortCode',
       },
-    ];
+    ]
   },
-} 
+}
 
 export default nextConfig
