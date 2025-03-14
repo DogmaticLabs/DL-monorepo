@@ -162,14 +162,14 @@ const LandingPage = ({
       </div>
 
       {/* Start Button - Outside the scroll container */}
-      <div className='fixed md:static bottom-0 left-0 right-0 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]'>
+      <div className='fixed md:static bottom-0 left-0 right-0 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] mt-2'>
         <div className='container mx-auto max-w-md'>
           <button
-            className={`w-full bg-[#ff6b35] font-bold py-3 px-6 rounded-xl transition-colors duration-200 flex items-center justify-center ${
+            className={`w-full font-bold py-3 px-6 rounded-xl transition-colors flex items-center justify-center bg-[#ff6b35] ${
               selectedBracket
-                ? 'hover:bg-[#ff5a1f] text-white focus:bg-[#ff5a1f] focus:outline-none focus:ring-2 focus:ring-white'
+                ? 'hover:bg-[#ff5a1f] text-white'
                 : 'opacity-60 cursor-not-allowed text-white'
-            }`}
+            } ${cn(selectedBracket && selectedGroup && 'animate-shimmer items-center justify-center border border-[#ff8c35] bg-[linear-gradient(110deg,#ff6b35,45%,#ffb835,55%,#ff6b35)] bg-[length:200%_100%] text-white')}`}
             onClick={() => {
               if (selectedBracket) {
                 console.log('Starting...', {
