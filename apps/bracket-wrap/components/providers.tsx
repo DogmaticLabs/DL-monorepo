@@ -7,7 +7,7 @@ import { createContext, ReactNode, useContext, useState } from 'react'
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { retry: false },
+    queries: { retry: false, staleTime: Infinity },
   },
 })
 
