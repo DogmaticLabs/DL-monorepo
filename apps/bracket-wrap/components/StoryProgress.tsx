@@ -14,8 +14,11 @@ export default function StoryProgress() {
   useEffect(() => {
     // Initial setup
     if (!init) {
+      setAnimationProgress(0) // Start at 0% instead of immediately setting to 100%
+
       setTimeout(() => {
         setInit(true)
+        setIsAnimating(true) // Enable animation for initial load
         setAnimationProgress(100)
       }, 100)
       return

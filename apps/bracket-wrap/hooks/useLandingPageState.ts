@@ -109,6 +109,7 @@ const useLandingPageState = () => {
           [selectedBracket.id]: group.id,
         }))
       }
+      if (!!bracketId && !!groupId) buttonRef.current?.focus()
     },
     group: (group: Group) => {
       setGroupId(group.id)
@@ -119,6 +120,7 @@ const useLandingPageState = () => {
         setShowGroupSelection(true)
       }
       setShowGroupSelection(false)
+      if (!!bracketId && !!groupId) buttonRef.current?.focus()
       setTimeout(() => {
         if (bracketFilterInputRef && bracketFilterInputRef.current) {
           bracketFilterInputRef.current.focus()
@@ -138,12 +140,14 @@ const useLandingPageState = () => {
       setTimeout(() => {
         if (buttonRef && buttonRef.current) buttonRef.current.focus()
       }, 0)
+      if (!!bracketId && !!groupId) buttonRef.current?.focus()
     },
     group: (bracket: Bracket) => {
       setBracketId(bracket.id)
       setShowBracketDropdown(false)
       setBracketFilterValue('') // Clear filter when selecting a bracket
       setShowGroupSelection(false)
+      if (!!bracketId && !!groupId) buttonRef.current?.focus()
     },
   }[searchMode!]
 

@@ -93,3 +93,131 @@ export const getTeams = async (year = 2024): Promise<TeamMap> => {
   const data = await response.json()
   return data
 }
+
+export type Round = {
+  id: number
+  name: string
+}
+
+export type TeamWithSeed = {
+  id: string
+  seed: number
+  regionId: number
+}
+
+export type ChampionPick = {
+  teamId: string
+  count: number
+  percentage: number
+}
+
+export type CinderellaTeam = {
+  id: string
+  seed: number
+  count: number
+  percentage: number
+}
+
+export type BracketInfo = {
+  id: string
+  name: string
+  member: {
+    id: string
+    displayName: string
+    customDisplayName?: string
+    description?: string
+    logo?: string
+  }
+}
+
+export type ChalkScore = {
+  bracket: BracketInfo
+  score: number
+  rank: number
+}
+
+export type FinalFourTeam = {
+  team: TeamWithSeed
+  count: number
+  percentage: number
+  rank: number
+  totalTeamsInRegion: number
+}
+
+export type BracketSlide = {
+  slide: string
+  order: number
+  data: {
+    // GROUP_OVERVIEW slide
+    championPicks?: ChampionPick[]
+    cinderella?: {
+      teams: CinderellaTeam[]
+      round: Round
+    }
+    mostSimilarGroupBracketTwins?: {
+      brackets: BracketInfo[]
+      weightedSimilarityPercentage: number
+      year: number
+      groupId: string
+    }
+    chalkScores?: {
+      highestChalk: ChalkScore
+      lowestChalk: ChalkScore
+    }
+
+    // BRACKET_TWIN slides
+    weightedSimilarityPercentage?: number
+    matchingPicks?: number
+    finalPickWinnerId?: string
+    furthestSharedPicks?: {
+      round: Round
+      teamIds: string[]
+    }
+
+    // SAME_CHAMPION slides
+    teamId?: string
+    count?: number
+    percentage?: number
+    rank?: number
+    totalChampions?: number
+
+    // SAME_FINAL_FOUR slides
+    teams?: FinalFourTeam[]
+
+    // BRACKET_CINDERELLA slide
+    team?: TeamWithSeed
+    round?: Round
+
+    // CHALK_BRACKET slide
+    score?: number
+  }
+}
+
+export type Member = {
+  id: string
+  displayName: string
+}
+
+export type BracketSlidesData = {
+  id: string
+  name: string
+  year: number
+  member: Member
+  finalPickWinnerId: string
+  group: Group
+  wrapped: {
+    slides: BracketSlide[]
+  }
+}
+
+export const getBracketSlides = async (
+  bracketId: string,
+  groupId?: string,
+): Promise<BracketSlidesData> => {
+  const url = groupId
+    ? `https://bracket-wrap-qaj2wo7wh-ryan-marcus-projects.vercel.app/brackets/${bracketId}/wrapped/?groupId=${groupId}`
+    : `https://bracket-wrap-qaj2wo7wh-ryan-marcus-projects.vercel.app/brackets/${bracketId}/wrapped/`
+  const response = await fetch(url)
+  const data = await response.json()
+  return data
+}

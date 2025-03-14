@@ -1,4 +1,6 @@
+import { BracketSlidesData, getBracketSlides } from '@/app/api/bracket-data'
 import useLandingPageState from '@/hooks/useLandingPageState'
+import { useQueryClient } from '@tanstack/react-query'
 import {
   ArrowRight,
   CornerLeftUp,
@@ -10,9 +12,16 @@ import {
   Users,
 } from 'lucide-react'
 import Image from 'next/image'
+import { useState } from 'react'
 
-const LandingPage = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
+const LandingPage = ({
+  setBracketSlidesData,
+}: {
+  setBracketSlidesData: (data: BracketSlidesData) => void
+}) => {
   const landingPageState = useLandingPageState()
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const {
     searchMode,
@@ -29,6 +38,26 @@ const LandingPage = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
     groupId,
     buttonRef,
   } = landingPageState
+
+  const queryClient = useQueryClient()
+
+  const onSubmit = async () => {
+    if (!selectedBracket) return
+
+    setIsLoading(true)
+    try {
+      const res = await queryClient.fetchQuery({
+        queryKey: ['bracketSlidesData', selectedBracket?.id],
+        queryFn: () => getBracketSlides(selectedBracket?.id, selectedGroup?.id),
+      })
+
+      setBracketSlidesData(res)
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'An unknown error occurred')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <div className='relative container mx-auto max-w-md inset-0 z-[-1] bg-[#1e293b] flex flex-col'>
@@ -138,7 +167,7 @@ const LandingPage = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
           <button
             className={`w-full bg-[#ff6b35] font-bold py-3 px-6 rounded-xl transition-colors duration-200 flex items-center justify-center ${
               selectedBracket
-                ? 'hover:bg-[#ff5a1f] text-white'
+                ? 'hover:bg-[#ff5a1f] text-white focus:bg-[#ff5a1f] focus:outline-none focus:ring-2 focus:ring-white'
                 : 'opacity-60 cursor-not-allowed text-white'
             }`}
             onClick={() => {
@@ -149,15 +178,22 @@ const LandingPage = ({ onSubmit }: { onSubmit: (id: string) => void }) => {
                   selectedBracket,
                   searchValue: bracketFilterValue,
                 })
-                onSubmit(selectedBracket.id)
+                onSubmit()
               }
             }}
-            disabled={!selectedBracket}
+            disabled={!selectedBracket || isLoading}
             ref={buttonRef}
           >
-            <span className='mr-2'>Let's Go!</span>
-            <ArrowRight className='h-5 w-5' />
+            {isLoading ? (
+              <Loader2 className='animate-spin' />
+            ) : (
+              <>
+                <span className='mr-2'>Let's Go!</span>
+                <ArrowRight className='h-5 w-5' />
+              </>
+            )}
           </button>
+          {error && <div className='text-red-500 text-xs'>{error}</div>}
         </div>
       </div>
     </div>

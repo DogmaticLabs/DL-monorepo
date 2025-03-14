@@ -12,7 +12,7 @@ interface StoryContainerProps {
 }
 
 export default function StoryContainer({ children }: StoryContainerProps) {
-  const { currentSlide, nextSlide, prevSlide } = useStory()
+  const { currentSlide } = useStory()
   const [isPaused, setIsPaused] = useState(false)
   useStoryNavigation()
 

@@ -15,40 +15,20 @@ import GroupBracketChalkScoreSlide from '@/components/story-slides/GroupBracketC
 import GroupBracketStatsSlide from '@/components/story-slides/GroupBracketStatsSlide'
 import GroupNemesisSlide from '@/components/story-slides/GroupNemesisSlide'
 import NationalBracketStatsSlide from '@/components/story-slides/NationalBracketStatsSlide'
-import Particles, { initParticlesEngine } from '@tsparticles/react'
-import { loadSlim } from '@tsparticles/slim'
 import { Button } from '@workspace/ui/components/button'
-import { memo, use, useEffect, useState } from 'react'
+import { use, useState } from 'react'
 import { SearchParamsProvider, StoryProvider } from '../components/providers'
 import StoryContainer from '../components/StoryContainer'
 import StorySlide from '../components/StorySlide'
+import { BracketSlidesData } from './api/bracket-data'
 import './globals.css'
 
 export default function Page({ searchParams }: { searchParams: Promise<{ mode: string }> }) {
   const unwrappedParams = use(searchParams)
+  const [bracketSlidesData, setBracketSlidesData] = useState<BracketSlidesData>()
 
   // Define your slides here - we'll create 4 example slides (excluding the landing page)
   const totalSlides = 9
-
-  const [init, setInit] = useState(false)
-  const [showStory, setShowStory] = useState(false)
-  const [bracketId, setBracketId] = useState('')
-
-  // this should be run only once per application lifetime
-  useEffect(() => {
-    initParticlesEngine(async engine => {
-      await loadSlim(engine)
-    }).then(() => {
-      setInit(true)
-    })
-  }, [])
-
-  const handleBracketSubmit = (id: string) => {
-    setBracketId(id)
-    setShowStory(true)
-  }
-
-  if (!init) return null
 
   return (
     <SearchParamsProvider params={unwrappedParams}>
@@ -56,14 +36,10 @@ export default function Page({ searchParams }: { searchParams: Promise<{ mode: s
         {/* Particles background */}
         {/* <CoolParticles /> */}
 
-        {!showStory ? (
+        {!bracketSlidesData ? (
           // Landing page with MainStorySlide
           <div className='flex-1 flex items-center justify-center z-10'>
-            <LandingPage
-              // bracketId={bracketId}
-              // setBracketId={setBracketId}
-              onSubmit={handleBracketSubmit}
-            />
+            <LandingPage setBracketSlidesData={setBracketSlidesData} />
           </div>
         ) : (
           // Story sequence starts after the landing page
@@ -84,7 +60,7 @@ export default function Page({ searchParams }: { searchParams: Promise<{ mode: s
 
                 <GroupChalkScoreSlide />
 
-                <BracketTwinSlide bracketId={bracketId} />
+                <BracketTwinSlide bracketId={bracketSlidesData?.id} />
 
                 <NationalBracketStatsSlide />
 
@@ -157,51 +133,3 @@ export default function Page({ searchParams }: { searchParams: Promise<{ mode: s
     </SearchParamsProvider>
   )
 }
-
-const CoolParticles = memo(() => (
-  <Particles
-    id='tsparticles'
-    className='absolute inset-0'
-    options={{
-      background: {
-        opacity: 0,
-      },
-      fpsLimit: 60,
-      particles: {
-        color: {
-          value: '#ffffff',
-        },
-        move: {
-          direction: 'none',
-          enable: true,
-          outModes: {
-            default: 'out',
-          },
-          random: true,
-          speed: 0.5,
-          straight: false,
-        },
-        number: {
-          density: {
-            enable: true,
-            // area: 800,
-          },
-          value: 80,
-        },
-        opacity: {
-          value: 0.3,
-        },
-        shape: {
-          type: 'circle',
-        },
-        size: {
-          value: { min: 0.5, max: 2 },
-        },
-      },
-      detectRetina: true,
-    }}
-  />
-))
-
-// Add a display name for debugging purposes
-CoolParticles.displayName = 'CoolParticles'
