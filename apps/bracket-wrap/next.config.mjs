@@ -14,7 +14,7 @@ const nextConfig = {
       {
         source: '/share/:shortCode',
         destination:
-          'https://bracket-wrap-qaj2wo7wh-ryan-marcus-projects.vercel.app/share/:shortCode',
+          'https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/share/:shortCode',
       },
     ]
   },
