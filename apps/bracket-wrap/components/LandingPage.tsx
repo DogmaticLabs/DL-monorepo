@@ -1,6 +1,7 @@
 import { BracketSlidesData, getBracketSlides } from '@/app/api/bracket-data'
 import useLandingPageState from '@/hooks/useLandingPageState'
 import { useQueryClient } from '@tanstack/react-query'
+import { cn } from '@workspace/ui/lib/utils'
 import {
   ArrowRight,
   CornerLeftUp,
