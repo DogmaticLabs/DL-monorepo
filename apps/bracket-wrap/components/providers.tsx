@@ -1,5 +1,6 @@
 'use client'
 
+import { BracketSlidesData, bracketSlidesMockData } from '@/app/api/bracket-data'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import * as React from 'react'
@@ -17,6 +18,8 @@ type StoryContextType = {
   nextSlide: () => void
   prevSlide: () => void
   goToSlide: (index: number) => void
+  isExiting: boolean
+  triggerNextSlide: () => void
 }
 
 const StoryContext = createContext<StoryContextType | undefined>(undefined)
@@ -37,7 +40,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       disableTransitionOnChange
       enableColorScheme
     >
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <BracketSlidesProvider>{children}</BracketSlidesProvider>
+      </QueryClientProvider>
     </NextThemesProvider>
   )
 }
@@ -52,14 +57,39 @@ export function SearchParamsProvider({
   return <SearchParamsContext.Provider value={{ params }}>{children}</SearchParamsContext.Provider>
 }
 
-export function StoryProvider({
-  children,
-  totalSlides = 5,
-}: {
-  children: ReactNode
-  totalSlides?: number
-}) {
+type BracketSlidesContextType = {
+  bracketSlidesData: BracketSlidesData | undefined
+  setBracketSlidesData: (bracketSlidesData: BracketSlidesData) => void
+}
+
+const BracketSlidesContext = createContext<BracketSlidesContextType | undefined>(undefined)
+
+export function BracketSlidesProvider({ children }: { children: ReactNode }) {
+  const [bracketSlidesData, setBracketSlidesData] =
+    useState<BracketSlidesData>(bracketSlidesMockData)
+
+  return (
+    <BracketSlidesContext.Provider value={{ bracketSlidesData, setBracketSlidesData }}>
+      {children}
+    </BracketSlidesContext.Provider>
+  )
+}
+
+export const useBracketSlides = (): [
+  BracketSlidesData | undefined,
+  (bracketSlidesData: BracketSlidesData) => void,
+] => {
+  const context = useContext(BracketSlidesContext)
+  if (context === undefined) {
+    throw new Error('useBracketSlides must be used within a BracketSlidesProvider')
+  }
+  return [context.bracketSlidesData, context.setBracketSlidesData]
+}
+
+export function StoryProvider({ children }: { children: ReactNode }) {
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [isExiting, setIsExiting] = useState(false)
+  const totalSlides = 10
 
   const nextSlide = () => {
     if (currentSlide < totalSlides - 1) {
@@ -79,8 +109,30 @@ export function StoryProvider({
     }
   }
 
+  // New function to handle exit animation before changing slides
+  const triggerNextSlide = () => {
+    if (currentSlide < totalSlides - 1) {
+      setIsExiting(true)
+      // Wait for exit animation to complete before changing slides
+      setTimeout(() => {
+        setCurrentSlide(currentSlide + 1)
+        setIsExiting(false)
+      }, 800) // Match this with your exit animation duration
+    }
+  }
+
   return (
-    <StoryContext.Provider value={{ currentSlide, totalSlides, nextSlide, prevSlide, goToSlide }}>
+    <StoryContext.Provider
+      value={{
+        currentSlide,
+        totalSlides,
+        nextSlide,
+        prevSlide,
+        goToSlide,
+        isExiting,
+        triggerNextSlide,
+      }}
+    >
       {children}
     </StoryContext.Provider>
   )

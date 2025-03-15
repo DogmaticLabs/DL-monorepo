@@ -1,16 +1,16 @@
+import { useBracketSlides } from '@/components/providers'
+
 interface GroupBannerProps {
-  groupName: string
-  memberCount?: number
   variant?: 'default' | 'compact'
   className?: string
 }
 
-const GroupSlideBanner = ({
-  groupName,
-  memberCount,
-  variant = 'default',
-  className = '',
-}: GroupBannerProps) => {
+const GroupSlideBanner = ({ variant = 'default', className = '' }: GroupBannerProps) => {
+  const [bracketSlidesData] = useBracketSlides()
+
+  const groupName = bracketSlidesData?.group?.name
+  const memberCount = bracketSlidesData?.group?.size
+
   return (
     <div className='w-full flex justify-center'>
       <div className='mx-auto bg-white/15 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2 border border-white/20 shadow-sm'>

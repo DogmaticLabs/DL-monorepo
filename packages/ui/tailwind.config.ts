@@ -78,12 +78,17 @@ export default {
             height: '0',
           },
         },
+        shimmer: {
+          '0%': { backgroundPosition: '0 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
       },
       animation: {
         scroll: 'scroll 40s linear infinite',
         'scroll-fast': 'scroll 10s linear infinite',
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        shimmer: 'shimmer 2s linear infinite',
       },
       borderRadius: {
         lg: 'var(--radius)',

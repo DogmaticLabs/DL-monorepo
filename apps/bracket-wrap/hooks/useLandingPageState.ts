@@ -2,13 +2,13 @@ import {
   Bracket,
   getBracket,
   getBracketsForGroup,
-  getTeams,
   Group,
   searchGroupsByQuery,
 } from '@/app/api/bracket-data'
 import { useUrlParam } from '@/hooks/useUrlParams'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
+import { useTeams } from './useTeams'
 
 type SearchMode = 'bracket' | 'group'
 
@@ -41,6 +41,7 @@ const useLandingPageState = () => {
   const isValidBracketId = (id: string) => {
     return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(id)
   }
+  const teamsQuery = useTeams()
 
   // Add debounce effect for group search
   useEffect(() => {
@@ -72,11 +73,6 @@ const useLandingPageState = () => {
   })
 
   const selectedBracket = bracketQuery.data
-
-  const teamsQuery = useQuery({
-    queryKey: ['teams'],
-    queryFn: () => getTeams(),
-  })
 
   if (selectedBracket && bracketQuery.data) {
     selectedBracket.groups = bracketQuery.data?.groups

@@ -1,4 +1,5 @@
-import { BracketSlidesData, getBracketSlides } from '@/app/api/bracket-data'
+import { getBracketSlides } from '@/app/api/bracket-data'
+import PageState from '@/app/page-state'
 import useLandingPageState from '@/hooks/useLandingPageState'
 import { useQueryClient } from '@tanstack/react-query'
 import { cn } from '@workspace/ui/lib/utils'
@@ -12,17 +13,16 @@ import {
   User,
   Users,
 } from 'lucide-react'
+import { motion } from 'motion/react'
 import Image from 'next/image'
 import { useState } from 'react'
+import { useBracketSlides } from './providers'
 
-const LandingPage = ({
-  setBracketSlidesData,
-}: {
-  setBracketSlidesData: (data: BracketSlidesData) => void
-}) => {
+const LandingPage = ({ setPageState }: { setPageState: (state: PageState) => void }) => {
   const landingPageState = useLandingPageState()
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [, setBracketSlidesData] = useBracketSlides()
 
   const {
     searchMode,
@@ -43,161 +43,180 @@ const LandingPage = ({
   const queryClient = useQueryClient()
 
   const onSubmit = async () => {
+    console.log('onSubmit', {
+      selectedBracket,
+      selectedGroup,
+      searchMode,
+      searchValue: bracketFilterValue,
+    })
     if (!selectedBracket) return
-
+    console.log('Starting...', {
+      searchMode,
+      selectedGroup,
+      selectedBracket,
+      searchValue: bracketFilterValue,
+    })
     setIsLoading(true)
     try {
       const res = await queryClient.fetchQuery({
         queryKey: ['bracketSlidesData', selectedBracket?.id],
         queryFn: () => getBracketSlides(selectedBracket?.id, selectedGroup?.id),
       })
-
       setBracketSlidesData(res)
+      setPageState(PageState.LoadingSequence)
     } catch (error) {
       setError(error instanceof Error ? error.message : 'An unknown error occurred')
-    } finally {
       setIsLoading(false)
     }
   }
 
-  return (
-    <div className='relative container mx-auto max-w-md inset-0 z-[-1] bg-[#1e293b] flex flex-col'>
-      <div className='md:pt-[10%]'>
-        <div className='container mx-auto px-4 py-0 max-w-md'>
-          {/* Logo */}
-          <div className='flex justify-center -mt-2'>
-            <Image src='/logo.png' alt='BracketWrap Logo' width={192} height={192} />
-          </div>
+  console.log(selectedBracket, selectedBracket, isLoading)
 
-          {/* Main Content */}
-          <div className='space-y-1 -mt-4 md:min-w-[400px]'>
-            <div className='text-center'>
-              <h1 className='text-3xl font-bold text-white mb-1'>Find Your Bracket</h1>
-              <p className='text-[#94a3b8]'>Paste your bracket or search for your group</p>
+  return (
+    <>
+      {/* Main content - fade out when loading animation is shown */}
+      <motion.div
+        className='relative container mx-auto max-w-md inset-0 z-[-1] bg-[#1e293b] flex flex-col'
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className='md:pt-[10%]'>
+          <div className='container mx-auto px-4 py-0 max-w-md'>
+            {/* Logo */}
+            <div className='flex justify-center -mt-2'>
+              <Image src='/logo.png' alt='BracketWrap Logo' width={192} height={192} />
             </div>
 
-            <div className='h-2'></div>
+            {/* Main Content */}
+            <div className='space-y-1 -mt-4 md:min-w-[400px]'>
+              <div className='text-center'>
+                <h1 className='text-3xl font-bold text-white mb-1'>Find Your Bracket</h1>
+                <p className='text-[#94a3b8]'>Paste your bracket or search for your group</p>
+              </div>
 
-            {/* Search Box */}
-            <div className='pt-2'>
-              <div className='relative' ref={dropdownRef}>
-                <div className='relative'>
-                  {/* Group header when selecting bracket */}
-                  {searchMode === 'group' && groupId && showBracketDropdown && (
-                    <GroupHeader {...landingPageState} />
+              <div className='h-2'></div>
+
+              {/* Search Box */}
+              <div className='pt-2'>
+                <div className='relative' ref={dropdownRef}>
+                  <div className='relative'>
+                    {/* Group header when selecting bracket */}
+                    {searchMode === 'group' && groupId && showBracketDropdown && (
+                      <GroupHeader {...landingPageState} />
+                    )}
+                    {/* Only show search bar for initial group search or bracket ID */}
+                    {!(showBracketDropdown && searchMode === 'group') && !showGroupSelection && (
+                      <SearchInput {...landingPageState} />
+                    )}
+                  </div>
+
+                  {/* Group Dropdown */}
+                  {searchMode === 'group' && showGroupDropdown && !groupId && groupSearchValue && (
+                    <GroupDropdown {...landingPageState} />
                   )}
-                  {/* Only show search bar for initial group search or bracket ID */}
-                  {!(showBracketDropdown && searchMode === 'group') && !showGroupSelection && (
-                    <SearchInput {...landingPageState} />
+
+                  {/* Group Selection for Bracket */}
+                  {showGroupSelection && bracketId && (
+                    <GroupSelectionForBracket {...landingPageState} />
+                  )}
+
+                  {/* Bracket Selection with Search */}
+                  {groupId && showBracketDropdown && (
+                    <div
+                      className={`w-full ${searchMode === 'group' && !bracketId ? 'absolute' : 'relative'}`}
+                    >
+                      <BracketDropdown {...landingPageState} />
+                    </div>
                   )}
                 </div>
+              </div>
 
-                {/* Group Dropdown */}
-                {searchMode === 'group' && showGroupDropdown && !groupId && groupSearchValue && (
-                  <GroupDropdown {...landingPageState} />
-                )}
+              <div className='h-0.5'></div>
 
-                {/* Group Selection for Bracket */}
-                {showGroupSelection && bracketId && (
-                  <GroupSelectionForBracket {...landingPageState} />
-                )}
+              {/* OR Divider */}
+              <div className='flex items-center justify-center'>
+                <div className='border-t border-[#3d4a61] w-full'></div>
+                <span className='px-4 text-[#94a3b8] font-medium'>or</span>
+                <div className='border-t border-[#3d4a61] w-full'></div>
+              </div>
 
-                {/* Bracket Selection with Search */}
-                {groupId && showBracketDropdown && (
-                  <div
-                    className={`w-full ${searchMode === 'group' && !bracketId ? 'absolute' : 'relative'}`}
-                  >
-                    <BracketDropdown {...landingPageState} />
+              <div className='h-0.5'></div>
+
+              {/* Toggle Button */}
+              <button
+                className='w-full bg-transparent hover:bg-[#2d3a4f] text-[#94a3b8] hover:text-white font-medium py-3 px-6 rounded-xl border border-[#3d4a61] transition-colors duration-200 flex items-center justify-center'
+                onClick={toggleSearchMode}
+              >
+                {searchMode === 'bracket' ? (
+                  <div className='flex items-center transition-colors'>
+                    <CornerLeftUp className='h-4 w-4 mr-2' />
+                    <span>Switch to Group Search</span>
+                    <CornerRightUp className='h-4 w-4 ml-2' />
+                  </div>
+                ) : (
+                  <div className='flex items-center transition-colors'>
+                    <CornerLeftUp className='h-4 w-4 mr-2' />
+                    <span>Switch to Bracket Search</span>
+                    <CornerRightUp className='h-4 w-4 ml-2' />
                   </div>
                 )}
-              </div>
+              </button>
+
+              {/* Spacing between toggle button and selected bracket details */}
+              <div className='h-4'></div>
+
+              {/* Selected Bracket + Group Details */}
+              {bracketId &&
+                groupId &&
+                !showGroupSelection &&
+                !showBracketDropdown &&
+                !showGroupDropdown && (
+                  <div className='bg-[#2d3a4f] rounded-xl p-4 space-y-3 outline outline-white outline-1'>
+                    <SelectedBracket {...landingPageState} />
+                    <SelectedGroup {...landingPageState} />
+                  </div>
+                )}
             </div>
-
-            <div className='h-0.5'></div>
-
-            {/* OR Divider */}
-            <div className='flex items-center justify-center'>
-              <div className='border-t border-[#3d4a61] w-full'></div>
-              <span className='px-4 text-[#94a3b8] font-medium'>or</span>
-              <div className='border-t border-[#3d4a61] w-full'></div>
-            </div>
-
-            <div className='h-0.5'></div>
-
-            {/* Toggle Button */}
-            <button
-              className='w-full bg-transparent hover:bg-[#2d3a4f] text-[#94a3b8] hover:text-white font-medium py-3 px-6 rounded-xl border border-[#3d4a61] transition-colors duration-200 flex items-center justify-center'
-              onClick={toggleSearchMode}
-            >
-              {searchMode === 'bracket' ? (
-                <div className='flex items-center transition-colors'>
-                  <CornerLeftUp className='h-4 w-4 mr-2' />
-                  <span>Switch to Group Search</span>
-                  <CornerRightUp className='h-4 w-4 ml-2' />
-                </div>
-              ) : (
-                <div className='flex items-center transition-colors'>
-                  <CornerLeftUp className='h-4 w-4 mr-2' />
-                  <span>Switch to Bracket Search</span>
-                  <CornerRightUp className='h-4 w-4 ml-2' />
-                </div>
-              )}
-            </button>
-
-            {/* Spacing between toggle button and selected bracket details */}
-            <div className='h-4'></div>
-
-            {/* Selected Bracket + Group Details */}
-            {bracketId &&
-              groupId &&
-              !showGroupSelection &&
-              !showBracketDropdown &&
-              !showGroupDropdown && (
-                <div className='bg-[#2d3a4f] rounded-xl p-4 space-y-3 outline outline-white outline-1'>
-                  <SelectedBracket {...landingPageState} />
-                  <SelectedGroup {...landingPageState} />
-                </div>
-              )}
           </div>
         </div>
-      </div>
 
-      {/* Start Button - Outside the scroll container */}
-      <div className='fixed md:static bottom-0 left-0 right-0 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] mt-2'>
-        <div className='container mx-auto max-w-md'>
-          <button
-            className={`w-full font-bold py-3 px-6 rounded-xl transition-colors flex items-center justify-center bg-[#ff6b35] ${
-              selectedBracket
-                ? 'hover:bg-[#ff5a1f] text-white'
-                : 'opacity-60 cursor-not-allowed text-white'
-            } ${cn(selectedBracket && selectedGroup && 'animate-shimmer items-center justify-center border border-[#ff8c35] bg-[linear-gradient(110deg,#ff6b35,45%,#ffb835,55%,#ff6b35)] bg-[length:200%_100%] text-white')}`}
-            onClick={() => {
-              if (selectedBracket) {
-                console.log('Starting...', {
-                  searchMode,
-                  selectedGroup,
-                  selectedBracket,
-                  searchValue: bracketFilterValue,
-                })
-                onSubmit()
-              }
-            }}
-            disabled={!selectedBracket || isLoading}
-            ref={buttonRef}
-          >
-            {isLoading ? (
-              <Loader2 className='animate-spin' />
-            ) : (
-              <>
-                <span className='mr-2'>Let's Go!</span>
-                <ArrowRight className='h-5 w-5' />
-              </>
-            )}
-          </button>
-          {error && <div className='text-red-500 text-xs'>{error}</div>}
+        {/* Start Button - Outside the scroll container */}
+        <div className='fixed md:static bottom-0 left-0 right-0 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] mt-2'>
+          <div className='container mx-auto max-w-md'>
+            <button
+              className={`w-full font-bold py-3 px-6 rounded-xl transition-colors flex items-center justify-center bg-[#ff6b35] ${
+                selectedBracket
+                  ? 'hover:bg-[#ff5a1f] text-white'
+                  : 'opacity-60 cursor-not-allowed text-white'
+              } ${cn(selectedBracket && selectedGroup && 'animate-shimmer items-center justify-center border border-[#ff8c35] bg-[linear-gradient(110deg,#ff6b35,45%,#ffb835,55%,#ff6b35)] bg-[length:200%_100%] text-white')}`}
+              onClick={() => {
+                if (selectedBracket) {
+                  console.log('Starting...', {
+                    searchMode,
+                    selectedGroup,
+                    selectedBracket,
+                    searchValue: bracketFilterValue,
+                  })
+                  onSubmit()
+                }
+              }}
+              disabled={!selectedBracket || isLoading}
+              ref={buttonRef}
+            >
+              {isLoading ? (
+                <Loader2 className='animate-spin' />
+              ) : (
+                <>
+                  <span className='mr-2'>Let's Go!</span>
+                  <ArrowRight className='h-5 w-5' />
+                </>
+              )}
+            </button>
+            {error && <div className='text-red-500 text-xs'>{error}</div>}
+          </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </>
   )
 }
 
