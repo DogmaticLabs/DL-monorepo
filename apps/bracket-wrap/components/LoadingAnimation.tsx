@@ -2,9 +2,8 @@
 
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useState } from 'react'
-import { SlideProps } from './types'
 
-interface LoadingAnimationProps extends SlideProps {
+interface LoadingAnimationProps {
   onComplete: () => void
 }
 
