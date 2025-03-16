@@ -1,20 +1,21 @@
 import { useBracketSlides, useStory } from '@/components/providers'
 import { CinderellaAnimatedBackground } from '@/components/story-slides/animations/CinderellaAnimatedElements'
 import StorySlide from '@/components/StorySlide'
+import { useShareContent } from '@/hooks/useShareContent'
 import { useTeams } from '@/hooks/useTeams'
-import html2canvas from 'html2canvas'
 import { AnimatePresence, motion } from 'motion/react'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
+import ShareButton from '../ShareButton'
 import GroupSlideBanner from './GroupSlideBanner'
 
 const GroupCinderellaSlide = () => {
   const [data] = useBracketSlides()
   const { isExiting } = useStory()
   const { data: teams } = useTeams()
-  const [showShareButton, setShowShareButton] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
-  const [isSharing, setIsSharing] = useState(false)
+  const shareableRef = useRef<HTMLDivElement>(null)
+  const { isSharing, shareContent } = useShareContent()
 
   // Placeholder data - would be replaced with actual data in production
   const cinderellaData = {
@@ -43,70 +44,11 @@ const GroupCinderellaSlide = () => {
     if (!showContent) {
       const timer = setTimeout(() => {
         setShowContent(true)
-      }, 3500) // Show content after 3.5 seconds
+      }, 3500) // Increased from 2.5s to 4.5s to give more time to read
 
       return () => clearTimeout(timer)
     }
   }, [showContent])
-
-  // Show share button after content is displayed
-  useEffect(() => {
-    if (showContent) {
-      const timer = setTimeout(() => {
-        setShowShareButton(true)
-      }, 2000) // Show share button 2 seconds after content appears
-
-      return () => clearTimeout(timer)
-    }
-  }, [showContent])
-
-  // Function to capture the card as an image
-  const captureCardAsImage = async (): Promise<Blob | null> => {
-    if (!cardRef.current) return null
-
-    try {
-      // Set a flag to indicate sharing is in progress
-      setIsSharing(true)
-
-      // Capture the card element
-      const canvas = await html2canvas(cardRef.current, {
-        scale: 2, // Higher scale for better quality
-        backgroundColor: null, // Transparent background
-        logging: false,
-        useCORS: true, // Enable CORS for images
-      })
-
-      // Add watermark
-      const ctx = canvas.getContext('2d')
-      if (ctx) {
-        // Save the current state
-        ctx.save()
-
-        // Add watermark text
-        ctx.font = '14px Arial'
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)'
-        ctx.textAlign = 'right'
-        ctx.fillText('bracketwrap.com', canvas.width - 10, canvas.height - 10)
-
-        // Restore the state
-        ctx.restore()
-      }
-
-      // Convert canvas to blob
-      return new Promise(resolve => {
-        canvas.toBlob(
-          blob => {
-            resolve(blob)
-          },
-          'image/png',
-          0.9,
-        )
-      })
-    } catch (error) {
-      console.error('Error capturing card:', error)
-      return null
-    }
-  }
 
   // Handle share functionality
   const handleShare = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -114,472 +56,522 @@ const GroupCinderellaSlide = () => {
     e.preventDefault()
     e.stopPropagation()
 
+    // Share options
+    const shareOptions = {
+      title: `${cinderellaData.team} - The Cinderella Story`,
+      text: `Check out ${cinderellaData.team}, the #${cinderellaData.seed} seed that made it to the ${cinderellaData.roundReached}!`,
+      url: 'https://bracketwrap.com',
+      watermark: {
+        text: 'bracketwrap.com',
+        position: 'bottomRight' as const,
+        color: 'rgba(255, 255, 255, 0.7)',
+      },
+    }
+
     try {
-      // Set sharing state
-      setIsSharing(true)
-
-      // Capture the card as an image
-      const imageBlob = await captureCardAsImage()
-
-      // Create share data
-      const shareData: ShareData = {
-        title: `${cinderellaData.team} - The Cinderella Story`,
-        text: `Check out ${cinderellaData.team}, the #${cinderellaData.seed} seed that made it to the ${cinderellaData.roundReached}!`,
-        url: 'https://bracketwrap.com',
-      }
-
-      console.log('iamge blob vlid', imageBlob)
-
-      // Add image file if available
-      if (imageBlob) {
-        const file = new File([imageBlob], 'cinderella-story.png', {
-          type: 'image/png',
-        })
-
-        shareData.files = [file]
-      }
-
-      console.log('share data', shareData)
-
-      // Check if Web Share API is supported and can share files
-      if (
-        navigator.share &&
-        (!imageBlob || (navigator.canShare && navigator.canShare({ files: shareData.files })))
-      ) {
-        // Try to share with files if supported
-        await navigator.share(shareData)
-        console.log('Shared successfully with Web Share API')
-      } else if (navigator.share) {
-        // Fallback to sharing without files
-        const textOnlyShareData = {
-          title: shareData.title,
-          text: shareData.text,
-          url: shareData.url,
-        }
-        await navigator.share(textOnlyShareData)
-        console.log('Shared successfully without image')
-      } else {
-        // Fallback for browsers without Web Share API
-        console.error('Web Share API not supported in this browser')
-
-        // Create a fallback share mechanism - download image and copy text
-        if (imageBlob) {
-          // Create a download link for the image
-          const url = URL.createObjectURL(imageBlob)
-          const a = document.createElement('a')
-          a.href = url
-          a.download = 'cinderella-story.png'
-          document.body.appendChild(a)
-          a.click()
-          document.body.removeChild(a)
-          URL.revokeObjectURL(url)
-
-          // Copy text to clipboard
-          await navigator.clipboard.writeText(
-            `${shareData.title}\n${shareData.text}\n${shareData.url}`,
-          )
-
-          alert('Image downloaded and text copied to clipboard!')
-        } else {
-          // Just copy text to clipboard
-          await navigator.clipboard.writeText(
-            `${shareData.title}\n${shareData.text}\n${shareData.url}`,
-          )
-          alert('Text copied to clipboard!')
-        }
+      if (shareableRef.current) {
+        await shareContent(
+          { current: shareableRef.current } as React.RefObject<HTMLElement>,
+          shareOptions,
+        )
       }
     } catch (error) {
-      console.error('Error sharing:', error)
-      // If error is AbortError, user likely canceled the share
-      if (error instanceof Error && error.name !== 'AbortError') {
-        alert('There was an error sharing. Please try again.')
-      }
-    } finally {
-      setIsSharing(false)
+      console.error('Error sharing content:', error)
+      alert('There was an error sharing the content. Please try again.')
     }
-  }
-
-  // Animation elements configuration
-  const animationElements = {
-    slippers: [
-      // Slipper 1 - Top right
-      {
-        top: '15%',
-        right: '10%',
-        size: '16',
-        opacity: 0.8,
-        rotateDirection: 'clockwise' as const,
-      },
-      // Slipper 2 - Bottom left
-      {
-        bottom: '20%',
-        left: '8%',
-        size: '12',
-        opacity: 0.6,
-        rotateDirection: 'counterclockwise' as const,
-      },
-    ],
-    crowns: [
-      // Crown 1 - Top left
-      {
-        top: '12%',
-        left: '15%',
-        size: '18',
-        opacity: 0.7,
-      },
-      // Crown 2 - Bottom right
-      {
-        bottom: '15%',
-        right: '12%',
-        size: '14',
-        opacity: 0.5,
-      },
-    ],
-    stars: [
-      // Star 1
-      {
-        top: '25%',
-        right: '25%',
-        size: 'lg',
-        color: 'teal-200',
-        opacity: 0.8,
-        blinkSpeed: 'medium' as const,
-      },
-      // Star 2
-      {
-        top: '15%',
-        left: '35%',
-        size: 'md',
-        color: 'teal-100',
-        opacity: 0.6,
-        blinkSpeed: 'slow' as const,
-      },
-      // Star 3
-      {
-        bottom: '30%',
-        right: '30%',
-        size: 'sm',
-        color: 'teal-300',
-        opacity: 0.7,
-        blinkSpeed: 'fast' as const,
-      },
-      // Star 4
-      {
-        bottom: '20%',
-        left: '25%',
-        size: 'md',
-        color: 'teal-200',
-        opacity: 0.5,
-        blinkSpeed: 'medium' as const,
-      },
-      // Star 5
-      {
-        top: '40%',
-        right: '15%',
-        size: 'sm',
-        color: 'teal-100',
-        opacity: 0.6,
-        blinkSpeed: 'fast' as const,
-      },
-    ],
-    sparkles: [
-      // Random sparkles
-      { top: '30%', left: '20%', size: '4', opacity: 0.7 },
-      { top: '50%', right: '25%', size: '3', opacity: 0.5 },
-      { bottom: '40%', left: '30%', size: '5', opacity: 0.6 },
-      { bottom: '25%', right: '40%', size: '3', opacity: 0.7 },
-      { top: '60%', left: '15%', size: '4', opacity: 0.5 },
-      { top: '20%', right: '35%', size: '3', opacity: 0.6 },
-      { bottom: '60%', left: '40%', size: '4', opacity: 0.7 },
-      { bottom: '35%', right: '15%', size: '5', opacity: 0.5 },
-    ],
   }
 
   // Define exit animations for content
   const contentExitAnimation = {
     opacity: 0,
-    y: -50,
-    scale: 0.9,
-    transition: { duration: 0.6, ease: 'easeOut' },
+    y: -100,
+    scale: 0.8,
+    transition: { duration: 0.4, ease: 'easeOut' },
   }
 
   return (
-    <StorySlide
-      bgColor='bg-gradient-to-br from-blue-900 via-purple-900 to-teal-800'
-      footer={<GroupSlideBanner />}
-    >
-      <div className='relative flex flex-col w-full h-full overflow-hidden'>
-        {/* Decorative elements */}
-        <CinderellaAnimatedBackground isExiting={isExiting} elements={animationElements} />
+    <div className='w-full h-dvh overflow-hidden'>
+      <StorySlide
+        bgColor='bg-gradient-to-br from-[#0067b1] via-black to-[#0067b1]'
+        footer={<GroupSlideBanner />}
+      >
+        <div className='relative flex flex-col w-full h-full overflow-hidden'>
+          {/* Decorative elements - now appearing first with their own animations */}
+          <CinderellaAnimatedBackground isExiting={isExiting} elements={animationElements as any} />
 
-        {/* Radial gradient overlay for depth */}
-        <div className='absolute inset-0 bg-radial-gradient from-transparent to-black/30 pointer-events-none' />
+          {/* Radial gradient overlay for depth */}
+          <div className='absolute inset-0 bg-radial-gradient from-transparent to-black/50 pointer-events-none' />
 
-        {/* Content container with padding */}
-        <div className='flex flex-col items-center justify-center gap-6 w-full px-4 py-6 flex-1'>
-          <AnimatePresence mode='wait'>
-            {!showContent ? (
-              <motion.div
-                key='intro'
-                className='flex flex-col items-center justify-center h-full'
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                transition={{ duration: 0.5 }}
-              >
-                <motion.p
-                  className='text-2xl font-medium text-center text-white leading-relaxed'
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
+          {/* Content container with padding */}
+          <div className='flex flex-col items-center justify-center gap-6 w-full px-4 py-6 flex-1'>
+            <AnimatePresence mode='wait'>
+              {!showContent ? (
+                <motion.div
+                  key='intro'
+                  className='flex flex-col items-center justify-center h-full'
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, scale: 0.8, y: -30 }}
+                  transition={{ duration: 0.6 }}
                 >
-                  Every tournament has its underdogs...
-                </motion.p>
-                <motion.p
-                  className='text-2xl font-medium text-center text-white leading-relaxed mt-4'
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 1.2 }}
-                >
-                  Here's your group's favorite Cinderella story
-                </motion.p>
-              </motion.div>
-            ) : (
-              <AnimatePresence mode='wait'>
-                {!isExiting ? (
-                  <motion.div
-                    key='content'
-                    className='w-full max-w-md mx-auto'
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={contentExitAnimation}
-                    transition={{ duration: 0.8 }}
+                  <motion.p
+                    className='text-3xl font-black text-center text-white leading-tight uppercase tracking-wide'
+                    initial={{ x: -500, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
                   >
-                    {/* Title with emoji and animation */}
+                    Every tournament has its
+                  </motion.p>
+                  <motion.p
+                    className='text-4xl font-black text-center text-[#ff6b00] leading-tight mt-2 uppercase tracking-wide'
+                    initial={{ x: 500, opacity: 0, scale: 0.9 }}
+                    animate={{ x: 0, opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.6, delay: 0.8 }}
+                  >
+                    UNDERDOGS
+                  </motion.p>
+                  <motion.p
+                    className='text-3xl font-black text-center text-white leading-tight mt-6 uppercase tracking-wide'
+                    initial={{ x: -500, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 1.4 }}
+                  >
+                    Your group's Cinderella story
+                  </motion.p>
+                </motion.div>
+              ) : (
+                <AnimatePresence mode='wait'>
+                  {!isExiting ? (
                     <motion.div
-                      className='mb-6 text-center'
-                      animate={{
-                        y: [0, -5, 0],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        repeatType: 'reverse',
-                        ease: 'easeInOut',
-                      }}
+                      key='content'
+                      className='w-full max-w-md mx-auto'
+                      initial={{ opacity: 0, y: 40 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={contentExitAnimation}
+                      transition={{ duration: 0.5 }}
                     >
+                      {/* Title with basketball icon and animation */}
+                      <CinderellaTitle />
+
+                      {/* Team Card */}
+                      <TeamCard cinderellaData={cinderellaData} teams={teams} cardRef={cardRef} />
+
+                      {/* Share Button */}
                       <motion.div
-                        className='inline-block mb-2'
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{
-                          rotate: [0, -10, 10, -5, 5, 0],
-                          scale: [1, 1.2, 1.2, 1.1, 1.1, 1],
+                          opacity: 1,
+                          y: 20,
                         }}
-                        transition={{
-                          duration: 1.5,
-                          ease: 'easeInOut',
-                          times: [0, 0.2, 0.4, 0.6, 0.8, 1],
-                        }}
+                        transition={{ duration: 0.5, delay: 0.6 }}
+                        className='flex justify-center'
+                        onClick={e => e.stopPropagation()}
+                        data-click='share-container'
                       >
-                        <span className='text-4xl'>👑</span>
+                        <ShareButton isSharing={isSharing} handleShare={handleShare} />
                       </motion.div>
-                      <h2 className='text-3xl font-bold text-white drop-shadow-lg'>
-                        Your Group's Cinderella
-                      </h2>
                     </motion.div>
-
-                    {/* Team Card */}
+                  ) : (
                     <motion.div
-                      ref={cardRef}
-                      className='w-full bg-gradient-to-br from-teal-500/30 to-purple-600/30 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20 mb-4'
-                      animate={{
-                        y: [0, -5, 0],
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        repeatType: 'reverse',
-                        ease: 'easeInOut',
-                        delay: 0.2,
-                      }}
+                      key='content-exiting'
+                      className='w-full'
+                      initial={{ opacity: 1 }}
+                      animate={contentExitAnimation}
+                      transition={{ duration: 0.4, ease: 'easeOut' }}
                     >
-                      {/* Team Information Section */}
-                      <div className='flex items-center gap-4 mb-6'>
-                        <div className='flex-shrink-0 flex flex-col items-center gap-2'>
-                          {/* Seed */}
-                          <motion.div
-                            className='w-8 h-8 rounded-full bg-teal-500/50 flex items-center justify-center text-white font-bold text-sm border-2 border-white/50'
-                            animate={{ rotate: [0, 5, 0, -5, 0] }}
-                            transition={{
-                              duration: 5,
-                              repeat: Infinity,
-                              ease: 'easeInOut',
-                            }}
-                          >
-                            {cinderellaData.seed}
-                          </motion.div>
-
-                          {/* Team Logo */}
-                          <motion.div
-                            className='w-10 h-10 rounded-lg overflow-hidden bg-white/10 flex items-center justify-center'
-                            animate={{ rotate: [0, 2, 0, -2, 0] }}
-                            transition={{
-                              duration: 4,
-                              repeat: Infinity,
-                              ease: 'easeInOut',
-                            }}
-                          >
-                            <Image
-                              src={
-                                teams?.[cinderellaData.teamId]?.images.secondary ||
-                                '/placeholder-team.png'
-                              }
-                              alt={cinderellaData.team}
-                              width={32}
-                              height={32}
-                              className='w-8 h-8 object-contain'
-                            />
-                          </motion.div>
-                        </div>
-
-                        {/* Team Name and Round */}
-                        <div className='flex-1 min-w-0'>
-                          <h3 className='text-3xl font-bold text-white truncate'>
-                            {cinderellaData.team}
-                          </h3>
-                          <div className='flex items-center gap-2 mt-1'>
-                            <span className='bg-teal-500/30 px-2 py-0.5 rounded-md text-white font-bold'>
-                              {cinderellaData.roundReached}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Bracket Owner Section */}
-                      <div className='pt-4 border-t border-white/10'>
-                        <h4 className='text-lg font-bold text-white/90 mb-3'>Bracket Owner</h4>
-                        <div className='flex items-center gap-4'>
-                          <motion.div
-                            className='flex-shrink-0 w-14 h-14 rounded-full overflow-hidden border-2 border-teal-400 bg-white/10 flex items-center justify-center text-white'
-                            animate={{ rotate: [0, 10, 0, -10, 0] }}
-                            transition={{
-                              duration: 6,
-                              repeat: Infinity,
-                              ease: 'easeInOut',
-                            }}
-                          >
-                            <svg
-                              xmlns='http://www.w3.org/2000/svg'
-                              viewBox='0 0 24 24'
-                              fill='currentColor'
-                              className='w-8 h-8'
-                            >
-                              <path
-                                fillRule='evenodd'
-                                d='M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z'
-                                clipRule='evenodd'
-                              />
-                            </svg>
-                          </motion.div>
-                          <div className='flex-1 min-w-0'>
-                            <p className='font-bold text-xl text-white truncate'>
-                              {cinderellaData.bracketOwner.name}
-                            </p>
-                            <p className='text-teal-200 truncate'>
-                              {cinderellaData.bracketOwner.bracketName}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+                      {/* Content is exiting - this is a placeholder that will animate out */}
+                      <div className='opacity-0'>Content exiting</div>
                     </motion.div>
+                  )}
+                </AnimatePresence>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </StorySlide>
 
-                    {/* Share Button */}
-                    <AnimatePresence>
-                      {showShareButton && !isExiting && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          transition={{ duration: 0.5 }}
-                          className='mt-6 flex justify-center'
-                          onClick={e => e.stopPropagation()}
-                          data-click='share-container'
-                        >
-                          <motion.button
-                            onClick={handleShare}
-                            className='flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full text-white font-bold shadow-lg hover:shadow-xl transition-all relative overflow-hidden group'
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            disabled={isSharing}
-                            data-click='share-button'
-                            aria-label='Share this story'
-                          >
-                            {/* Button background glow effect */}
-                            <span className='absolute inset-0 w-full h-full bg-gradient-to-r from-teal-300/20 to-blue-300/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300'></span>
+      <ShareableContent shareableRef={shareableRef} cinderellaData={cinderellaData} teams={teams} />
+    </div>
+  )
+}
 
-                            {isSharing ? (
-                              <>
-                                <svg
-                                  className='animate-spin -ml-1 mr-2 h-5 w-5 text-white'
-                                  xmlns='http://www.w3.org/2000/svg'
-                                  fill='none'
-                                  viewBox='0 0 24 24'
-                                >
-                                  <circle
-                                    className='opacity-25'
-                                    cx='12'
-                                    cy='12'
-                                    r='10'
-                                    stroke='currentColor'
-                                    strokeWidth='4'
-                                  ></circle>
-                                  <path
-                                    className='opacity-75'
-                                    fill='currentColor'
-                                    d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
-                                  ></path>
-                                </svg>
-                                <span className='relative z-10'>Preparing...</span>
-                              </>
-                            ) : (
-                              <>
-                                <svg
-                                  xmlns='http://www.w3.org/2000/svg'
-                                  viewBox='0 0 24 24'
-                                  fill='currentColor'
-                                  className='w-5 h-5 relative z-10'
-                                >
-                                  <path
-                                    fillRule='evenodd'
-                                    d='M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z'
-                                    clipRule='evenodd'
-                                  />
-                                </svg>
-                                <span className='relative z-10'>Share This Story</span>
-                              </>
-                            )}
-                          </motion.button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key='content-exiting'
-                    className='w-full'
-                    initial={{ opacity: 1 }}
-                    animate={contentExitAnimation}
-                    transition={{ duration: 0.6, ease: 'easeOut' }}
-                  >
-                    {/* Content is exiting - this is a placeholder that will animate out */}
-                    <div className='opacity-0'>Content exiting</div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            )}
-          </AnimatePresence>
+// Animation elements configuration
+const animationElements = {
+  brackets: [
+    // Bracket 1 - Top right
+    {
+      top: '15%',
+      right: '10%',
+      size: '7',
+      opacity: 0.8,
+      rotateDirection: 'clockwise',
+      color: 'blue',
+      bracketType: 'right',
+    },
+    // Bracket 2 - Bottom left
+    {
+      bottom: '10%',
+      left: '5%',
+      size: '7',
+      opacity: 0.7,
+      rotateDirection: 'counterclockwise',
+      color: 'blue',
+      bracketType: 'left',
+    },
+    // Bracket 3 - Top left
+    {
+      top: '8%',
+      left: '8%',
+      size: '6',
+      opacity: 0.6,
+      color: 'blue',
+      bracketType: 'left',
+    },
+    // Bracket 4 - Bottom right
+    {
+      bottom: '12%',
+      right: '8%',
+      size: '6',
+      opacity: 0.6,
+      color: 'blue',
+      bracketType: 'right',
+    },
+    // Full bracket - center background (larger, more subtle)
+    {
+      top: '30%',
+      left: '40%',
+      size: '14',
+      opacity: 0.15,
+      color: 'blue',
+      bracketType: 'full',
+    },
+  ],
+  basketballs: [
+    // Basketball 1 - Top
+    {
+      top: '12%',
+      left: '30%',
+      size: '3.5',
+      opacity: 0.7,
+      bounceHeight: 'low',
+    },
+    // Basketball 2 - Bottom
+    {
+      bottom: '15%',
+      right: '35%',
+      size: '4',
+      opacity: 0.8,
+      bounceHeight: 'medium',
+    },
+    // Basketball 3 - Side
+    {
+      top: '40%',
+      right: '12%',
+      size: '3',
+      opacity: 0.6,
+      bounceHeight: 'low',
+    },
+  ],
+  ncaaLogos: [
+    // NCAA Logo 1
+    {
+      top: '8%',
+      right: '42%',
+      size: 'sm',
+      opacity: 0.3,
+      pulseEffect: true,
+    },
+    // NCAA Logo 2
+    {
+      bottom: '10%',
+      left: '35%',
+      size: 'sm',
+      opacity: 0.3,
+      pulseEffect: true,
+    },
+  ],
+  flashes: [
+    // Flash effect 1
+    { top: '20%', left: '20%', size: '100px', color: 'blue', opacity: 0.3, speed: 'medium' },
+    { top: '50%', right: '15%', size: '80px', color: 'white', opacity: 0.2, speed: 'fast' },
+    { bottom: '30%', left: '10%', size: '120px', color: 'blue', opacity: 0.3, speed: 'slow' },
+    { bottom: '40%', right: '25%', size: '90px', color: 'white', opacity: 0.2, speed: 'medium' },
+  ],
+}
+
+// Types for our components
+interface CinderellaData {
+  team: string
+  seed: number
+  roundReached: string
+  bracketCount: number
+  teamId: string
+  bracketOwner: {
+    name: string
+    avatarUrl: string
+    bracketName: string
+  }
+}
+
+interface TeamCardProps {
+  cinderellaData: CinderellaData
+  teams: any
+  animated?: boolean
+  cardRef?: React.RefObject<HTMLDivElement>
+}
+
+interface BracketOwnerSectionProps {
+  bracketOwner: CinderellaData['bracketOwner']
+  animated?: boolean
+}
+
+// Reusable TeamCard component
+const TeamCard: React.FC<TeamCardProps> = ({ cinderellaData, teams, animated = true, cardRef }) => {
+  return (
+    <motion.div
+      ref={cardRef}
+      className='w-full bg-black/60 backdrop-blur-md rounded-xl p-6 shadow-lg border-l-4 border-[#0067b1] mb-4'
+      initial={{ opacity: 0, y: 20 }}
+      animate={animated ? { opacity: 1, y: 0, x: [-5, 5, -5, 5, 0] } : { opacity: 1, y: 0 }}
+      transition={{
+        duration: animated ? 0.8 : 0.5,
+        x: {
+          duration: 0.5,
+          times: [0, 0.25, 0.5, 0.75, 1],
+          ease: 'easeOut',
+          delay: 0.1,
+        },
+      }}
+    >
+      {/* Team Information Section */}
+      <div className='flex items-center gap-4 mb-6'>
+        <div className='flex-shrink-0 flex flex-col items-center gap-2'>
+          {/* Seed */}
+          <motion.div
+            className='w-10 h-10 rounded-md bg-[#0067b1] flex items-center justify-center text-white font-black text-lg border-2 border-white/80'
+            animate={animated ? { rotate: [-3, 3, -3] } : {}}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          >
+            {cinderellaData.seed}
+          </motion.div>
+
+          {/* Team Logo */}
+          <motion.div
+            className='w-12 h-12 rounded-md overflow-hidden bg-white flex items-center justify-center'
+            animate={animated ? { rotate: [0, 2, 0, -2, 0] } : {}}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          >
+            <Image
+              src={teams?.[cinderellaData.teamId]?.images.secondary || '/placeholder-team.png'}
+              alt={cinderellaData.team}
+              width={40}
+              height={40}
+              className='w-10 h-10 object-contain'
+            />
+          </motion.div>
+        </div>
+
+        {/* Team Name and Round */}
+        <div className='flex-1 min-w-0'>
+          <h3 className='text-3xl font-black text-white uppercase tracking-tight'>
+            {cinderellaData.team}
+          </h3>
+          <div className='flex items-center gap-2 mt-2'>
+            <span className='bg-[#ff6b00] px-3 py-1 rounded text-white font-black uppercase text-sm tracking-wide'>
+              {cinderellaData.roundReached}
+            </span>
+          </div>
         </div>
       </div>
-    </StorySlide>
+
+      {/* Bracket Owner Section */}
+      <BracketOwnerSection bracketOwner={cinderellaData.bracketOwner} animated={animated} />
+    </motion.div>
+  )
+}
+
+// Reusable BracketOwnerSection component
+const BracketOwnerSection: React.FC<BracketOwnerSectionProps> = ({
+  bracketOwner,
+  animated = true,
+}) => {
+  return (
+    <div className='pt-4 border-t border-[#0067b1]/50'>
+      <h4 className='text-lg font-black text-white/90 mb-3 uppercase tracking-wide'>
+        Bracket Owner
+      </h4>
+      <div className='flex items-center gap-4'>
+        <motion.div
+          className='flex-shrink-0 w-14 h-14 rounded-md overflow-hidden border-2 border-[#0067b1] bg-white/10 flex items-center justify-center text-white'
+          animate={animated ? { scale: [1, 1.05, 1], rotate: [0, 5, 0, -5, 0] } : {}}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            viewBox='0 0 24 24'
+            fill='currentColor'
+            className='w-8 h-8'
+          >
+            <path
+              fillRule='evenodd'
+              d='M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z'
+              clipRule='evenodd'
+            />
+          </svg>
+        </motion.div>
+        <div className='flex-1 min-w-0'>
+          <p className='font-black text-xl text-white truncate'>{bracketOwner.name}</p>
+          <p className='text-[#ff6b00] truncate font-bold'>{bracketOwner.bracketName}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Reusable Title component
+const CinderellaTitle: React.FC<{ animated?: boolean }> = ({ animated = true }) => {
+  return (
+    <motion.div
+      className='mb-6 text-center'
+      initial={{ y: -20, opacity: 0 }}
+      animate={
+        animated
+          ? {
+              y: 0,
+              opacity: 1,
+            }
+          : { y: 0, opacity: 1 }
+      }
+      transition={{
+        duration: 0.5,
+        ease: 'easeOut',
+      }}
+    >
+      <motion.div
+        className='inline-block mb-3'
+        animate={
+          animated
+            ? {
+                rotate: [0, -10, 10, -5, 5, 0],
+                scale: [1, 1.3, 1.3, 1.2, 1.2, 1],
+              }
+            : {}
+        }
+        transition={{
+          duration: 1.2,
+          ease: 'easeInOut',
+          times: [0, 0.2, 0.4, 0.6, 0.8, 1],
+        }}
+      >
+        <span className='text-5xl' role='img' aria-label='basketball'>
+          👸
+        </span>
+      </motion.div>
+      <h2 className='text-4xl font-black text-white uppercase tracking-tighter'>
+        CINDERELLA STORY
+      </h2>
+      <div className='h-1 w-32 bg-[#ff6b00] mx-auto mt-2'></div>
+    </motion.div>
+  )
+}
+
+// Reusable decorative elements component
+export const DecorativeElements: React.FC = () => {
+  return (
+    <div className='absolute inset-0 overflow-hidden pointer-events-none'>
+      {/* Brackets */}
+      <div className='absolute top-[2%] right-[5%] opacity-70 text-4xl'>
+        <Image
+          src='/bracket.png'
+          alt='March Madness bracket'
+          width={100}
+          height={100}
+          className='w-full h-full object-contain'
+        />
+      </div>
+
+      {/* Basketball */}
+      <div className='absolute top-[15%] left-[10%] opacity-70 text-4xl'>
+        <span role='img' aria-label='basketball'>
+          🏀
+        </span>
+      </div>
+
+      <div className='absolute bottom-[25%] right-[15%] opacity-60 text-3xl'>
+        <span role='img' aria-label='basketball'>
+          🏀
+        </span>
+      </div>
+
+      {/* NCAA Logo */}
+      <div className='absolute bottom-[20%] right-[25%] opacity-40'>
+        <svg width='20' height='20' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'>
+          <circle cx='50' cy='50' r='45' fill='#0067b1' />
+          <text
+            x='50'
+            y='57'
+            fontFamily='Arial, sans-serif'
+            fontSize='20'
+            fontWeight='bold'
+            fill='white'
+            textAnchor='middle'
+          >
+            NCAA
+          </text>
+        </svg>
+      </div>
+    </div>
+  )
+}
+
+const ShareableContent = ({
+  shareableRef,
+  cinderellaData,
+  teams,
+}: {
+  shareableRef: React.RefObject<HTMLDivElement>
+  cinderellaData: CinderellaData
+  teams: any
+}) => {
+  return (
+    <div
+      ref={shareableRef}
+      className='relative w-full top-0 left-0 pointer-events-none overflow-hidden'
+      style={{
+        background: 'linear-gradient(to bottom right, #0067b1, #000000, #0067b1)',
+        borderRadius: '12px',
+        padding: '24px',
+      }}
+    >
+      {/* Decorative elements */}
+      <DecorativeElements />
+
+      {/* Radial gradient overlay for depth */}
+      <div className='absolute inset-0 bg-radial-gradient from-transparent to-black/40 pointer-events-none' />
+
+      {/* Title with emoji */}
+      <div className='relative mb-8 text-center'>
+        <CinderellaTitle animated={false} />
+      </div>
+
+      {/* Team Card - using our reusable component */}
+      <TeamCard cinderellaData={cinderellaData} teams={teams} animated={false} />
+
+      {/* Group name banner at top */}
+      <GroupSlideBanner />
+    </div>
   )
 }
 

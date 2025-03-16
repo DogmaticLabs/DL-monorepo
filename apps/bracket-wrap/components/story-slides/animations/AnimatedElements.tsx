@@ -1,4 +1,5 @@
 import { motion } from 'motion/react'
+import Image from 'next/image'
 
 // Common types for positioning
 type PositionProps = {
@@ -15,6 +16,7 @@ type BasketballProps = PositionProps & {
   opacity?: number
   rotateDirection?: 'clockwise' | 'counterclockwise'
   dotSize?: string
+  delay?: number
 }
 
 export const AnimatedBasketball = ({
@@ -27,17 +29,8 @@ export const AnimatedBasketball = ({
   rotateDirection = 'clockwise',
   dotSize = '8px',
   isExiting = false,
+  delay = 0,
 }: BasketballProps) => {
-  // Calculate position classes
-  const positionClasses = [
-    top ? `top-[${top}]` : '',
-    bottom ? `bottom-[${bottom}]` : '',
-    left ? `left-[${left}]` : '',
-    right ? `right-[${right}]` : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
-
   // Define exit animation
   const exitAnimation = {
     y: top ? -200 : 200,
@@ -48,18 +41,22 @@ export const AnimatedBasketball = ({
 
   return (
     <motion.div
-      className={`absolute ${positionClasses} w-${size} h-${size} rounded-full bg-gradient-to-br from-orange-500 to-orange-700 opacity-${Math.round(opacity * 100)}`}
+      className='absolute'
       style={{
-        backgroundImage:
-          'radial-gradient(circle, rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(to bottom right, #f97316, #c2410c)',
-        backgroundSize: `${dotSize} ${dotSize}, 100% 100%`,
+        top: top || undefined,
+        bottom: bottom || undefined,
+        left: left || undefined,
+        right: right || undefined,
+        width: `${size}rem`,
+        height: `${size}rem`,
+        opacity: opacity,
       }}
-      initial={{ y: top ? -50 : 50, opacity: 0 }}
+      initial={{ scale: 0, opacity: 0, rotate: 0 }}
       animate={
         isExiting
           ? exitAnimation
           : {
-              y: 0,
+              scale: 1,
               opacity: opacity,
               rotate: rotateDirection === 'clockwise' ? [0, 360] : [0, -360],
             }
@@ -68,16 +65,32 @@ export const AnimatedBasketball = ({
         isExiting
           ? { duration: 0.7, ease: 'easeOut' }
           : {
-              y: { duration: 0.8, ease: 'easeOut' },
+              scale: { duration: 0.8, ease: 'easeOut', delay: delay },
               rotate: {
-                duration: rotateDirection === 'clockwise' ? 3 : 4,
+                duration: rotateDirection === 'clockwise' ? 6 : 7,
                 repeat: Infinity,
                 ease: 'linear',
+                delay: delay + 0.2,
               },
-              opacity: { duration: 0.8 },
+              opacity: { duration: 0.8, delay: delay },
             }
       }
-    />
+    >
+      <span
+        role='img'
+        aria-label='basketball'
+        style={{
+          fontSize: `${size}rem`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100%',
+          width: '100%',
+        }}
+      >
+        🏀
+      </span>
+    </motion.div>
   )
 }
 
@@ -87,6 +100,7 @@ type BracketProps = PositionProps & {
   color?: string
   opacity?: number
   type?: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight'
+  delay?: number
 }
 
 export const AnimatedBracket = ({
@@ -95,44 +109,12 @@ export const AnimatedBracket = ({
   left,
   right,
   size = '14',
-  color = 'yellow-400',
   opacity = 0.6,
   type = 'topLeft',
+  color = 'blue-400',
   isExiting = false,
+  delay = 0,
 }: BracketProps) => {
-  // Calculate position classes
-  const positionClasses = [
-    top ? `top-[${top}]` : '',
-    bottom ? `bottom-[${bottom}]` : '',
-    left ? `left-[${left}]` : '',
-    right ? `right-[${right}]` : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
-
-  // Determine border styles based on type
-  let borderStyles = ''
-  let roundedStyles = ''
-
-  switch (type) {
-    case 'topLeft':
-      borderStyles = `border-l-4 border-t-4 border-${color}`
-      roundedStyles = 'rounded-tl-lg'
-      break
-    case 'topRight':
-      borderStyles = `border-r-4 border-t-4 border-${color}`
-      roundedStyles = 'rounded-tr-lg'
-      break
-    case 'bottomLeft':
-      borderStyles = `border-l-4 border-b-4 border-${color}`
-      roundedStyles = 'rounded-bl-lg'
-      break
-    case 'bottomRight':
-      borderStyles = `border-r-4 border-b-4 border-${color}`
-      roundedStyles = 'rounded-br-lg'
-      break
-  }
-
   // Determine animation direction
   const rotateDirection = type.includes('Right') ? -10 : 10
   const moveDirection = type.includes('Right') ? -5 : 5
@@ -146,48 +128,78 @@ export const AnimatedBracket = ({
     scale: 0.2,
   }
 
+  // Convert Tailwind color to CSS color
+  const colorMap: Record<string, string> = {
+    'blue-400': '#0067b1', // NCAA Blue
+    'yellow-400': '#facc15',
+    'orange-500': '#ff6b00', // NCAA Orange
+    // Add more color mappings as needed
+  }
+
+  const cssColor = colorMap[color] || '#0067b1'
+
+  // Determine if we should flip the bracket
+  const shouldFlipHorizontal = type.includes('Right')
+
   return (
     <motion.div
-      className={`absolute ${positionClasses} w-${size} h-${size} ${borderStyles} ${roundedStyles} opacity-${Math.round(opacity * 100)}`}
-      initial={{ scale: 0, opacity: 0 }}
+      className='absolute'
+      style={{
+        top: top || undefined,
+        bottom: bottom || undefined,
+        left: left || undefined,
+        right: right || undefined,
+        width: `${size}rem`,
+        height: `${size}rem`,
+        opacity: opacity,
+        transform: shouldFlipHorizontal ? 'scaleX(-1)' : undefined,
+      }}
+      initial={{ y: top ? -100 : 100, x: left ? -100 : 100, opacity: 0, rotate: 0 }}
       animate={
         isExiting
           ? exitAnimation
           : {
-              scale: 1,
+              y: 0,
+              x: 0,
               opacity: opacity,
               rotate: [0, rotateDirection, 0],
-              x: [0, moveDirection, 0],
             }
       }
       transition={
         isExiting
           ? { duration: 0.8, ease: 'easeOut' }
           : {
-              scale: { duration: 0.8, ease: 'easeOut' },
+              y: { duration: 0.7, ease: 'easeOut', delay: delay },
+              x: { duration: 0.7, ease: 'easeOut', delay: delay },
               rotate: {
-                duration: type.includes('Right') ? 6 : 5,
+                duration: 4,
                 repeat: Infinity,
                 repeatType: 'reverse',
+                ease: 'easeInOut',
+                delay: delay + 0.3,
               },
-              x: {
-                duration: type.includes('Right') ? 5 : 4,
-                repeat: Infinity,
-                repeatType: 'reverse',
-              },
-              opacity: { duration: 0.8 },
+              opacity: { duration: 0.8, delay: delay },
             }
       }
-    />
+    >
+      <Image
+        src='/bracket.png'
+        alt='March Madness bracket'
+        width={100}
+        height={100}
+        className='w-full h-full object-contain'
+      />
+    </motion.div>
   )
 }
 
 // Percentage symbol component
 type PercentageSymbolProps = PositionProps & {
   color?: string
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl'
   opacity?: number
   floatDistance?: number
+  delay?: number
 }
 
 export const AnimatedPercentageSymbol = ({
@@ -195,21 +207,36 @@ export const AnimatedPercentageSymbol = ({
   bottom,
   left,
   right,
-  color = 'yellow-400',
+  color = 'blue-400',
   size = '3xl',
   opacity = 0.4,
   floatDistance = 15,
   isExiting = false,
+  delay = 0,
 }: PercentageSymbolProps) => {
-  // Calculate position classes
-  const positionClasses = [
-    top ? `top-[${top}]` : '',
-    bottom ? `bottom-[${bottom}]` : '',
-    left ? `left-[${left}]` : '',
-    right ? `right-[${right}]` : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
+  // Convert Tailwind color to CSS color
+  const colorMap: Record<string, string> = {
+    'blue-400': '#0067b1', // NCAA Blue
+    'yellow-400': '#facc15',
+    'orange-500': '#ff6b00', // NCAA Orange
+    // Add more color mappings as needed
+  }
+
+  const cssColor = colorMap[color] || '#0067b1'
+
+  // Map text size to CSS font size
+  const sizeMap: Record<string, string> = {
+    sm: '0.875rem',
+    md: '1rem',
+    lg: '1.125rem',
+    xl: '1.25rem',
+    '2xl': '1.5rem',
+    '3xl': '1.875rem',
+    '4xl': '2.25rem',
+    '5xl': '3rem',
+  }
+
+  const fontSize = sizeMap[size] || '1.875rem'
 
   // Determine float direction based on position
   const initialY = top ? 20 : -20
@@ -226,7 +253,17 @@ export const AnimatedPercentageSymbol = ({
 
   return (
     <motion.div
-      className={`absolute ${positionClasses} text-${size} font-bold text-${color} opacity-${Math.round(opacity * 100)}`}
+      className='absolute'
+      style={{
+        top: top || undefined,
+        bottom: bottom || undefined,
+        left: left || undefined,
+        right: right || undefined,
+        fontSize: fontSize,
+        fontWeight: 'bold',
+        color: cssColor,
+        opacity: opacity,
+      }}
       initial={{ y: initialY, opacity: 0 }}
       animate={
         isExiting
@@ -240,8 +277,13 @@ export const AnimatedPercentageSymbol = ({
         isExiting
           ? { duration: 0.6, ease: 'easeOut' }
           : {
-              y: { duration: top ? 4 : 5, repeat: Infinity, repeatType: 'reverse' },
-              opacity: { duration: 0.8 },
+              y: {
+                duration: 3,
+                repeat: Infinity,
+                repeatType: 'reverse',
+                delay: delay,
+              },
+              opacity: { duration: 0.8, delay: delay },
             }
       }
     >
@@ -263,19 +305,34 @@ type AnimatedBackgroundProps = {
 export const AnimatedBackground = ({ isExiting = false, elements }: AnimatedBackgroundProps) => {
   return (
     <>
-      {/* Render basketballs */}
-      {elements?.basketballs?.map((props, index) => (
-        <AnimatedBasketball key={`basketball-${index}`} {...props} isExiting={isExiting} />
-      ))}
-
-      {/* Render brackets */}
+      {/* Render brackets with staggered delays */}
       {elements?.brackets?.map((props, index) => (
-        <AnimatedBracket key={`bracket-${index}`} {...props} isExiting={isExiting} />
+        <AnimatedBracket
+          key={`bracket-${index}`}
+          {...props}
+          isExiting={isExiting}
+          delay={props.delay !== undefined ? props.delay : index * 0.15}
+        />
       ))}
 
-      {/* Render percentage symbols */}
+      {/* Render basketballs with staggered delays */}
+      {elements?.basketballs?.map((props, index) => (
+        <AnimatedBasketball
+          key={`basketball-${index}`}
+          {...props}
+          isExiting={isExiting}
+          delay={props.delay !== undefined ? props.delay : 0.3 + index * 0.2}
+        />
+      ))}
+
+      {/* Render percentage symbols with staggered delays */}
       {elements?.percentageSymbols?.map((props, index) => (
-        <AnimatedPercentageSymbol key={`percent-${index}`} {...props} isExiting={isExiting} />
+        <AnimatedPercentageSymbol
+          key={`percent-${index}`}
+          {...props}
+          isExiting={isExiting}
+          delay={props.delay !== undefined ? props.delay : 0.5 + index * 0.2}
+        />
       ))}
     </>
   )

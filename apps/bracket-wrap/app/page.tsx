@@ -28,14 +28,14 @@ import PageState from './page-state'
 
 export default function Page({ searchParams }: { searchParams: Promise<{ mode: string }> }) {
   const unwrappedParams = use(searchParams)
-  const [pageState, setPageState] = useState<PageState>(PageState.StorySequence)
+  const [pageState, setPageState] = useState<PageState>(PageState.LandingPage)
 
   // Define your slides here - we'll create 4 example slides (excluding the landing page)
   // const totalSlides = 9
 
   return (
     <SearchParamsProvider params={unwrappedParams}>
-      <div className='relative w-full flex flex-col bg-[#1e293b]'>
+      <div id='app-content' className='relative w-full flex flex-col bg-[#1e293b]'>
         <AnimatePresence mode='wait'>
           {pageState === PageState.LandingPage && (
             // Landing page with MainStorySlide
@@ -52,7 +52,7 @@ export default function Page({ searchParams }: { searchParams: Promise<{ mode: s
           )}
 
           {[PageState.LoadingSequence, PageState.IntroSequence].includes(pageState) && (
-            <div className='w-full h-screen bg-gradient-to-br from-blue-700 via-purple-700 to-orange-700'>
+            <div className='w-full h-dvh bg-gradient-to-br from-blue-700 via-purple-700 to-orange-700'>
               {pageState === PageState.LoadingSequence && (
                 <motion.div
                   key='loading-sequence'

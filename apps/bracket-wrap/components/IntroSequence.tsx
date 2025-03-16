@@ -34,7 +34,7 @@ export default function IntroSequence({ onComplete }: IntroSequenceProps) {
 
   return (
     <motion.div
-      className='relative flex flex-col items-center justify-center h-screen w-full overflow-hidden'
+      className='relative flex flex-col items-center justify-center h-dvh w-full overflow-hidden'
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5, delay: 0.8 }}
     >

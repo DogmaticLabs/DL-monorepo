@@ -8,13 +8,14 @@ import '@workspace/ui/globals.css'
 export const metadata: Metadata = {
   title: 'Bracket Wrap',
   description: 'Your bracket analysis and insights',
-  viewport: 'width=device-width, initial-scale=1',
+  viewport: 'width=device-width, initial-scale=1, viewport-fit=cover',
   // You can add more metadata properties here
   // icons: { ... },
   // openGraph: { ... },
   // twitter: { ... },
   appleWebApp: {
     statusBarStyle: 'black-translucent',
+    capable: true,
   },
 }
 
@@ -35,9 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en' suppressHydrationWarning>
-      <body
-        className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased h-screen overflow-auto`}
-      >
+      <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>

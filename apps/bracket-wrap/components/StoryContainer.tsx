@@ -33,7 +33,7 @@ export default function StoryContainer({ children }: StoryContainerProps) {
   }
 
   return (
-    <div className='relative w-full h-full overflow-hidden flex flex-col'>
+    <div className='relative w-full h-svh flex flex-col min-h-svh'>
       <StoryProgress />
 
       {/* Top controls bar */}
@@ -60,7 +60,7 @@ function StoryControls({
     <div className='fixed top-2 left-0 right-0 z-20 p-4 flex justify-between items-center'>
       {/* Logo */}
       <div className='w-10 h-10 rounded-full flex items-center justify-center'>
-        <Image src='/icon.png' alt='Spotify Logo' width={40} height={40} />
+        <Image src='/logo.png' alt='Spotify Logo' width={40} height={40} />
       </div>
 
       {/* Controls */}
