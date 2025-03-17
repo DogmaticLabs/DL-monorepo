@@ -55,7 +55,10 @@ export type Team = {
     secondary: string
   }
   seed: number
-  regionId: number
+  region: {
+    id: number
+    name: string
+  }
 }
 
 export type TeamMap = Record<string, Team>

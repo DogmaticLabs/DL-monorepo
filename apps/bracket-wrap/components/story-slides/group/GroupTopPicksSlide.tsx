@@ -15,7 +15,10 @@ interface TeamPick {
   name?: string
   abbreviation?: string
   rank: number
-  region: string
+  region: {
+    id: number
+    name: string
+  }
   groupPercentage: number
   seed: number
   bracketCount: number
@@ -524,7 +527,7 @@ const TeamPickBar = ({
             {pick.name}
           </p>
           <p className='text-white/80 text-[10px]'>
-            {pick.region} ({pick.seed})
+            {pick.region.name} ({pick.seed})
           </p>
         </motion.div>
       </div>
