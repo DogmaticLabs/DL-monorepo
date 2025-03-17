@@ -5,12 +5,6 @@ interface ShareOptions {
   title: string
   text: string
   url: string
-  watermark?: {
-    text: string
-    position?: 'bottomRight' | 'bottomLeft' | 'topRight' | 'topLeft'
-    color?: string
-    opacity?: number
-  }
   captureOptions?: {
     quality?: number
     backgroundColor?: string
@@ -59,51 +53,7 @@ export const useShareContent = (): UseShareContentReturn => {
       // Capture the element as a PNG
       const dataUrl = await toPng(elementRef.current, captureOpts)
 
-      // Add watermark if specified
-      if (options?.watermark) {
-        // Create a temporary canvas to add the watermark
-        const img = new Image()
-        await new Promise<void>(resolve => {
-          img.onload = () => resolve()
-          img.src = dataUrl
-        })
-
-        const canvas = document.createElement('canvas')
-        canvas.width = img.width
-        canvas.height = img.height
-
-        const ctx = canvas.getContext('2d')
-        if (ctx) {
-          // Draw the original image
-          ctx.drawImage(img, 0, 0)
-
-          // Add watermark text
-          ctx.font = '14px Arial'
-          ctx.fillStyle = options.watermark.color || 'rgba(255, 255, 255, 0.7)'
-
-          // Position the watermark based on the specified position or default to bottom right
-          const position = options.watermark.position || 'bottomRight'
-          ctx.textAlign = position.includes('Right') ? 'right' : 'left'
-
-          const x = position.includes('Right') ? canvas.width - 10 : 10
-          const y = position.includes('bottom') ? canvas.height - 10 : 20
-
-          ctx.fillText(options.watermark.text, x, y)
-
-          // Convert canvas to blob
-          return new Promise(resolve => {
-            canvas.toBlob(
-              blob => {
-                resolve(blob)
-              },
-              'image/png',
-              0.9,
-            )
-          })
-        }
-      }
-
-      // Convert data URL to blob if no watermark was added
+      // Convert data URL to blob
       const response = await fetch(dataUrl)
       return await response.blob()
     } catch (error) {
@@ -190,7 +140,7 @@ export const useShareContent = (): UseShareContentReturn => {
         }
       }
     } catch (error) {
-      console.error('Error sharing:', error)
+      console.log('Error sharing:', error)
       // If error is AbortError, user likely canceled the share
       if (error instanceof Error && error.name !== 'AbortError') {
         alert('There was an error sharing. Please try again.')

@@ -28,10 +28,7 @@ import PageState from './page-state'
 
 export default function Page({ searchParams }: { searchParams: Promise<{ mode: string }> }) {
   const unwrappedParams = use(searchParams)
-  const [pageState, setPageState] = useState<PageState>(PageState.LandingPage)
-
-  // Define your slides here - we'll create 4 example slides (excluding the landing page)
-  // const totalSlides = 9
+  const [pageState, setPageState] = useState<PageState>(PageState.StorySequence)
 
   return (
     <SearchParamsProvider params={unwrappedParams}>

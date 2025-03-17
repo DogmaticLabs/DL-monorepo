@@ -1,14 +1,14 @@
 import { useBracketSlides, useStory } from '@/components/providers'
-import { AnimatedBackground } from '@/components/story-slides/animations/AnimatedElements'
+import ShareableContent from '@/components/story-slides/shared/ShareableContent'
+import StoryCard from '@/components/story-slides/shared/StoryCard'
 import StorySlide from '@/components/StorySlide'
 import { useShareContent } from '@/hooks/useShareContent'
 import { useTeams } from '@/hooks/useTeams'
 import { AnimatePresence, motion } from 'motion/react'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
+import { CinderellaAnimatedBackground } from '../animations/CinderellaAnimatedElements'
 import ShareButton from '../ShareButton'
-import { DecorativeElements } from './GroupCinderellaSlide'
-import GroupSlideBanner from './GroupSlideBanner'
 
 // Define the type for team pick
 interface TeamPick {
@@ -26,113 +26,58 @@ interface TeamPick {
   }
 }
 
-// TopPicksCard component - refactored for reuse
-interface TopPicksCardProps {
+// Bar Chart Display component
+interface ChampionBarChartProps {
   championPicks: TeamPick[]
   teams: any
   maxBracketCount: number
   animated?: boolean
-  className?: string
-  withLogo?: boolean
 }
 
-const TopPicksCard = ({
+const ChampionBarChart = ({
   championPicks,
   teams,
   maxBracketCount,
   animated = true,
-  className = '',
-  withLogo = false,
-}: TopPicksCardProps) => {
-  const cardContent = (
-    <>
-      {/* Subtle glow effect overlay */}
-      <div className='absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent pointer-events-none' />
-      <div className="absolute inset-0 bg-[url('/noise-pattern.png')] opacity-5 mix-blend-overlay pointer-events-none" />
-
-      {/* Title */}
-      <TopPicksTitle animated={animated} />
-
-      {/* Bar Chart Display */}
-      {animated ? (
-        <motion.div
-          className='w-full py-4'
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
-          <div className='flex justify-center items-end gap-4'>
-            {championPicks.map((pick, idx) => (
-              <TeamPickBar
-                key={idx}
-                pick={pick}
-                index={idx}
-                teams={teams}
-                maxBracketCount={maxBracketCount}
-                animated={animated}
-              />
-            ))}
-          </div>
-        </motion.div>
-      ) : (
-        <div className='w-full py-4'>
-          <div className='flex justify-center items-end gap-4'>
-            {championPicks.map((pick, idx) => (
-              <TeamPickBar
-                key={idx}
-                pick={pick}
-                index={idx}
-                teams={teams}
-                maxBracketCount={maxBracketCount}
-                animated={animated}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Group Banner */}
-      <div className='scale-[80%] mt-2 border-t border-white/20 pt-4'>
-        <GroupSlideBanner />
-      </div>
-    </>
-  )
-
-  const cardStyle = {
-    boxShadow:
-      '0 8px 32px rgba(0, 103, 177, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
-    transform: 'translateZ(0)',
-  }
-
-  // If animated, wrap with motion.div, otherwise return static div
+}: ChampionBarChartProps) => {
   if (animated) {
     return (
       <motion.div
-        className={`w-full bg-gradient-to-br from-gray-950/80 to-gray-900/90 backdrop-blur-lg rounded-xl pb-2 pt-10 mb-4 border border-white/30 relative overflow-hidden ${className}`}
-        style={cardStyle}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0, x: [-5, 5, -5, 5, 0] }}
-        transition={{
-          duration: 0.8,
-          x: {
-            duration: 0.5,
-            times: [0, 0.25, 0.5, 0.75, 1],
-            ease: 'easeOut',
-            delay: 0.1,
-          },
-        }}
+        className='w-full py-4'
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
       >
-        {cardContent}
+        <div className='flex justify-center items-end gap-4'>
+          {championPicks.map((pick, idx) => (
+            <TeamPickBar
+              key={idx}
+              pick={pick}
+              index={idx}
+              teams={teams}
+              maxBracketCount={maxBracketCount}
+              animated={animated}
+            />
+          ))}
+        </div>
       </motion.div>
     )
   }
 
   return (
-    <div
-      className={`w-full bg-gradient-to-br from-gray-950/80 to-gray-900/90 backdrop-blur-lg rounded-xl pb-2 pt-10 mb-4 border border-white/30 relative overflow-hidden ${className}`}
-      style={cardStyle}
-    >
-      {cardContent}
+    <div className='w-full py-4'>
+      <div className='flex justify-center items-end gap-4'>
+        {championPicks.map((pick, idx) => (
+          <TeamPickBar
+            key={idx}
+            pick={pick}
+            index={idx}
+            teams={teams}
+            maxBracketCount={maxBracketCount}
+            animated={animated}
+          />
+        ))}
+      </div>
     </div>
   )
 }
@@ -200,22 +145,8 @@ const GroupTopPicksSlide = () => {
     },
   ]
 
-  console.log(championPicks)
-
   // State to control when to show the content
   const [showContent, setShowContent] = useState(false)
-
-  // State to track if background elements have finished animating
-  const [backgroundReady, setBackgroundReady] = useState(false)
-
-  // Background elements need some time to appear before showing text
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setBackgroundReady(true)
-    }, 500) // Give background elements 0.5 seconds to appear first
-
-    return () => clearTimeout(timer)
-  }, [])
 
   // Automatically transition to content after the intro text
   useEffect(() => {
@@ -233,54 +164,12 @@ const GroupTopPicksSlide = () => {
 
   // Animation elements configuration - updated with more March Madness themed elements
   const animationElements = {
-    basketballs: [
-      // Basketball 1 - Top right
-      {
-        top: '12%',
-        right: '15%',
-        size: '5',
-        opacity: 0.9,
-        rotateDirection: 'clockwise' as const,
-      },
-      // Basketball 2 - Bottom left
-      {
-        bottom: '15%',
-        left: '10%',
-        size: '4',
-        opacity: 0.85,
-        rotateDirection: 'counterclockwise' as const,
-      },
-    ],
-    brackets: [
-      // Bracket 1 - Top left (NCAA blue)
-      {
-        top: '15%',
-        left: '8%',
-        size: '5',
-        color: 'blue-400',
-        opacity: 0.8,
-        type: 'topLeft' as const,
-      },
-      // Bracket 2 - Bottom right (NCAA blue)
-      {
-        bottom: '15%',
-        right: '7%',
-        size: '6',
-        color: 'blue-400',
-        opacity: 0.8,
-        type: 'bottomRight' as const,
-      },
-    ],
-    percentageSymbols: [
-      // Percentage 1 - Top right
-      {
-        top: '30%',
-        right: '20%',
-        color: 'orange-500',
-        size: '3xl' as const,
-        opacity: 0.6,
-        floatDistance: 15,
-      },
+    flashes: [
+      // Flash effect 1
+      { top: '15%', left: '20%', size: '100px', color: 'blue', opacity: 0.3, speed: 'medium' },
+      { top: '10%', right: '10%', size: '80px', color: 'white', opacity: 0.2, speed: 'fast' },
+      { bottom: '10%', left: '10%', size: '120px', color: 'blue', opacity: 0.3, speed: 'slow' },
+      { bottom: '10%', right: '10%', size: '90px', color: 'white', opacity: 0.2, speed: 'medium' },
     ],
   }
 
@@ -301,11 +190,6 @@ const GroupTopPicksSlide = () => {
       title: 'Top Picks',
       text: `Check out my group's top champion picks!`,
       url: 'https://bracketwrap.com',
-      // watermark: {
-      //   text: 'bracketwrap.com',
-      //   position: 'bottomRight' as const,
-      //   color: 'rgba(255, 255, 255, 0.7)',
-      // },
     }
 
     try {
@@ -326,9 +210,9 @@ const GroupTopPicksSlide = () => {
   return (
     <div className='w-full h-dvh overflow-hidden'>
       <StorySlide
-        bgColor='bg-gradient-to-br from-[#0067b1] via-black to-[#0067b1]'
+        // bgColor='bg-gradient-to-br from-[#0067b1] via-black to-[#0067b1]'
         footer={
-          showContent ? (
+          showContent && !isExiting ? (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -343,7 +227,7 @@ const GroupTopPicksSlide = () => {
       >
         <div className='relative flex flex-col w-full h-full overflow-hidden'>
           {/* Decorative elements */}
-          <AnimatedBackground isExiting={isExiting} elements={animationElements} />
+          <CinderellaAnimatedBackground isExiting={isExiting} elements={animationElements as any} />
 
           {/* Radial gradient overlay for depth */}
           <div className='absolute inset-0 bg-radial-gradient from-transparent to-black/50 pointer-events-none' />
@@ -354,35 +238,56 @@ const GroupTopPicksSlide = () => {
               {!showContent ? (
                 <motion.div
                   key='intro'
-                  className='flex flex-col items-center justify-center h-full'
+                  className='flex flex-col items-center justify-center h-full relative'
                   initial={{ opacity: 0 }}
-                  animate={{ opacity: backgroundReady ? 1 : 0 }}
+                  animate={{ opacity: 1 }}
                   exit={{ opacity: 0, scale: 0.8, y: -30 }}
-                  transition={{ duration: 0.6 }}
+                  transition={{ duration: 0.8, ease: 'easeOut' }}
                 >
                   <motion.p
-                    className='text-3xl font-black uppercase text-center text-white leading-tight tracking-wide'
-                    initial={{ x: -500, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ duration: 0.7, delay: backgroundReady ? 0.3 : 0.8 }}
-                  >
-                    WHO DO THEY TRUST
-                  </motion.p>
-                  <motion.p
-                    className='text-5xl font-black uppercase text-center text-[#ff6b00] leading-tight mt-4 tracking-wide'
-                    initial={{ x: 500, opacity: 0, scale: 0.9 }}
-                    animate={{ x: 0, opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.7, delay: backgroundReady ? 1.2 : 1.7 }}
-                  >
-                    TO WIN IT ALL?
-                  </motion.p>
-                  <motion.p
-                    className='text-2xl font-bold text-center text-white leading-tight mt-8'
-                    initial={{ y: 50, opacity: 0 }}
+                    className='text-3xl font-black uppercase text-center text-white leading-tight tracking-wide relative z-10'
+                    initial={{ y: -40, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.6, delay: backgroundReady ? 2.0 : 2.5 }}
+                    transition={{ duration: 0.7, delay: 0.4, ease: 'easeOut' }}
                   >
-                    Here's who your group picked as champions
+                    Your Group Selected
+                  </motion.p>
+                  <motion.p
+                    className='text-5xl font-black uppercase text-center text-white leading-tight tracking-wide rounded-lg bg-[#ff6b00] px-3 py-1 shadow-lg mt-4'
+                    initial={{ rotateY: 90 }}
+                    animate={{ rotateY: 0 }}
+                    transition={{ duration: 0.6, delay: 1.0 }}
+                  >
+                    12
+                  </motion.p>
+                  <motion.p
+                    className='text-2xl text-center text-white leading-tight uppercase font-black mt-4 z-10'
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.7, delay: 1.4 }}
+                  >
+                    unique champions
+                  </motion.p>
+
+                  <motion.p
+                    className='text-xl font-bold text-center text-white leading-tight z-10 mt-[80px]'
+                    initial={{ y: 30, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{
+                      duration: 0.6,
+                      delay: 2.4,
+                      ease: 'easeOut',
+                    }}
+                    whileInView={{
+                      textShadow: [
+                        '0px 0px 0px rgba(255,255,255,0)',
+                        '0px 0px 8px rgba(255,255,255,0.5)',
+                        '0px 0px 0px rgba(255,255,255,0)',
+                      ],
+                    }}
+                    viewport={{ once: true }}
+                  >
+                    Let's take a look at the top picks 🏆
                   </motion.p>
                 </motion.div>
               ) : (
@@ -396,12 +301,14 @@ const GroupTopPicksSlide = () => {
                       exit={contentExitAnimation}
                       transition={{ duration: 0.8 }}
                     >
-                      <TopPicksCard
-                        championPicks={championPicks as TeamPick[]}
-                        teams={teams}
-                        maxBracketCount={maxBracketCount}
-                        animated={true}
-                      />
+                      <StoryCard title={<TopPicksTitle animated={true} />}>
+                        <ChampionBarChart
+                          championPicks={championPicks as TeamPick[]}
+                          teams={teams}
+                          maxBracketCount={maxBracketCount}
+                          animated={true}
+                        />
+                      </StoryCard>
                     </motion.div>
                   ) : (
                     <motion.div
@@ -424,10 +331,17 @@ const GroupTopPicksSlide = () => {
       {/* Shareable Content */}
       <ShareableContent
         shareableRef={shareableRef}
-        championPicks={championPicks as TeamPick[]}
-        teams={teams}
-        maxBracketCount={maxBracketCount}
-      />
+        backgroundGradient='linear-gradient(to bottom right, #0067b1, #000000)'
+      >
+        <StoryCard animated={false} title={<TopPicksTitle animated={false} />}>
+          <ChampionBarChart
+            championPicks={championPicks as TeamPick[]}
+            teams={teams}
+            maxBracketCount={maxBracketCount}
+            animated={false}
+          />
+        </StoryCard>
+      </ShareableContent>
     </div>
   )
 }
@@ -447,9 +361,6 @@ const TopPicksTitle = ({ animated = true }: TopPicksTitleProps) => {
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
         <div className='flex justify-center gap-2'>
-          <span className='text-3xl' role='img' aria-label='trophy'>
-            🏆
-          </span>
           <h2 className='text-4xl font-black text-white tracking-tight leading-none'>
             Champion Picks
           </h2>
@@ -618,65 +529,6 @@ const TeamPickBar = ({
         </motion.div>
       </div>
     </motion.div>
-  )
-}
-
-// Shareable content component
-interface ShareableContentProps {
-  shareableRef: React.RefObject<HTMLDivElement>
-  championPicks: TeamPick[]
-  teams: any
-  maxBracketCount: number
-}
-
-const ShareableContent = ({
-  shareableRef,
-  championPicks,
-  teams,
-  maxBracketCount,
-}: ShareableContentProps) => {
-  return (
-    <div
-      ref={shareableRef}
-      className='relative w-full left-0'
-      // className='relative w-full top-[100svh] left-0'
-      style={{
-        background: 'linear-gradient(to bottom right, #0067b1, #000000)',
-        borderRadius: '12px',
-        padding: '24px',
-      }}
-    >
-      {/* Radial gradient overlay for depth */}
-      <div className='absolute inset-0 bg-radial-gradient from-transparent to-black/40 pointer-events-none' />
-
-      <DecorativeElements />
-
-      {/* Team picks card - now using the reusable component */}
-      <TopPicksCard
-        championPicks={championPicks}
-        teams={teams}
-        maxBracketCount={maxBracketCount}
-        animated={false}
-        withLogo={true}
-      />
-
-      {/* Logo text at bottom */}
-      <div className='flex flex-col items-center justify-center -my-4'>
-        <Image
-          src='/logo.png'
-          alt='BracketWrap Logo'
-          width={64}
-          height={64}
-          className='size-20 object-contain'
-        />
-        <span
-          className='text-white/80 text-[10px] -mt-3'
-          style={{ fontFamily: 'Arial, sans-serif' }}
-        >
-          bracketwrap.com
-        </span>
-      </div>
-    </div>
   )
 }
 

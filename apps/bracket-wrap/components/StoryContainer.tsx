@@ -1,6 +1,6 @@
 'use client'
 
-import { PauseIcon, PlayIcon, VolumeIcon, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import Image from 'next/image'
 import React, { useState } from 'react'
 import { useStoryNavigation } from '../hooks/useStoryNavigation'
@@ -33,13 +33,13 @@ export default function StoryContainer({ children }: StoryContainerProps) {
   }
 
   return (
-    <div className='relative w-full h-svh flex flex-col min-h-svh'>
+    <div className='relative w-full flex flex-col min-h-svh'>
       <StoryProgress />
 
       {/* Top controls bar */}
       <StoryControls handleVolume={handleVolume} handleClose={handleClose} />
 
-      <div className='w-full flex-1 flex items-center justify-center'>{slides[currentSlide]}</div>
+      {slides[currentSlide]}
     </div>
   )
 }
@@ -59,30 +59,16 @@ function StoryControls({
   return (
     <div className='fixed top-2 left-0 right-0 z-20 p-4 flex justify-between items-center'>
       {/* Logo */}
-      <div className='w-10 h-10 rounded-full flex items-center justify-center'>
-        <Image src='/logo.png' alt='Spotify Logo' width={40} height={40} />
-      </div>
+      <Image
+        src='/logo.png'
+        alt='BracketWrap Logo'
+        width={64}
+        height={64}
+        className='size-16 object-contain'
+      />
 
       {/* Controls */}
       <div className='flex items-center gap-4'>
-        {/* Pause/Play button */}
-        <button
-          onClick={togglePause}
-          className='w-10 h-10 flex items-center justify-center text-white'
-          aria-label={isPaused ? 'Play' : 'Pause'}
-        >
-          {isPaused ? <PlayIcon /> : <PauseIcon />}
-        </button>
-
-        {/* Volume button */}
-        <button
-          onClick={handleVolume}
-          className='w-10 h-10 flex items-center justify-center text-white'
-          aria-label='Volume'
-        >
-          <VolumeIcon />
-        </button>
-
         {/* Close button */}
         <button
           onClick={handleClose}

@@ -1,13 +1,26 @@
+import { Team } from '@/app/api/bracket-data'
 import { useBracketSlides, useStory } from '@/components/providers'
 import { CinderellaAnimatedBackground } from '@/components/story-slides/animations/CinderellaAnimatedElements'
+import ShareableContent from '@/components/story-slides/shared/ShareableContent'
+import StoryCard from '@/components/story-slides/shared/StoryCard'
 import StorySlide from '@/components/StorySlide'
 import { useShareContent } from '@/hooks/useShareContent'
 import { useTeams } from '@/hooks/useTeams'
+import { Trophy } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import ShareButton from '../ShareButton'
-import GroupSlideBanner from './GroupSlideBanner'
+
+// Types for our components
+type CinderellaData = Team & {
+  roundReached: string
+  bracketOwner: {
+    name: string
+    avatarUrl: string
+    bracketName: string
+  }
+}
 
 const GroupCinderellaSlide = () => {
   const [data] = useBracketSlides()
@@ -17,24 +30,25 @@ const GroupCinderellaSlide = () => {
   const shareableRef = useRef<HTMLDivElement>(null)
   const { isSharing, shareContent } = useShareContent()
 
-  // Placeholder data - would be replaced with actual data in production
-  const cinderellaData = {
-    team: "Saint Peter's",
-    seed: 15,
-    roundReached: 'Elite Eight',
-    bracketCount: 12, // Number of brackets with this pick
-    teamId: 'a47cb771-c12d-11ee-b568-d9cd047f74cf', // Placeholder ID
-    bracketOwner: {
-      name: 'Sarah Johnson',
-      bracketName: 'March Madness Magic',
-      avatarUrl: 'https://i.pravatar.cc/150?img=5', // Placeholder avatar URL
-    },
-  }
+  const teamData =
+    Object.values(teams ?? {})[Math.floor(Math.random() * Object.values(teams ?? {}).length)] ??
+    ({} as Team)
 
-  // Log when isExiting changes
-  useEffect(() => {
-    console.log('isExiting changed:', isExiting)
-  }, [isExiting])
+  const team = {
+    ...teamData,
+    team: teamData.name,
+    seed: teamData.seed,
+    roundReached: 'Elite Eight',
+    bracketOwner: {
+      name: 'RyanMarcus',
+      avatarUrl:
+        Object.values(teams ?? {})[Math.floor(Math.random() * Object.values(teams ?? {}).length)]
+          ?.images.primary ?? '',
+      bracketName: "RyanMarcus's Pick's 1",
+    },
+    // bracketCount:  ,
+    teamId: teamData.id,
+  }
 
   // State to control when to show the content
   const [showContent, setShowContent] = useState(false)
@@ -44,7 +58,7 @@ const GroupCinderellaSlide = () => {
     if (!showContent) {
       const timer = setTimeout(() => {
         setShowContent(true)
-      }, 3500) // Increased from 2.5s to 4.5s to give more time to read
+      }, 4000) // Show content after 4 seconds, matching the GroupTopPicksSlide timing
 
       return () => clearTimeout(timer)
     }
@@ -58,14 +72,9 @@ const GroupCinderellaSlide = () => {
 
     // Share options
     const shareOptions = {
-      title: `${cinderellaData.team} - The Cinderella Story`,
-      text: `Check out ${cinderellaData.team}, the #${cinderellaData.seed} seed that made it to the ${cinderellaData.roundReached}!`,
+      title: `${team.name} - The Cinderella Story`,
+      text: `Check out ${team.name}, the #${team.seed} seed that made it to the ${team?.roundReached}!`,
       url: 'https://bracketwrap.com',
-      watermark: {
-        text: 'bracketwrap.com',
-        position: 'bottomRight' as const,
-        color: 'rgba(255, 255, 255, 0.7)',
-      },
     }
 
     try {
@@ -92,8 +101,19 @@ const GroupCinderellaSlide = () => {
   return (
     <div className='w-full h-dvh overflow-hidden'>
       <StorySlide
-        bgColor='bg-gradient-to-br from-[#0067b1] via-black to-[#0067b1]'
-        footer={<GroupSlideBanner />}
+        footer={
+          showContent ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              onClick={e => e.stopPropagation()}
+              className='flex justify-center mt-3'
+            >
+              <ShareButton isSharing={isSharing} handleShare={handleShare} />
+            </motion.div>
+          ) : null
+        }
       >
         <div className='relative flex flex-col w-full h-full overflow-hidden'>
           {/* Decorative elements - now appearing first with their own animations */}
@@ -103,40 +123,54 @@ const GroupCinderellaSlide = () => {
           <div className='absolute inset-0 bg-radial-gradient from-transparent to-black/50 pointer-events-none' />
 
           {/* Content container with padding */}
-          <div className='flex flex-col items-center justify-center gap-6 w-full px-4 py-6 flex-1'>
+          <div className='flex flex-col items-center justify-center gap-6 w-full px-8 py-6 flex-1'>
             <AnimatePresence mode='wait'>
               {!showContent ? (
                 <motion.div
                   key='intro'
-                  className='flex flex-col items-center justify-center h-full'
+                  className='flex flex-col items-center justify-center h-full relative'
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0, scale: 0.8, y: -30 }}
-                  transition={{ duration: 0.6 }}
+                  transition={{ duration: 0.8, ease: 'easeOut' }}
                 >
                   <motion.p
-                    className='text-3xl font-black text-center text-white leading-tight uppercase tracking-wide'
-                    initial={{ x: -500, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
+                    className='text-2xl font-black uppercase text-center text-white leading-tight tracking-wide relative z-10'
+                    initial={{ y: -40, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.7, delay: 0.4, ease: 'easeOut' }}
                   >
-                    Every tournament has its
+                    Everyone loves an
                   </motion.p>
+
                   <motion.p
-                    className='text-4xl font-black text-center text-[#ff6b00] leading-tight mt-2 uppercase tracking-wide'
-                    initial={{ x: 500, opacity: 0, scale: 0.9 }}
-                    animate={{ x: 0, opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.6, delay: 0.8 }}
+                    className='text-5xl font-black uppercase text-center text-white leading-tight tracking-wide rounded-lg bg-[#ff6b00] px-3 py-1 shadow-lg mt-4'
+                    initial={{ rotateY: 90 }}
+                    animate={{ rotateY: 0 }}
+                    transition={{ duration: 0.6, delay: 1.0 }}
                   >
-                    UNDERDOGS
+                    Underdog
                   </motion.p>
+
                   <motion.p
-                    className='text-3xl font-black text-center text-white leading-tight mt-6 uppercase tracking-wide'
-                    initial={{ x: -500, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 1.4 }}
+                    className='text-xl font-bold text-center text-white leading-tight z-10 mt-[80px]'
+                    initial={{ y: 30, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{
+                      duration: 0.6,
+                      delay: 2.4,
+                      ease: 'easeOut',
+                    }}
+                    whileInView={{
+                      textShadow: [
+                        '0px 0px 0px rgba(255,255,255,0)',
+                        '0px 0px 8px rgba(255,255,255,0.5)',
+                        '0px 0px 0px rgba(255,255,255,0)',
+                      ],
+                    }}
+                    viewport={{ once: true }}
                   >
-                    Your group's Cinderella story
+                    Let's meet your group's craziest Cinderella Story 👸
                   </motion.p>
                 </motion.div>
               ) : (
@@ -150,26 +184,10 @@ const GroupCinderellaSlide = () => {
                       exit={contentExitAnimation}
                       transition={{ duration: 0.5 }}
                     >
-                      {/* Title with basketball icon and animation */}
-                      <CinderellaTitle />
-
-                      {/* Team Card */}
-                      <TeamCard cinderellaData={cinderellaData} teams={teams} cardRef={cardRef} />
-
-                      {/* Share Button */}
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{
-                          opacity: 1,
-                          y: 20,
-                        }}
-                        transition={{ duration: 0.5, delay: 0.6 }}
-                        className='flex justify-center'
-                        onClick={e => e.stopPropagation()}
-                        data-click='share-container'
-                      >
-                        <ShareButton isSharing={isSharing} handleShare={handleShare} />
-                      </motion.div>
+                      <StoryCard cardRef={cardRef} title={<CinderellaTitle />}>
+                        <TeamInfo cinderellaData={team} />
+                        <BracketOwnerSection bracketOwner={team.bracketOwner} />
+                      </StoryCard>
                     </motion.div>
                   ) : (
                     <motion.div
@@ -190,388 +208,186 @@ const GroupCinderellaSlide = () => {
         </div>
       </StorySlide>
 
-      <ShareableContent shareableRef={shareableRef} cinderellaData={cinderellaData} teams={teams} />
+      <ShareableContent
+        shareableRef={shareableRef}
+        backgroundGradient='linear-gradient(to bottom right, #0067b1, #000000, #0067b1)'
+      >
+        <StoryCard title={<CinderellaTitle />}>
+          <TeamInfo cinderellaData={team} />
+          <BracketOwnerSection bracketOwner={team.bracketOwner} />
+        </StoryCard>
+      </ShareableContent>
     </div>
   )
 }
 
 // Animation elements configuration
 const animationElements = {
-  brackets: [
-    // Bracket 1 - Top right
-    {
-      top: '15%',
-      right: '10%',
-      size: '7',
-      opacity: 0.8,
-      rotateDirection: 'clockwise',
-      color: 'blue',
-      bracketType: 'right',
-    },
-    // Bracket 2 - Bottom left
-    {
-      bottom: '10%',
-      left: '5%',
-      size: '7',
-      opacity: 0.7,
-      rotateDirection: 'counterclockwise',
-      color: 'blue',
-      bracketType: 'left',
-    },
-    // Bracket 3 - Top left
-    {
-      top: '8%',
-      left: '8%',
-      size: '6',
-      opacity: 0.6,
-      color: 'blue',
-      bracketType: 'left',
-    },
-    // Bracket 4 - Bottom right
-    {
-      bottom: '12%',
-      right: '8%',
-      size: '6',
-      opacity: 0.6,
-      color: 'blue',
-      bracketType: 'right',
-    },
-    // Full bracket - center background (larger, more subtle)
-    {
-      top: '30%',
-      left: '40%',
-      size: '14',
-      opacity: 0.15,
-      color: 'blue',
-      bracketType: 'full',
-    },
-  ],
-  basketballs: [
-    // Basketball 1 - Top
-    {
-      top: '12%',
-      left: '30%',
-      size: '3.5',
-      opacity: 0.7,
-      bounceHeight: 'low',
-    },
-    // Basketball 2 - Bottom
-    {
-      bottom: '15%',
-      right: '35%',
-      size: '4',
-      opacity: 0.8,
-      bounceHeight: 'medium',
-    },
-    // Basketball 3 - Side
-    {
-      top: '40%',
-      right: '12%',
-      size: '3',
-      opacity: 0.6,
-      bounceHeight: 'low',
-    },
-  ],
-  ncaaLogos: [
-    // NCAA Logo 1
-    {
-      top: '8%',
-      right: '42%',
-      size: 'sm',
-      opacity: 0.3,
-      pulseEffect: true,
-    },
-    // NCAA Logo 2
-    {
-      bottom: '10%',
-      left: '35%',
-      size: 'sm',
-      opacity: 0.3,
-      pulseEffect: true,
-    },
-  ],
   flashes: [
     // Flash effect 1
-    { top: '20%', left: '20%', size: '100px', color: 'blue', opacity: 0.3, speed: 'medium' },
-    { top: '50%', right: '15%', size: '80px', color: 'white', opacity: 0.2, speed: 'fast' },
-    { bottom: '30%', left: '10%', size: '120px', color: 'blue', opacity: 0.3, speed: 'slow' },
-    { bottom: '40%', right: '25%', size: '90px', color: 'white', opacity: 0.2, speed: 'medium' },
+    { top: '15%', left: '20%', size: '100px', color: 'blue', opacity: 0.3, speed: 'medium' },
+    { top: '10%', right: '10%', size: '80px', color: 'white', opacity: 0.2, speed: 'fast' },
+    { bottom: '10%', left: '10%', size: '120px', color: 'blue', opacity: 0.3, speed: 'slow' },
+    { bottom: '10%', right: '10%', size: '90px', color: 'white', opacity: 0.2, speed: 'medium' },
   ],
 }
 
-// Types for our components
-interface CinderellaData {
-  team: string
-  seed: number
-  roundReached: string
-  bracketCount: number
-  teamId: string
-  bracketOwner: {
-    name: string
-    avatarUrl: string
-    bracketName: string
-  }
-}
-
-interface TeamCardProps {
+interface TeamInfoProps {
   cinderellaData: CinderellaData
-  teams: any
-  animated?: boolean
-  cardRef?: React.RefObject<HTMLDivElement>
+  // teams: any
 }
 
 interface BracketOwnerSectionProps {
   bracketOwner: CinderellaData['bracketOwner']
-  animated?: boolean
 }
 
-// Reusable TeamCard component
-const TeamCard: React.FC<TeamCardProps> = ({ cinderellaData, teams, animated = true, cardRef }) => {
+// TeamInfo component
+const TeamInfo: React.FC<TeamInfoProps> = ({ cinderellaData }) => {
+  // Get the team's primary color or use a default color
+  const primaryColor = cinderellaData.colors.primary
+  const secondaryColor = cinderellaData.colors.secondary
+
   return (
     <motion.div
-      ref={cardRef}
-      className='w-full bg-black/60 backdrop-blur-md rounded-xl p-6 shadow-lg border-l-4 border-[#0067b1] mb-4'
-      initial={{ opacity: 0, y: 20 }}
-      animate={animated ? { opacity: 1, y: 0, x: [-5, 5, -5, 5, 0] } : { opacity: 1, y: 0 }}
-      transition={{
-        duration: animated ? 0.8 : 0.5,
-        x: {
-          duration: 0.5,
-          times: [0, 0.25, 0.5, 0.75, 1],
-          ease: 'easeOut',
-          delay: 0.1,
-        },
-      }}
+      className='flex items-center gap-4 mt-8 mb-6'
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.7 }}
     >
-      {/* Team Information Section */}
-      <div className='flex items-center gap-4 mb-6'>
-        <div className='flex-shrink-0 flex flex-col items-center gap-2'>
-          {/* Seed */}
-          <motion.div
-            className='w-10 h-10 rounded-md bg-[#0067b1] flex items-center justify-center text-white font-black text-lg border-2 border-white/80'
-            animate={animated ? { rotate: [-3, 3, -3] } : {}}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          >
-            {cinderellaData.seed}
-          </motion.div>
+      {/* Team Logo with enhanced rotation and bounce animation */}
+      <motion.div
+        className='flex-shrink-0 w-16 h-16 rounded-md overflow-hidden bg-white flex items-center justify-center border'
+        initial={{ opacity: 0, rotate: -15, scale: 0.8 }}
+        animate={{ opacity: 1, rotate: 0, scale: 1 }}
+        transition={{
+          duration: 0.6,
+          delay: 0.3,
+          scale: { type: 'spring', stiffness: 300, damping: 15 },
+          rotate: { type: 'spring', stiffness: 200, damping: 10 },
+        }}
+        style={{ backgroundColor: primaryColor, borderColor: 'white' }}
+      >
+        <Image
+          src={cinderellaData.images.secondary || '/placeholder-team.png'}
+          alt={cinderellaData.name}
+          width={48}
+          height={48}
+          className='w-12 h-12 object-contain'
+        />
+      </motion.div>
 
-          {/* Team Logo */}
-          <motion.div
-            className='w-12 h-12 rounded-md overflow-hidden bg-white flex items-center justify-center'
-            animate={animated ? { rotate: [0, 2, 0, -2, 0] } : {}}
+      {/* Team Name and Details with staggered animations */}
+      <div className='flex-1 min-w-0'>
+        <motion.h3
+          className='text-3xl font-black text-white tracking-tight'
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          {cinderellaData.name}
+        </motion.h3>
+        <div className='flex items-center gap-2 mt-0'>
+          {/* Region with seed in parentheses */}
+          <motion.span
+            className='bg-madness-blue px-3 py-1 rounded text-white font-black uppercase text-sm tracking-wide'
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: 'easeInOut',
+              duration: 0.4,
+              delay: 0.7,
+              type: 'spring',
+              stiffness: 300,
             }}
+            style={{ backgroundColor: primaryColor }}
           >
-            <Image
-              src={teams?.[cinderellaData.teamId]?.images.secondary || '/placeholder-team.png'}
-              alt={cinderellaData.team}
-              width={40}
-              height={40}
-              className='w-10 h-10 object-contain'
-            />
-          </motion.div>
-        </div>
+            {cinderellaData.seed} SEED
+          </motion.span>
 
-        {/* Team Name and Round */}
-        <div className='flex-1 min-w-0'>
-          <h3 className='text-3xl font-black text-white uppercase tracking-tight'>
-            {cinderellaData.team}
-          </h3>
-          <div className='flex items-center gap-2 mt-2'>
-            <span className='bg-[#ff6b00] px-3 py-1 rounded text-white font-black uppercase text-sm tracking-wide'>
-              {cinderellaData.roundReached}
-            </span>
-          </div>
+          {/* Round Reached with pulsing highlight */}
+          <motion.span
+            className='px-3 py-1 rounded font-black uppercase text-sm tracking-wide'
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+            }}
+            transition={{
+              duration: 0.4,
+              delay: 0.9,
+              type: 'spring',
+              stiffness: 300,
+            }}
+            style={{ backgroundColor: primaryColor }}
+          >
+            {cinderellaData.roundReached}
+          </motion.span>
         </div>
       </div>
-
-      {/* Bracket Owner Section */}
-      <BracketOwnerSection bracketOwner={cinderellaData.bracketOwner} animated={animated} />
     </motion.div>
   )
 }
 
 // Reusable BracketOwnerSection component
-const BracketOwnerSection: React.FC<BracketOwnerSectionProps> = ({
-  bracketOwner,
-  animated = true,
-}) => {
-  return (
-    <div className='pt-4 border-t border-[#0067b1]/50'>
-      <h4 className='text-lg font-black text-white/90 mb-3 uppercase tracking-wide'>
-        Bracket Owner
-      </h4>
-      <div className='flex items-center gap-4'>
-        <motion.div
-          className='flex-shrink-0 w-14 h-14 rounded-md overflow-hidden border-2 border-[#0067b1] bg-white/10 flex items-center justify-center text-white'
-          animate={animated ? { scale: [1, 1.05, 1], rotate: [0, 5, 0, -5, 0] } : {}}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        >
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            fill='currentColor'
-            className='w-8 h-8'
-          >
-            <path
-              fillRule='evenodd'
-              d='M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z'
-              clipRule='evenodd'
-            />
-          </svg>
-        </motion.div>
-        <div className='flex-1 min-w-0'>
-          <p className='font-black text-xl text-white truncate'>{bracketOwner.name}</p>
-          <p className='text-[#ff6b00] truncate font-bold'>{bracketOwner.bracketName}</p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// Reusable Title component
-const CinderellaTitle: React.FC<{ animated?: boolean }> = ({ animated = true }) => {
+const BracketOwnerSection: React.FC<BracketOwnerSectionProps> = ({ bracketOwner }) => {
   return (
     <motion.div
-      className='mb-6 text-center'
-      initial={{ y: -20, opacity: 0 }}
-      animate={
-        animated
-          ? {
-              y: 0,
-              opacity: 1,
-            }
-          : { y: 0, opacity: 1 }
-      }
-      transition={{
-        duration: 0.5,
-        ease: 'easeOut',
-      }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.5 }}
     >
-      <motion.div
-        className='inline-block mb-3'
-        animate={
-          animated
-            ? {
-                rotate: [0, -10, 10, -5, 5, 0],
-                scale: [1, 1.3, 1.3, 1.2, 1.2, 1],
-              }
-            : {}
-        }
-        transition={{
-          duration: 1.2,
-          ease: 'easeInOut',
-          times: [0, 0.2, 0.4, 0.6, 0.8, 1],
-        }}
-      >
-        <span className='text-5xl' role='img' aria-label='basketball'>
-          👸
-        </span>
-      </motion.div>
-      <h2 className='text-4xl font-black text-white uppercase tracking-tighter'>
-        CINDERELLA STORY
-      </h2>
-      <div className='h-1 w-32 bg-[#ff6b00] mx-auto mt-2'></div>
+      <div className='pt-2 pb-2 border-white/20'>
+        <h4 className='text-sm font-black text-white/60 mb-1 uppercase tracking-wide'>
+          Selected By:
+        </h4>
+        <div className='flex items-center gap-4'>
+          <div className='flex-1 flex items-center gap-x-2'>
+            <Trophy className='h-5 w-5 text-madness-orange' />
+            <div className='flex flex-col gap-x-2'>
+              <p className='font-black text-lg text-white truncate'>{bracketOwner.bracketName}</p>
+              <p className='text-white/60 truncate font-bold text-sm'>{bracketOwner.name}</p>
+            </div>
+          </div>
+          <Image
+            src={bracketOwner.avatarUrl}
+            alt={bracketOwner.name}
+            width={36}
+            height={36}
+            className='w-9 h-9 object-cover rounded-lg border bg-white p-[1px]'
+          />
+        </div>
+      </div>
     </motion.div>
   )
 }
 
-// Reusable decorative elements component
-export const DecorativeElements: React.FC = () => {
+// Reusable Title component
+const CinderellaTitle: React.FC = () => {
   return (
-    <div className='absolute inset-0 overflow-hidden pointer-events-none'>
-      {/* Brackets */}
-      <div className='absolute top-[2%] right-[5%] opacity-70 text-4xl'>
-        <Image
-          src='/bracket.png'
-          alt='March Madness bracket'
-          width={100}
-          height={100}
-          className='w-full h-full object-contain'
-        />
-      </div>
-
-      {/* Basketball */}
-      <div className='absolute top-[15%] left-[10%] opacity-70 text-4xl'>
-        <span role='img' aria-label='basketball'>
-          🏀
-        </span>
-      </div>
-
-      <div className='absolute bottom-[25%] right-[15%] opacity-60 text-3xl'>
-        <span role='img' aria-label='basketball'>
-          🏀
-        </span>
-      </div>
-
-      {/* NCAA Logo */}
-      <div className='absolute bottom-[20%] right-[25%] opacity-40'>
-        <svg width='20' height='20' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'>
-          <circle cx='50' cy='50' r='45' fill='#0067b1' />
-          <text
-            x='50'
-            y='57'
-            fontFamily='Arial, sans-serif'
-            fontSize='20'
-            fontWeight='bold'
-            fill='white'
-            textAnchor='middle'
-          >
-            NCAA
-          </text>
-        </svg>
-      </div>
-    </div>
-  )
-}
-
-const ShareableContent = ({
-  shareableRef,
-  cinderellaData,
-  teams,
-}: {
-  shareableRef: React.RefObject<HTMLDivElement>
-  cinderellaData: CinderellaData
-  teams: any
-}) => {
-  return (
-    <div
-      ref={shareableRef}
-      className='relative w-full top-0 left-0 pointer-events-none overflow-hidden'
-      style={{
-        background: 'linear-gradient(to bottom right, #0067b1, #000000, #0067b1)',
-        borderRadius: '12px',
-        padding: '24px',
-      }}
+    <motion.div
+      className='text-center'
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
     >
-      {/* Decorative elements */}
-      <DecorativeElements />
-
-      {/* Radial gradient overlay for depth */}
-      <div className='absolute inset-0 bg-radial-gradient from-transparent to-black/40 pointer-events-none' />
-
-      {/* Title with emoji */}
-      <div className='relative mb-8 text-center'>
-        <CinderellaTitle animated={false} />
+      <div className='flex justify-center gap-2'>
+        <h2 className='text-4xl font-black text-white tracking-tight leading-none'>
+          Cinderella Story
+        </h2>
+        <span className='text-3xl' role='img' aria-label='trophy'>
+          👸
+        </span>
       </div>
-
-      {/* Team Card - using our reusable component */}
-      <TeamCard cinderellaData={cinderellaData} teams={teams} animated={false} />
-
-      {/* Group name banner at top */}
-      <GroupSlideBanner />
-    </div>
+      <motion.div
+        className='h-1 bg-cinderella mx-auto mt-2 bg-madness-orange'
+        initial={{ width: 0 }}
+        animate={{ width: '16rem' }}
+        transition={{
+          duration: 0.8,
+          delay: 0.3,
+          ease: 'easeOut',
+        }}
+      />
+    </motion.div>
   )
 }
 
