@@ -53,7 +53,7 @@ const GroupChalkScoreSlide = ({ groupId }: GroupChalkScoreSlideProps) => {
   return (
     <StorySlide
       bgColor='bg-gradient-to-br from-slate-900 to-emerald-900'
-      footer={<GroupSlideBanner groupName={groupInfo.name} memberCount={groupInfo.memberCount} />}
+      footer={<GroupSlideBanner />}
     >
       <div className='flex flex-col w-full h-full'>
         {/* Content container with padding */}

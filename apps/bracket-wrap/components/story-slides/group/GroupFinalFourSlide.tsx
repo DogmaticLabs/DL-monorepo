@@ -70,7 +70,7 @@ const GroupFinalFourSlide = ({ groupId }: GroupFinalFourSlideProps) => {
   return (
     <StorySlide
       bgColor='bg-gradient-to-br from-purple-900 to-blue-900'
-      footer={<GroupSlideBanner groupName={groupInfo.name} memberCount={groupInfo.memberCount} />}
+      footer={<GroupSlideBanner />}
     >
       <div className='flex flex-col w-full h-full'>
         {/* Content container with padding */}

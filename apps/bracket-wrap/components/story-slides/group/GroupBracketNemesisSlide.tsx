@@ -50,7 +50,7 @@ const GroupBracketNemesisSlide = ({ groupId }: GroupBracketNemesisProps) => {
   return (
     <StorySlide
       bgColor='bg-gradient-to-br from-red-900 to-orange-800'
-      footer={<GroupSlideBanner groupName={groupInfo.name} memberCount={groupInfo.memberCount} />}
+      footer={<GroupSlideBanner />}
     >
       <div className='flex flex-col w-full h-full'>
         {/* Content container with padding */}
