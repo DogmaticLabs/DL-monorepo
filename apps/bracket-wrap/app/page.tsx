@@ -28,7 +28,7 @@ import PageState from './page-state'
 
 export default function Page({ searchParams }: { searchParams: Promise<{ mode: string }> }) {
   const unwrappedParams = use(searchParams)
-  const [pageState, setPageState] = useState<PageState>(PageState.StorySequence)
+  const [pageState, setPageState] = useState<PageState>(PageState.LandingPage)
 
   return (
     <SearchParamsProvider params={unwrappedParams}>
