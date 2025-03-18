@@ -1,3 +1,4 @@
+import { TeamMap } from '@/app/api/bracket-data'
 import { useBracketSlides, useStory } from '@/components/providers'
 import ShareableContent from '@/components/story-slides/shared/ShareableContent'
 import StoryCard from '@/components/story-slides/shared/StoryCard'
@@ -7,7 +8,6 @@ import { useTeams } from '@/hooks/useTeams'
 import { AnimatePresence, motion } from 'motion/react'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
-import { CinderellaAnimatedBackground } from '../animations/CinderellaAnimatedElements'
 import ShareButton from '../ShareButton'
 
 // Define the type for team pick
@@ -32,43 +32,18 @@ interface TeamPick {
 // Bar Chart Display component
 interface ChampionBarChartProps {
   championPicks: TeamPick[]
-  teams: any
+  teams: TeamMap
   maxBracketCount: number
-  animated?: boolean
 }
 
-const ChampionBarChart = ({
-  championPicks,
-  teams,
-  maxBracketCount,
-  animated = true,
-}: ChampionBarChartProps) => {
-  if (animated) {
-    return (
-      <motion.div
-        className='w-full py-4'
-        initial={{ y: 30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-      >
-        <div className='flex justify-center items-end gap-4'>
-          {championPicks.map((pick, idx) => (
-            <TeamPickBar
-              key={idx}
-              pick={pick}
-              index={idx}
-              teams={teams}
-              maxBracketCount={maxBracketCount}
-              animated={animated}
-            />
-          ))}
-        </div>
-      </motion.div>
-    )
-  }
-
+const ChampionBarChart = ({ championPicks, teams, maxBracketCount }: ChampionBarChartProps) => {
   return (
-    <div className='w-full py-4'>
+    <motion.div
+      className='w-full py-4'
+      initial={{ y: 30, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, delay: 0.4 }}
+    >
       <div className='flex justify-center items-end gap-4'>
         {championPicks.map((pick, idx) => (
           <TeamPickBar
@@ -77,11 +52,10 @@ const ChampionBarChart = ({
             index={idx}
             teams={teams}
             maxBracketCount={maxBracketCount}
-            animated={animated}
           />
         ))}
       </div>
-    </div>
+    </motion.div>
   )
 }
 
@@ -181,7 +155,7 @@ const GroupTopPicksSlide = () => {
     opacity: 0,
     y: -80,
     scale: 0.8,
-    transition: { duration: 0.7, ease: 'easeOut' },
+    transition: { duration: 0.4, ease: 'easeOut' },
   }
 
   // Handle share functionality
@@ -230,7 +204,7 @@ const GroupTopPicksSlide = () => {
       >
         <div className='relative flex flex-col w-full h-full overflow-hidden'>
           {/* Decorative elements */}
-          <CinderellaAnimatedBackground isExiting={isExiting} elements={animationElements as any} />
+          {/* <CinderellaAnimatedBackground isExiting={isExiting} elements={animationElements as any} /> */}
 
           {/* Radial gradient overlay for depth */}
           <div className='absolute inset-0 bg-radial-gradient from-transparent to-black/50 pointer-events-none' />
@@ -248,12 +222,12 @@ const GroupTopPicksSlide = () => {
                   transition={{ duration: 0.8, ease: 'easeOut' }}
                 >
                   <motion.p
-                    className='text-3xl font-black uppercase text-center text-white leading-tight tracking-wide relative z-10'
+                    className='text-3xl font-black text-center text-white leading-tight tracking-wide relative z-10'
                     initial={{ y: -40, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.7, delay: 0.4, ease: 'easeOut' }}
                   >
-                    Your Group Selected
+                    Your group selected
                   </motion.p>
                   <motion.p
                     className='text-5xl font-black uppercase text-center text-white leading-tight tracking-wide rounded-lg bg-[#ff6b00] px-3 py-1 shadow-lg mt-4'
@@ -264,7 +238,7 @@ const GroupTopPicksSlide = () => {
                     12
                   </motion.p>
                   <motion.p
-                    className='text-2xl text-center text-white leading-tight uppercase font-black mt-4 z-10'
+                    className='text-3xl text-center text-white leading-tight font-black mt-4 z-10'
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.7, delay: 1.4 }}
@@ -302,14 +276,13 @@ const GroupTopPicksSlide = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={contentExitAnimation}
-                      transition={{ duration: 0.8 }}
+                      transition={{ duration: 0.5 }}
                     >
-                      <StoryCard title={<TopPicksTitle animated={true} />}>
+                      <StoryCard title={<TopPicksTitle />}>
                         <ChampionBarChart
                           championPicks={championPicks as TeamPick[]}
                           teams={teams}
                           maxBracketCount={maxBracketCount}
-                          animated={true}
                         />
                       </StoryCard>
                     </motion.div>
@@ -319,7 +292,7 @@ const GroupTopPicksSlide = () => {
                       className='w-full'
                       initial={{ opacity: 1 }}
                       animate={contentExitAnimation}
-                      transition={{ duration: 0.7, ease: 'easeOut' }}
+                      transition={{ duration: 0.4, ease: 'easeOut' }}
                     >
                       {/* Content is exiting - this is a placeholder that will animate out */}
                       <div className='opacity-0'>Content exiting</div>
@@ -336,12 +309,11 @@ const GroupTopPicksSlide = () => {
         shareableRef={shareableRef}
         backgroundGradient='linear-gradient(to bottom right, #0067b1, #000000)'
       >
-        <StoryCard animated={false} title={<TopPicksTitle animated={false} />}>
+        <StoryCard animated={false} title={<TopPicksTitle />}>
           <ChampionBarChart
             championPicks={championPicks as TeamPick[]}
             teams={teams}
             maxBracketCount={maxBracketCount}
-            animated={false}
           />
         </StoryCard>
       </ShareableContent>
@@ -349,48 +321,15 @@ const GroupTopPicksSlide = () => {
   )
 }
 
-// Reusable Title component
-interface TopPicksTitleProps {
-  animated?: boolean
-}
-
-const TopPicksTitle = ({ animated = true }: TopPicksTitleProps) => {
-  if (animated) {
-    return (
-      <motion.div
-        className='text-center mb-4'
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-      >
-        <div className='flex justify-center gap-2'>
-          <h2 className='text-4xl font-black text-white tracking-tight leading-none'>
-            Champion Picks
-          </h2>
-          <span className='text-3xl' role='img' aria-label='trophy'>
-            🏆
-          </span>
-        </div>
-        <motion.div
-          className='h-1 bg-[#ff6b00] mx-auto mt-4'
-          initial={{ width: 0 }}
-          animate={{ width: '16rem' }} // 8rem = 32px (w-32)
-          transition={{
-            duration: 0.8,
-            delay: 0.3,
-            ease: 'easeOut',
-          }}
-        ></motion.div>
-      </motion.div>
-    )
-  }
-
+const TopPicksTitle = () => {
   return (
-    <div className='text-center mb-4'>
+    <motion.div
+      className='text-center mb-4'
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+    >
       <div className='flex justify-center gap-2'>
-        <span className='text-3xl' role='img' aria-label='trophy'>
-          🏆
-        </span>
         <h2 className='text-4xl font-black text-white tracking-tight leading-none'>
           Champion Picks
         </h2>
@@ -398,8 +337,17 @@ const TopPicksTitle = ({ animated = true }: TopPicksTitleProps) => {
           🏆
         </span>
       </div>
-      <div className='h-1 bg-[#ff6b00] mx-auto mt-4 w-64'></div>
-    </div>
+      <motion.div
+        className='h-1 bg-madness-orange mx-auto mt-4'
+        initial={{ width: 0 }}
+        animate={{ width: '19rem' }} // 8rem = 32px (w-32)
+        transition={{
+          duration: 0.8,
+          delay: 0.3,
+          ease: 'easeOut',
+        }}
+      />
+    </motion.div>
   )
 }
 
@@ -407,18 +355,11 @@ const TopPicksTitle = ({ animated = true }: TopPicksTitleProps) => {
 interface TeamPickBarProps {
   pick: TeamPick
   index: number
-  teams: any
+  teams: TeamMap
   maxBracketCount: number
-  animated?: boolean
 }
 
-const TeamPickBar = ({
-  pick,
-  index,
-  teams,
-  maxBracketCount,
-  animated = true,
-}: TeamPickBarProps) => {
+const TeamPickBar = ({ pick, index, teams, maxBracketCount }: TeamPickBarProps) => {
   // Set a fixed height for the tallest bar (in pixels) and scale others proportionally
   const maxBarHeight = 200 // Height in pixels for the bar with most picks
   const barHeight = Math.max((pick.bracketCount / maxBracketCount) * maxBarHeight, 60) // Minimum 60px height
@@ -428,25 +369,21 @@ const TeamPickBar = ({
   return (
     <motion.div
       className='flex flex-col items-center'
-      initial={animated ? { y: 100, opacity: 0 } : { y: 0, opacity: 1 }}
+      initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={
-        animated
-          ? {
-              type: 'spring',
-              stiffness: 100,
-              damping: 15,
-              delay: 0.3,
-            }
-          : { duration: 0 }
-      }
+      transition={{
+        type: 'spring',
+        stiffness: 100,
+        damping: 15,
+        delay: 0.3,
+      }}
     >
       {/* Pick Count */}
       <motion.div
         className='text-xl font-black text-white mb-3 flex flex-col items-center gap-0'
-        initial={animated ? { opacity: 0 } : { opacity: 1 }}
+        initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={animated ? { duration: 0.5, delay: 0.7 + index * 0.2 } : { duration: 0 }}
+        transition={{ duration: 0.5, delay: 0.7 + index * 0.2 }}
       >
         <div className='text-2xl leading-none h-5'>{pick.bracketCount}</div>
         <div className='text-[10px] h-4 text-white/80'>
@@ -458,39 +395,32 @@ const TeamPickBar = ({
       <div className='relative'>
         {/* Main Bar with Gradient using team colors */}
         <motion.div
-          className='w-24 rounded-lg flex items-center justify-center relative'
+          className='w-24 rounded-lg flex items-center justify-center relative border border-white/15'
           style={{
-            height: animated ? 0 : `${barHeight}px`,
+            height: 0,
             background: `linear-gradient(to top, ${primaryColor} 0%, ${primaryColor}dd 70%, ${primaryColor}aa 100%)`,
-            boxShadow: `0 4px 12px rgba(0,0,0,0.25), 0 0 0 2px ${primaryColor}33`,
+            // boxShadow: `0 4px 12px rgba(0,0,0,0.25), 0 0 0 2px ${primaryColor}33`,
+            // border: `1px solid `,
           }}
-          initial={animated ? { height: 0 } : { height: `${barHeight}px` }}
+          initial={{ height: 0 }}
           animate={{ height: `${barHeight}px` }}
-          transition={
-            animated
-              ? {
-                  duration: 1.2,
-                  delay: 0.5 + index * 0.2,
-                  ease: 'easeOut',
-                }
-              : { duration: 0 }
-          }
+          transition={{
+            duration: 1.2,
+            delay: 0.5 + index * 0.2,
+            ease: 'easeOut',
+          }}
         >
           {/* Team Logo Container */}
           <motion.div
             className='absolute transform -translate-x-1/2 -translate-y-1/2'
-            initial={animated ? { scale: 0 } : { scale: 1 }}
+            initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={
-              animated
-                ? {
-                    type: 'spring',
-                    stiffness: 300,
-                    damping: 20,
-                    delay: 1.0 + index * 0.2,
-                  }
-                : { duration: 0 }
-            }
+            transition={{
+              type: 'spring',
+              stiffness: 300,
+              damping: 20,
+              delay: 1.0 + index * 0.2,
+            }}
           >
             <div className='w-16 h-16 rounded-lg flex items-center justify-center'>
               <Image
@@ -519,9 +449,9 @@ const TeamPickBar = ({
         {/* Team Name */}
         <motion.div
           className='mt-4 text-center flex flex-col items-center gap-0'
-          initial={animated ? { opacity: 0 } : { opacity: 1 }}
+          initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={animated ? { duration: 0.5, delay: 1.2 + index * 0.2 } : { duration: 0 }}
+          transition={{ duration: 0.5, delay: 1.2 + index * 0.2 }}
         >
           <p className='text-white font-bold text-sm max-w-[96px] overflow-hidden text-ellipsis whitespace-nowrap'>
             {pick.name}

@@ -14,6 +14,9 @@ const config: Config = {
         'madness-orange': '#ff6b00',
         'madness-blue': '#0067b1',
       },
+      animation: {
+        'fade-in': 'fadeIn 1s forwards',
+      },
     },
   },
 }

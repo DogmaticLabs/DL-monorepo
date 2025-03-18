@@ -117,7 +117,7 @@ export function StoryProvider({ children }: { children: ReactNode }) {
       setTimeout(() => {
         setCurrentSlide(currentSlide + 1)
         setIsExiting(false)
-      }, 800) // Match this with your exit animation duration
+      }, 500) // Match this with your exit animation duration
     }
   }
 

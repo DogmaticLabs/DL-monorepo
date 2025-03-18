@@ -24,7 +24,7 @@ export default function Page({ searchParams }: { searchParams: Promise<{ mode: s
 
   return (
     <SearchParamsProvider params={unwrappedParams}>
-      <div id='app-content' className='relative w-full flex flex-col bg-[#1e293b]'>
+      <div id='app-content' className='relative w-full flex flex-col bg-[#1d3253]'>
         <AnimatePresence mode='wait'>
           {pageState === PageState.LandingPage && (
             // Landing page with MainStorySlide

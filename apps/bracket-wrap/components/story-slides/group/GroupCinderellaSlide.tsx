@@ -135,7 +135,7 @@ const GroupCinderellaSlide = () => {
                   transition={{ duration: 0.8, ease: 'easeOut' }}
                 >
                   <motion.p
-                    className='text-2xl font-black uppercase text-center text-white leading-tight tracking-wide relative z-10'
+                    className='text-3xl font-black text-center text-white leading-tight tracking-wide relative z-10'
                     initial={{ y: -40, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.7, delay: 0.4, ease: 'easeOut' }}
@@ -212,7 +212,7 @@ const GroupCinderellaSlide = () => {
         shareableRef={shareableRef}
         backgroundGradient='linear-gradient(to bottom right, #0067b1, #000000, #0067b1)'
       >
-        <StoryCard title={<CinderellaTitle />}>
+        <StoryCard title={<CinderellaTitle />} animated={false}>
           <TeamInfo cinderellaData={team} />
           <BracketOwnerSection bracketOwner={team.bracketOwner} />
         </StoryCard>
@@ -223,13 +223,13 @@ const GroupCinderellaSlide = () => {
 
 // Animation elements configuration
 const animationElements = {
-  flashes: [
-    // Flash effect 1
-    { top: '15%', left: '20%', size: '100px', color: 'blue', opacity: 0.3, speed: 'medium' },
-    { top: '10%', right: '10%', size: '80px', color: 'white', opacity: 0.2, speed: 'fast' },
-    { bottom: '10%', left: '10%', size: '120px', color: 'blue', opacity: 0.3, speed: 'slow' },
-    { bottom: '10%', right: '10%', size: '90px', color: 'white', opacity: 0.2, speed: 'medium' },
-  ],
+  // flashes: [
+  //   // Flash effect 1
+  //   { top: '15%', left: '20%', size: '100px', color: 'blue', opacity: 0.3, speed: 'medium' },
+  //   { top: '10%', right: '10%', size: '80px', color: 'white', opacity: 0.2, speed: 'fast' },
+  //   { bottom: '10%', left: '10%', size: '120px', color: 'blue', opacity: 0.3, speed: 'slow' },
+  //   { bottom: '10%', right: '10%', size: '90px', color: 'white', opacity: 0.2, speed: 'medium' },
+  // ],
 }
 
 interface TeamInfoProps {
