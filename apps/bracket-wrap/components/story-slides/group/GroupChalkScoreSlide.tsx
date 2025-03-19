@@ -227,7 +227,7 @@ const GroupChalkScoreSlide = ({ groupId }: GroupChalkScoreSlideProps) => {
                     }}
                     viewport={{ once: true }}
                   >
-                    Let's see who stuck to the script and who's taking a gamble? 🎲
+                    Let's see who stuck to the script and who's taking a gamble. 🎲
                   </motion.p>
                 </motion.div>
               ) : (
