@@ -11,6 +11,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import ShareButton from '../ShareButton'
+import TeamInfo from '../shared/TeamInfo'
 
 // Types for our components
 type CinderellaData = Team & {
@@ -147,7 +148,7 @@ const GroupCinderellaSlide = () => {
                     className='text-5xl font-black uppercase text-center text-white leading-tight tracking-wide rounded-lg bg-[#ff6b00] px-3 py-1 shadow-lg mt-4'
                     initial={{ rotateY: 90 }}
                     animate={{ rotateY: 0 }}
-                    transition={{ duration: 0.6, delay: 1.0 }}
+                    transition={{ duration: 0.6, delay: 0.8 }}
                   >
                     Underdog
                   </motion.p>
@@ -158,7 +159,7 @@ const GroupCinderellaSlide = () => {
                     animate={{ y: 0, opacity: 1 }}
                     transition={{
                       duration: 0.6,
-                      delay: 2.4,
+                      delay: 1.8,
                       ease: 'easeOut',
                     }}
                     whileInView={{
@@ -185,7 +186,7 @@ const GroupCinderellaSlide = () => {
                       transition={{ duration: 0.5 }}
                     >
                       <StoryCard cardRef={cardRef} title={<CinderellaTitle />}>
-                        <TeamInfo cinderellaData={team} />
+                        <TeamInfo team={team} tags={[team.roundReached]} className='mb-6 mt-8' />
                         <BracketOwnerSection bracketOwner={team.bracketOwner} />
                       </StoryCard>
                     </motion.div>
@@ -213,7 +214,7 @@ const GroupCinderellaSlide = () => {
         backgroundGradient='linear-gradient(to bottom right, #0067b1, #000000, #0067b1)'
       >
         <StoryCard title={<CinderellaTitle />} animated={false}>
-          <TeamInfo cinderellaData={team} />
+          <TeamInfo team={team} tags={[team.seed?.toString() + ' SEED', team.roundReached]} />
           <BracketOwnerSection bracketOwner={team.bracketOwner} />
         </StoryCard>
       </ShareableContent>
@@ -242,90 +243,6 @@ interface BracketOwnerSectionProps {
 }
 
 // TeamInfo component
-const TeamInfo: React.FC<TeamInfoProps> = ({ cinderellaData }) => {
-  // Get the team's primary color or use a default color
-  const primaryColor = cinderellaData.colors.primary
-  const secondaryColor = cinderellaData.colors.secondary
-
-  return (
-    <motion.div
-      className='flex items-center gap-4 mt-8 mb-6'
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.7 }}
-    >
-      {/* Team Logo with enhanced rotation and bounce animation */}
-      <motion.div
-        className='flex-shrink-0 w-16 h-16 rounded-md overflow-hidden bg-white flex items-center justify-center border'
-        initial={{ opacity: 0, rotate: -15, scale: 0.8 }}
-        animate={{ opacity: 1, rotate: 0, scale: 1 }}
-        transition={{
-          duration: 0.6,
-          delay: 0.3,
-          scale: { type: 'spring', stiffness: 300, damping: 15 },
-          rotate: { type: 'spring', stiffness: 200, damping: 10 },
-        }}
-        style={{ backgroundColor: primaryColor, borderColor: 'white' }}
-      >
-        <Image
-          src={cinderellaData.images.secondary || '/placeholder-team.png'}
-          alt={cinderellaData.name}
-          width={48}
-          height={48}
-          className='w-12 h-12 object-contain'
-        />
-      </motion.div>
-
-      {/* Team Name and Details with staggered animations */}
-      <div className='flex-1 min-w-0'>
-        <motion.h3
-          className='text-3xl font-black text-white tracking-tight'
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-        >
-          {cinderellaData.name}
-        </motion.h3>
-        <div className='flex items-center gap-2 mt-0'>
-          {/* Region with seed in parentheses */}
-          <motion.span
-            className='bg-madness-blue px-3 py-1 rounded text-white font-black uppercase text-sm tracking-wide'
-            initial={{ opacity: 0, scale: 0.7 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              duration: 0.4,
-              delay: 0.7,
-              type: 'spring',
-              stiffness: 300,
-            }}
-            style={{ backgroundColor: primaryColor }}
-          >
-            {cinderellaData.seed} SEED
-          </motion.span>
-
-          {/* Round Reached with pulsing highlight */}
-          <motion.span
-            className='px-3 py-1 rounded font-black uppercase text-sm tracking-wide'
-            initial={{ opacity: 0, scale: 0.7 }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-            }}
-            transition={{
-              duration: 0.4,
-              delay: 0.9,
-              type: 'spring',
-              stiffness: 300,
-            }}
-            style={{ backgroundColor: primaryColor }}
-          >
-            {cinderellaData.roundReached}
-          </motion.span>
-        </div>
-      </div>
-    </motion.div>
-  )
-}
 
 // Reusable BracketOwnerSection component
 const BracketOwnerSection: React.FC<BracketOwnerSectionProps> = ({ bracketOwner }) => {
@@ -341,7 +258,7 @@ const BracketOwnerSection: React.FC<BracketOwnerSectionProps> = ({ bracketOwner 
         </h4>
         <div className='flex items-center gap-4'>
           <div className='flex-1 flex items-center gap-x-2'>
-            <Trophy className='h-5 w-5 text-madness-orange' />
+            <Trophy className='h-5 w-a5 text-madness-orange' />
             <div className='flex flex-col gap-x-2'>
               <p className='font-black text-lg text-white truncate'>{bracketOwner.bracketName}</p>
               <p className='text-white/60 truncate font-bold text-sm'>{bracketOwner.name}</p>
@@ -380,7 +297,7 @@ const CinderellaTitle: React.FC = () => {
       <motion.div
         className='h-1 bg-cinderella mx-auto mt-2 bg-madness-orange'
         initial={{ width: 0 }}
-        animate={{ width: '16rem' }}
+        animate={{ width: '19rem' }}
         transition={{
           duration: 0.8,
           delay: 0.3,

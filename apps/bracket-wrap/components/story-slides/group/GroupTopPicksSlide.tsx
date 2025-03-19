@@ -203,9 +203,6 @@ const GroupTopPicksSlide = () => {
         }
       >
         <div className='relative flex flex-col w-full h-full overflow-hidden'>
-          {/* Decorative elements */}
-          {/* <CinderellaAnimatedBackground isExiting={isExiting} elements={animationElements as any} /> */}
-
           {/* Radial gradient overlay for depth */}
           <div className='absolute inset-0 bg-radial-gradient from-transparent to-black/50 pointer-events-none' />
 

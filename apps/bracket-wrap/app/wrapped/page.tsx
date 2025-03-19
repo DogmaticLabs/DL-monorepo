@@ -5,7 +5,6 @@ import BracketCinderellaSlide from '@/components/story-slides/BracketCinderellaS
 import BracketSummarySlide from '@/components/story-slides/BracketSummarySlide'
 import BracketTwinSlide from '@/components/story-slides/BracketTwinSlide'
 import CelebrityTwinBracketSlide from '@/components/story-slides/CelebrityTwinBracketSlide'
-import GroupBracketNemesisSlide from '@/components/story-slides/group/GroupBracketNemesisSlide'
 import GroupBracketTwinsSlide from '@/components/story-slides/group/GroupBracketTwinsSlide'
 import GroupChalkScoreSlide from '@/components/story-slides/group/GroupChalkScoreSlide'
 import GroupCinderellaSlide from '@/components/story-slides/group/GroupCinderellaSlide'
@@ -44,7 +43,7 @@ export default function WrappedPage({ searchParams }: { searchParams: Promise<{ 
 
               <GroupBracketTwinsSlide />
 
-              <GroupBracketNemesisSlide />
+              {/* <GroupBracketNemesisSlide /> */}
 
               <GroupFinalFourSlide />
 

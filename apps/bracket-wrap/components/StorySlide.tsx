@@ -26,7 +26,7 @@ export default function StorySlide({ children, footer }: StorySlideProps) {
           }}
         >
           <div
-            className='absolute inset-0 bg-[url("/bracket.svg")] bg-no-repeat'
+            className='absolute inset-0 bg-[url("/bracket.svg")] bg-no-repeat animate-bracket-pulse'
             style={{
               backgroundSize: 'contain',
               backgroundPosition: 'center',

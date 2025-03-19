@@ -16,6 +16,27 @@ const config: Config = {
       },
       animation: {
         'fade-in': 'fadeIn 1s forwards',
+        'bracket-pulse': 'bracketPulse 4s infinite linear',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: 0 },
+          '100%': { opacity: 1 },
+        },
+        bracketPulse: {
+          '0%': {
+            filter: 'invert(0.8) brightness(0.8) sepia(0.5) hue-rotate(170deg) saturate(4)',
+            opacity: 0.2,
+          },
+          '50%': {
+            filter: 'invert(0.8) brightness(0.8) sepia(0.5) hue-rotate(170deg) saturate(4)',
+            opacity: 0.5,
+          },
+          '100%': {
+            filter: 'invert(0.8) brightness(0.8) sepia(0.5) hue-rotate(170deg) saturate(4)',
+            opacity: 0.2,
+          },
+        },
       },
     },
   },
