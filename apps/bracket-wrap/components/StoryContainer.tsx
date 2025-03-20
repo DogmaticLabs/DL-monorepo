@@ -2,7 +2,8 @@
 
 import { X } from 'lucide-react'
 import Image from 'next/image'
-import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import React from 'react'
 import { useStoryNavigation } from '../hooks/useStoryNavigation'
 import { useStory } from './providers'
 import StoryProgress from './StoryProgress'
@@ -13,7 +14,7 @@ interface StoryContainerProps {
 
 export default function StoryContainer({ children }: StoryContainerProps) {
   const { currentSlide } = useStory()
-
+  const router = useRouter()
   useStoryNavigation()
 
   // Convert children to array to access by index
@@ -21,41 +22,26 @@ export default function StoryContainer({ children }: StoryContainerProps) {
 
   const handleClose = (e: React.MouseEvent) => {
     e.stopPropagation()
-    // You can implement close functionality here
-    // For example, redirect to home page or show a confirmation dialog
-    console.log('Close button clicked')
-  }
-
-  const handleVolume = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    // You can implement volume control functionality here
-    console.log('Volume button clicked')
+    router.push('/')
   }
 
   return (
     <div className='relative w-full flex flex-col min-h-svh'>
+      {/* Background */}
+      <StoryBackground />
+
+      {/* Progress */}
       <StoryProgress />
 
       {/* Top controls bar */}
-      <StoryControls handleVolume={handleVolume} handleClose={handleClose} />
+      <StoryControls handleClose={handleClose} />
 
       {slides[currentSlide]}
     </div>
   )
 }
 
-function StoryControls({
-  handleVolume,
-  handleClose,
-}: {
-  handleVolume: (e: React.MouseEvent) => void
-  handleClose: (e: React.MouseEvent) => void
-}) {
-  const togglePause = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setIsPaused(!isPaused)
-  }
-  const [isPaused, setIsPaused] = useState(false)
+function StoryControls({ handleClose }: { handleClose: (e: React.MouseEvent) => void }) {
   return (
     <div className='fixed top-2 left-0 right-0 z-20 p-4 flex justify-between items-center'>
       {/* Logo */}
@@ -78,6 +64,65 @@ function StoryControls({
           <X />
         </button>
       </div>
+    </div>
+  )
+}
+
+const StoryBackground = () => {
+  return (
+    <div className='absolute inset-0 w-full h-full pt-8'>
+      {/* Bracket SVG with masked center for the logo */}
+      <div
+        className='absolute inset-0'
+        style={{
+          maskImage:
+            'radial-gradient(circle at center, transparent 0%, transparent 60px, black 120px)',
+          WebkitMaskImage:
+            'radial-gradient(circle at center, transparent 0%, transparent 60px, black 120px)',
+        }}
+      >
+        <div
+          className='absolute inset-0 bg-[url("/bracket.svg")] bg-no-repeat animate-bracket-pulse'
+          style={{
+            backgroundSize: 'contain',
+            backgroundPosition: 'center',
+            filter: 'invert(0.8) brightness(0.8) sepia(0.5) hue-rotate(170deg) saturate(4)',
+            opacity: 0.2,
+            mixBlendMode: 'screen',
+          }}
+        />
+      </div>
+
+      {/* Logo centered on the bracket - now visible through the "hole" */}
+      <div className='absolute inset-0 flex items-center justify-center pointer-events-none'>
+        <div
+          className='relative w-[200px] h-[200px] flex items-center justify-center'
+          style={{
+            filter: 'brightness(1) contrast(1)',
+          }}
+        >
+          <Image
+            src='/logo.png'
+            alt='Bracket Wrap Logo'
+            className='size-[200px] object-contain opacity-20'
+            width={200}
+            height={200}
+            style={{
+              mixBlendMode: 'soft-light',
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Add a radial gradient to the center of the bracket */}
+      <div
+        className='absolute inset-0'
+        style={{
+          background:
+            'radial-gradient(circle at center, rgba(40,40,40,0.5) 5%, rgba(0,0,0,0) 100%)',
+          mixBlendMode: 'multiply',
+        }}
+      />
     </div>
   )
 }

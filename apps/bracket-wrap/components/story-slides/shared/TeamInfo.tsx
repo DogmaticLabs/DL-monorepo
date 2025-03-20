@@ -18,14 +18,14 @@ const TeamInfo = ({
   const secondaryColor = team.colors?.secondary ?? ''
   return (
     <motion.div
-      className={`flex items-center gap-4 ${className}`}
+      className={`flex items-end space-x-3 ${className}`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.7 }}
     >
       {/* Team Logo with enhanced rotation and bounce animation */}
       <motion.div
-        className='flex-shrink-0 w-16 h-16 rounded-md overflow-hidden bg-white flex items-center justify-center border'
+        className='flex-shrink-0 w-16 h-16 rounded-md overflow-hidden flex items-center justify-center'
         initial={{ opacity: 0, rotate: -15, scale: 0.8 }}
         animate={{ opacity: 1, rotate: 0, scale: 1 }}
         transition={{
@@ -34,7 +34,7 @@ const TeamInfo = ({
           scale: { type: 'spring', stiffness: 300, damping: 15 },
           rotate: { type: 'spring', stiffness: 200, damping: 10 },
         }}
-        style={{ backgroundColor: primaryColor, borderColor: 'white' }}
+        style={{ backgroundColor: primaryColor }}
       >
         <Image
           src={team.images?.secondary || '/placeholder-team.png'}

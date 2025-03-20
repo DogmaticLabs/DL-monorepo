@@ -1,4 +1,4 @@
-import { Team } from '@/app/api/bracket-data'
+import { FinalFourStatsData, Team } from '@/app/api/bracket-data'
 import { useBracketSlides, useStory } from '@/components/providers'
 import ShareableContent from '@/components/story-slides/shared/ShareableContent'
 import StoryCard from '@/components/story-slides/shared/StoryCard'
@@ -16,42 +16,17 @@ interface GroupFinalFourSlideProps {
 }
 
 const GroupFinalFourSlide = ({ groupId }: GroupFinalFourSlideProps) => {
-  const [data] = useBracketSlides()
+  const [bracketSlidesData] = useBracketSlides()
   const { isExiting } = useStory()
   const cardRef = useRef<HTMLDivElement>(null)
   const shareableRef = useRef<HTMLDivElement>(null)
   const { isSharing, shareContent } = useShareContent()
+
+  const { data, shareId } = bracketSlidesData!.wrapped.group!.finalFourStats!
   const { data: teams } = useTeams()
 
   // State to control when to show the content
   const [showContent, setShowContent] = useState(false)
-
-  // Placeholder data - would be replaced with actual data in production
-  const finalFourData = [
-    {
-      percentage: 87,
-      ...Object.values(teams ?? {})[Math.floor(Math.random() * Object.values(teams ?? {}).length)],
-    },
-    {
-      percentage: 75,
-      ...Object.values(teams ?? {})[Math.floor(Math.random() * Object.values(teams ?? {}).length)],
-    },
-    {
-      percentage: 62,
-      ...Object.values(teams ?? {})[Math.floor(Math.random() * Object.values(teams ?? {}).length)],
-    },
-    {
-      percentage: 54,
-      ...Object.values(teams ?? {})[Math.floor(Math.random() * Object.values(teams ?? {}).length)],
-    },
-  ]
-
-  // Stub data for group info
-  const groupInfo = {
-    name: 'Cantonsville',
-    memberCount: 24,
-    uniqueFinalFourTeams: 12,
-  }
 
   // Automatically transition to content after the intro text
   useEffect(() => {
@@ -80,7 +55,7 @@ const GroupFinalFourSlide = ({ groupId }: GroupFinalFourSlideProps) => {
     const shareOptions = {
       title: 'Final Four Picks',
       text: `Check out my group's most popular Final Four picks!`,
-      url: 'https://bracketwrap.com',
+      url: `https://bracketwrap.com/share/${shareId}`,
     }
 
     try {
@@ -213,7 +188,7 @@ const GroupFinalFourSlide = ({ groupId }: GroupFinalFourSlideProps) => {
                             ease: 'easeInOut',
                           }}
                         >
-                          {groupInfo.uniqueFinalFourTeams}
+                          {data.reduce((acc, curr) => acc + curr.uniqueTeams, 0)}
                         </motion.p>
                       </motion.div>
                     </motion.div>
@@ -248,7 +223,7 @@ const GroupFinalFourSlide = ({ groupId }: GroupFinalFourSlideProps) => {
                       animate={{ opacity: 1, filter: 'blur(0px)' }}
                       transition={{ duration: 0.6, delay: 2.3 }}
                     >
-                      Here are the most common selections
+                      Here are the most popular selections
                     </motion.p>
 
                     <motion.div
@@ -294,8 +269,8 @@ const GroupFinalFourSlide = ({ groupId }: GroupFinalFourSlideProps) => {
                       exit={contentExitAnimation}
                       transition={{ duration: 0.5 }}
                     >
-                      <StoryCard cardRef={cardRef} title={<FinalFourTitle />}>
-                        <FinalFourGrid teams={finalFourData as (Team & { percentage: number })[]} />
+                      <StoryCard cardRef={cardRef} title={<FinalFourTitle />} showGroup>
+                        <FinalFourGrid teams={data} teamsData={teams!} />
                       </StoryCard>
                     </motion.div>
                   ) : (
@@ -320,10 +295,10 @@ const GroupFinalFourSlide = ({ groupId }: GroupFinalFourSlideProps) => {
       {/* Shareable Content */}
       <ShareableContent
         shareableRef={shareableRef}
-        backgroundGradient='linear-gradient(to bottom right, #4C1D95, #1E3A8A)'
+        backgroundGradient='linear-gradient(to bottom right, #FF7E5F, #FEB47B)'
       >
         <StoryCard animated={false} title={<FinalFourTitle />}>
-          <FinalFourGrid teams={finalFourData as (Team & { percentage: number })[]} />
+          <FinalFourGrid teams={data} teamsData={teams!} />
         </StoryCard>
       </ShareableContent>
     </div>
@@ -361,10 +336,16 @@ const FinalFourTitle = () => {
 
 // 2x2 Grid component for Final Four teams
 interface FinalFourGridProps {
-  teams: (Team & { percentage: number })[]
+  teams: FinalFourStatsData[]
+  teamsData: Record<string, Team>
 }
 
 const FinalFourGrid: React.FC<FinalFourGridProps> = ({ teams }: FinalFourGridProps) => {
+  const { data: teamsData } = useTeams()
+  const [bracketSlidesData] = useBracketSlides()
+
+  const groupMembers = bracketSlidesData?.info.group?.data.size
+
   return (
     <motion.div
       className='grid grid-cols-2 mt-6 mb-4'
@@ -375,10 +356,11 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({ teams }: FinalFourGridPro
       {teams?.map((team, index) => {
         const isLeftSide = index % 2 === 0
         const isTopRow = index < 2
+        const teamData = teamsData?.[team.teamId]
 
         return (
           <motion.div
-            key={team.name}
+            key={team.teamId}
             className={cn(
               'relative flex items-center justify-end',
               isLeftSide ? 'flex-row' : 'flex-row-reverse',
@@ -408,16 +390,18 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({ teams }: FinalFourGridPro
                 stiffness: 200,
               }}
             >
-              <p className='text-white font-bold text-xl ml-1'>{team.percentage}%</p>
+              <p className='text-white font-bold text-xl ml-1'>
+                {Math.round((team.count * 100) / (groupMembers ?? 1))}%
+              </p>
             </motion.div>
 
-            <div className='flex flex-col justify-center items-center m-2'>
+            <div className={cn('flex flex-col justify-center items-center m-2')}>
               {/* Team box with primary color */}
               <motion.div
                 className={cn(
-                  'aspect-square rounded-lg flex items-center justify-center shadow-lg relative overflow-hidden border border-white/60',
+                  'aspect-square rounded-lg flex items-center justify-center shadow-lg relative overflow-hidden',
                 )}
-                style={{ backgroundColor: team.colors?.primary }}
+                style={{ backgroundColor: teamData?.colors?.primary }}
                 initial={{ opacity: 0.5 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
@@ -435,8 +419,8 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({ teams }: FinalFourGridPro
                   }}
                 >
                   <Image
-                    src={team.images?.secondary}
-                    alt={team.name}
+                    src={teamData?.images?.secondary ?? ''}
+                    alt={teamData?.name ?? ''}
                     width={60}
                     height={60}
                     className='object-contain'
@@ -446,23 +430,27 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({ teams }: FinalFourGridPro
                 {/* Region badge */}
                 <motion.div
                   className={cn(
-                    'absolute text-xs -top-[0.5px] font-bold py-0.5 px-2 bg-white/60 rounded-lg',
+                    'absolute text-[10px] -top-[0.5px] font-bold py-0.5 px-2 bg-white rounded-lg',
                     isLeftSide ? '-left-[0.5px]' : '-right-[0.5px]',
                     isLeftSide
                       ? 'rounded-tr-none rounded-bl-none'
                       : 'rounded-tl-none rounded-br-none',
                   )}
-                  style={{ color: team.colors?.primary }}
+                  style={{ color: teamData?.colors?.primary }}
                   initial={{ x: -20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ duration: 0.3, delay: 0.6 + index * 0.1 }}
                 >
-                  {team.region?.name}
+                  {teamData?.region?.name}
                 </motion.div>
               </motion.div>
-              <div className='flex items-center'>
-                <p className='text-white font-bold text-sm ml-1 flex-1 truncate'>{team.name}</p>
-                <span className='text-white/60 text-xs font-black ml-1'>{team.seed}</span>
+              <div className='flex items-center justify-center w-full max-w-[120px] mt-1'>
+                <p className='text-white font-bold text-xs truncate text-center'>
+                  {teamData?.name}
+                </p>
+                <span className='text-white/60 text-xs font-black ml-1 flex-shrink-0'>
+                  {teamData?.seed}
+                </span>
               </div>
             </div>
           </motion.div>

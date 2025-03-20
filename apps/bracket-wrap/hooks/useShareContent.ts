@@ -2,8 +2,8 @@ import { toPng } from 'html-to-image'
 import { useState } from 'react'
 
 interface ShareOptions {
-  title: string
-  text: string
+  title?: string
+  text?: string
   url: string
   captureOptions?: {
     quality?: number
@@ -12,6 +12,7 @@ interface ShareOptions {
     skipFonts?: boolean
     cacheBust?: boolean
     filter?: (node: HTMLElement) => boolean
+    skipTwitterOptimization?: boolean // Only used to disable Twitter optimization
   }
 }
 
@@ -27,12 +28,14 @@ interface UseShareContentReturn {
 /**
  * Hook for sharing content with the Web Share API, with fallbacks
  * Includes functionality to capture an element as an image
+ * Automatically optimizes images for Twitter to prevent conversion to JPG
  */
 export const useShareContent = (): UseShareContentReturn => {
   const [isSharing, setIsSharing] = useState(false)
 
   /**
    * Captures an HTML element as an image
+   * Automatically optimizes for Twitter to prevent JPG conversion
    */
   const captureElementAsImage = async (
     elementRef: React.RefObject<HTMLElement>,
@@ -44,10 +47,16 @@ export const useShareContent = (): UseShareContentReturn => {
       // Default capture options
       const captureOpts = {
         pixelRatio: 2, // Higher ratio for better quality
-        backgroundColor: options?.captureOptions?.backgroundColor,
+        backgroundColor: options?.captureOptions?.backgroundColor || 'transparent',
         skipFonts: false,
         cacheBust: true,
         ...options?.captureOptions,
+      }
+
+      // Force transparent background to avoid white backgrounds
+      // Only override if not explicitly set by user
+      if (!options?.captureOptions?.backgroundColor) {
+        captureOpts.backgroundColor = 'transparent'
       }
 
       // Capture the element as a PNG

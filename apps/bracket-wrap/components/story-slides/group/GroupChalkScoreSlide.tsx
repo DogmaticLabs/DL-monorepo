@@ -1,46 +1,24 @@
+import { GroupChalkScoresData, TeamMap } from '@/app/api/bracket-data'
 import { useBracketSlides, useStory } from '@/components/providers'
+import ShareableContent from '@/components/story-slides/shared/ShareableContent'
 import StoryCard from '@/components/story-slides/shared/StoryCard'
 import StorySlide from '@/components/StorySlide'
 import { useShareContent } from '@/hooks/useShareContent'
+import { useTeams } from '@/hooks/useTeams'
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import ShareButton from '../ShareButton'
 import BracketOwnerCard from '../shared/BracketOwnerCard'
 
-interface GroupChalkScoreSlideProps {
-  groupId?: string
-}
-
-const GroupChalkScoreSlide = ({ groupId }: GroupChalkScoreSlideProps) => {
-  const [data] = useBracketSlides()
+const GroupChalkScoreSlide = () => {
+  const [bracketSlidesData] = useBracketSlides()
   const { isExiting } = useStory()
   const cardRef = useRef<HTMLDivElement>(null)
   const shareableRef = useRef<HTMLDivElement>(null)
   const { isSharing, shareContent } = useShareContent()
+  const { data: teamsData } = useTeams()
 
-  // Placeholder data - would be replaced with actual data in production
-  const chalkData = {
-    mostChalky: {
-      name: 'David Wilson',
-      bracketName: 'No Surprises Here',
-      avatarUrl: '/team-logos/4.png',
-      chalkScore: 18,
-      upsetCount: 3,
-      favoriteTeam: 'UConn',
-      description: 'The Safe Bet',
-    },
-    leastChalky: {
-      name: 'Sophia Martinez',
-      bracketName: 'Chaos Theory',
-      avatarUrl: '/team-logos/5.png',
-      chalkScore: 119,
-      upsetCount: 19,
-      favoriteTeam: 'NC State',
-      description: 'The Risk Taker',
-    },
-    groupAverage: 64,
-    nationalAverage: 70,
-  }
+  const { data, shareId } = bracketSlidesData!.wrapped.group!.chalkScores!
 
   // State to control when to show the content
   const [showContent, setShowContent] = useState(false)
@@ -72,7 +50,7 @@ const GroupChalkScoreSlide = ({ groupId }: GroupChalkScoreSlideProps) => {
     const shareOptions = {
       title: 'Chalk Score Analysis',
       text: `Check out the risk-takers and safe-bets in my bracket group!`,
-      url: 'https://bracketwrap.com',
+      url: `https://bracketwrap.com/share/${shareId}`,
     }
 
     try {
@@ -86,19 +64,6 @@ const GroupChalkScoreSlide = ({ groupId }: GroupChalkScoreSlideProps) => {
       console.error('Error sharing content:', error)
       alert('There was an error sharing the content. Please try again.')
     }
-  }
-
-  // Create bracket owner objects for the BracketOwnerCard component
-  const safeOwner = {
-    name: chalkData.mostChalky.name,
-    bracketName: chalkData.mostChalky.bracketName,
-    avatarUrl: chalkData.mostChalky.avatarUrl,
-  }
-
-  const riskyOwner = {
-    name: chalkData.leastChalky.name,
-    bracketName: chalkData.leastChalky.bracketName,
-    avatarUrl: chalkData.leastChalky.avatarUrl,
   }
 
   return (
@@ -241,71 +206,8 @@ const GroupChalkScoreSlide = ({ groupId }: GroupChalkScoreSlideProps) => {
                       exit={contentExitAnimation}
                       transition={{ duration: 0.5 }}
                     >
-                      <StoryCard cardRef={cardRef} title={<ChalkScoreTitle />}>
-                        {/* Risk Taker (Low Chalk) */}
-                        <motion.div
-                          className='mt-4 p-3 rounded-lg border border-white/20 relative'
-                          initial={{ x: -20, opacity: 0 }}
-                          animate={{ x: 0, opacity: 1 }}
-                          transition={{ duration: 0.5, delay: 0.5 }}
-                        >
-                          <div className='flex justify-between items-center mb-1'>
-                            <div className='flex items-center gap-2'>
-                              <span className='bg-madness-orange text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center'>
-                                🔥
-                              </span>
-                              <span className='text-sm font-bold text-orange-300'>RISK TAKER</span>
-                              <span className='text-xs font-bold text-white/60'>49 Upsets</span>
-                            </div>
-                            <div className='text-xl font-bold text-white bg-madness-orange absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
-                              {chalkData.leastChalky.chalkScore}
-                            </div>
-                          </div>
-                          <BracketOwnerCard
-                            owner={riskyOwner}
-                            label=''
-                            iconColor='text-orange-400'
-                            delay={0.7}
-                            iconBackground={false}
-                          />
-                        </motion.div>
-                        {/* Chalk Score Visualization */}
-                        <ChalkScoreBar
-                          leastChalky={chalkData.leastChalky.chalkScore}
-                          mostChalky={chalkData.mostChalky.chalkScore}
-                          groupAverage={chalkData.groupAverage}
-                          nationalAverage={chalkData.nationalAverage}
-                        />
-
-                        {/* Safe Bet (High Chalk) */}
-                        <motion.div
-                          className='mb-4 p-3 rounded-lg border border-white/20 relative'
-                          initial={{ x: 20, opacity: 0 }}
-                          animate={{ x: 0, opacity: 1 }}
-                          transition={{ duration: 0.5, delay: 1.1 }}
-                        >
-                          <div className='flex justify-between items-center mb-1'>
-                            <div className='flex items-center gap-2'>
-                              <span className='bg-blue-600 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center'>
-                                🧊
-                              </span>
-                              <span className='text-sm font-bold text-blue-300'>
-                                PLAYING IT SAFE
-                              </span>
-                              <span className='text-xs font-bold text-white/60'>9 Upsets</span>
-                            </div>
-                            <div className='text-xl font-bold text-white bg-blue-600 absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
-                              {chalkData.mostChalky.chalkScore}
-                            </div>
-                          </div>
-                          <BracketOwnerCard
-                            owner={safeOwner}
-                            label=''
-                            iconColor='text-blue-400'
-                            delay={1.3}
-                            iconBackground={false}
-                          />
-                        </motion.div>
+                      <StoryCard cardRef={cardRef} title={<ChalkScoreTitle />} showGroup>
+                        <ChalkScoreContent data={data} teamsData={teamsData!} animated={true} />
                       </StoryCard>
                     </motion.div>
                   ) : (
@@ -326,6 +228,16 @@ const GroupChalkScoreSlide = ({ groupId }: GroupChalkScoreSlideProps) => {
           </div>
         </div>
       </StorySlide>
+
+      {/* Add ShareableContent component for sharing */}
+      <ShareableContent
+        shareableRef={shareableRef}
+        backgroundGradient='linear-gradient(to bottom right, #1f2937, #065f46)'
+      >
+        <StoryCard title={<ChalkScoreTitle animated={false} />} animated={false} showGroup>
+          <ChalkScoreContent data={data} teamsData={teamsData!} animated={false} />
+        </StoryCard>
+      </ShareableContent>
     </div>
   )
 }
@@ -379,20 +291,187 @@ const ChalkScoreTitle = ({ animated = true }: ChalkScoreTitleProps) => {
   )
 }
 
+// ChalkScoreContent Component to reduce duplication
+interface ChalkScoreContentProps {
+  data: GroupChalkScoresData
+  teamsData: TeamMap
+  animated?: boolean
+}
+
+const ChalkScoreContent: React.FC<ChalkScoreContentProps> = ({
+  data,
+  teamsData,
+  animated = true,
+}) => {
+  return (
+    <>
+      {/* Risk Taker (Highest Chalk) */}
+      {animated ? (
+        <motion.div
+          className='mt-4 p-3 rounded-lg border border-white/20 relative'
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          <div className='flex justify-between items-center mb-1'>
+            <div className='flex items-center gap-2'>
+              <span className='bg-madness-orange text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center'>
+                🔥
+              </span>
+              <span className='text-sm font-bold text-orange-300'>RISK TAKER</span>
+              <span className='text-xs font-bold text-white/60'>49 Upsets</span>
+            </div>
+            <div className='text-xl font-bold text-white bg-madness-orange absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
+              {data.highestChalk.percentile}
+            </div>
+          </div>
+          <BracketOwnerCard
+            name={data.highestChalk.bracket.member.displayName}
+            bracketName={data.highestChalk.bracket.name}
+            teamLogo={teamsData?.[data.highestChalk.bracket.winnerId!]?.images.primary}
+            iconColor='text-orange-400'
+            delay={0.7}
+            teamBackground={false}
+          />
+        </motion.div>
+      ) : (
+        <div className='mt-4 p-3 rounded-lg border border-white/20 relative'>
+          <div className='flex justify-between items-center mb-1'>
+            <div className='flex items-center gap-2'>
+              <span className='bg-madness-orange text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center'>
+                🔥
+              </span>
+              <span className='text-sm font-bold text-orange-300'>RISK TAKER</span>
+              <span className='text-xs font-bold text-white/60'>49 Upsets</span>
+            </div>
+            <div className='text-xl font-bold text-white bg-madness-orange absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
+              {data.highestChalk.percentile}
+            </div>
+          </div>
+          <BracketOwnerCard
+            name={data.highestChalk.bracket.member.displayName}
+            bracketName={data.highestChalk.bracket.name}
+            teamLogo={teamsData?.[data.highestChalk.bracket.winnerId!]?.images.primary}
+            iconColor='text-orange-400'
+            teamBackground={false}
+          />
+        </div>
+      )}
+
+      {/* Chalk Score Visualization */}
+      <ChalkScoreBar
+        leastChalky={data.lowestChalk.percentile}
+        mostChalky={data.highestChalk.percentile}
+        groupAverage={data.averageChalk.percentile}
+        animated={animated}
+      />
+
+      {/* Safe Bet (Lowest Chalk) */}
+      {animated ? (
+        <motion.div
+          className='mb-4 p-3 rounded-lg border border-white/20 relative'
+          initial={{ x: 20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 1.1 }}
+        >
+          <div className='flex justify-between items-center mb-1'>
+            <div className='flex items-center gap-2'>
+              <span className='bg-blue-600 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center'>
+                🧊
+              </span>
+              <span className='text-sm font-bold text-blue-300'>PLAYING IT SAFE</span>
+              <span className='text-xs font-bold text-white/60'>9 Upsets</span>
+            </div>
+            <div className='text-xl font-bold text-white bg-blue-600 absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
+              {data.lowestChalk.percentile}
+            </div>
+          </div>
+          <BracketOwnerCard
+            name={data.lowestChalk.bracket.member.displayName}
+            bracketName={data.lowestChalk.bracket.name}
+            teamLogo={teamsData?.[data.lowestChalk.bracket.winnerId!]?.images.primary}
+            delay={1.3}
+            teamBackground={false}
+          />
+        </motion.div>
+      ) : (
+        <div className='mb-4 p-3 rounded-lg border border-white/20 relative'>
+          <div className='flex justify-between items-center mb-1'>
+            <div className='flex items-center gap-2'>
+              <span className='bg-blue-600 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center'>
+                🧊
+              </span>
+              <span className='text-sm font-bold text-blue-300'>PLAYING IT SAFE</span>
+              <span className='text-xs font-bold text-white/60'>9 Upsets</span>
+            </div>
+            <div className='text-xl font-bold text-white bg-blue-600 absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
+              {data.lowestChalk.percentile}
+            </div>
+          </div>
+          <BracketOwnerCard
+            name={data.lowestChalk.bracket.member.displayName}
+            bracketName={data.lowestChalk.bracket.name}
+            teamLogo={teamsData?.[data.lowestChalk.bracket.winnerId!]?.images.primary}
+            teamBackground={false}
+          />
+        </div>
+      )}
+    </>
+  )
+}
+
 // Chalk Score Bar Component
 interface ChalkScoreBarProps {
   leastChalky: number
   mostChalky: number
   groupAverage: number
-  nationalAverage: number
+  animated?: boolean
 }
 
 const ChalkScoreBar = ({
   leastChalky,
   mostChalky,
   groupAverage,
-  nationalAverage,
+  animated = true,
 }: ChalkScoreBarProps) => {
+  if (!animated) {
+    return (
+      <div className='mt-6 mb-6'>
+        <div className='h-6 w-full bg-gradient-to-r from-blue-700 to-madness-orange rounded-full relative'>
+          {/* Group Average Marker */}
+          <div
+            className='absolute top-0 bottom-0 border-l border-white/40 border-dashed'
+            style={{ left: `${groupAverage}%` }}
+          />
+
+          {/* Risk Taker Marker */}
+          <div
+            className='absolute top-0 h-6 bg-white border-r border-l border-white rounded-full'
+            style={{ left: `${mostChalky}%` }}
+          />
+          <div
+            className='absolute -top-6 transform -translate-x-[42%] text-orange-500'
+            style={{ left: `${mostChalky}%` }}
+          >
+            ▼
+          </div>
+
+          {/* Safe Bet Marker */}
+          <div
+            className='absolute top-0 h-6 bg-white border-r border-l border-white rounded-full'
+            style={{ left: `${leastChalky}%` }}
+          />
+          <div
+            className='absolute -bottom-6 transform -translate-x-[42%] text-blue-500'
+            style={{ left: `${leastChalky}%` }}
+          >
+            ▲
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <motion.div
       className='mt-6 mb-6'
@@ -418,14 +497,14 @@ const ChalkScoreBar = ({
         {/* Risk Taker Marker */}
         <motion.div
           className='absolute top-0 h-6 bg-white border-r border-l border-white rounded-full'
-          style={{ left: `84%` }}
+          style={{ left: `${mostChalky}%` }}
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: '100%' }}
           transition={{ duration: 0.3, delay: 1.2 }}
         />
         <motion.div
           className='absolute -top-6 transform -translate-x-[42%] text-orange-500'
-          style={{ left: `84%` }}
+          style={{ left: `${mostChalky}%` }}
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: '100%' }}
           transition={{ duration: 0.3, delay: 1.2 }}
@@ -436,14 +515,14 @@ const ChalkScoreBar = ({
         {/* Safe Bet Marker */}
         <motion.div
           className='absolute top-0 h-6 bg-white border-r border-l border-white rounded-full'
-          style={{ left: `22%` }}
+          style={{ left: `${leastChalky}%` }}
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: '100%' }}
           transition={{ duration: 0.3, delay: 1.2 }}
         />
         <motion.div
           className='absolute -bottom-6 transform -translate-x-[42%] text-blue-500'
-          style={{ left: `22%` }}
+          style={{ left: `${leastChalky}%` }}
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: '100%' }}
           transition={{ duration: 0.3, delay: 1.2 }}

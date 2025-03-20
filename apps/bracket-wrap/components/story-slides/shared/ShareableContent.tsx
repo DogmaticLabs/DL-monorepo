@@ -24,7 +24,6 @@ const ShareableContent = ({
       className='relative w-full top-0 left-0 pointer-events-none overflow-hidden'
       style={{
         background: backgroundGradient,
-        borderRadius: '12px',
         padding: '24px',
       }}
     >

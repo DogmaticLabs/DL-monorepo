@@ -2,7 +2,6 @@
 
 import IntroSequence from '@/components/IntroSequence'
 import LandingPage from '@/components/LandingPage'
-import LoadingAnimation from '@/components/LoadingAnimation'
 import { AnimatePresence, motion } from 'motion/react'
 import { useRouter } from 'next/navigation'
 import { use, useEffect, useState } from 'react'
@@ -24,7 +23,7 @@ export default function Page({ searchParams }: { searchParams: Promise<{ mode: s
 
   return (
     <SearchParamsProvider params={unwrappedParams}>
-      <div id='app-content' className='relative w-full flex flex-col bg-[#1d3253]'>
+      <div id='app-content' className='relative w-full flex flex-col bg-[#1e293b]'>
         <AnimatePresence mode='wait'>
           {pageState === PageState.LandingPage && (
             // Landing page with MainStorySlide
@@ -36,13 +35,13 @@ export default function Page({ searchParams }: { searchParams: Promise<{ mode: s
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <LandingPage setPageState={setPageState} />
+              <LandingPage onComplete={() => setPageState(PageState.IntroSequence)} />
             </motion.div>
           )}
 
           {[PageState.LoadingSequence, PageState.IntroSequence].includes(pageState) && (
             <div className='w-full h-dvh bg-gradient-to-br from-blue-700 via-purple-700 to-orange-700'>
-              {pageState === PageState.LoadingSequence && (
+              {/* {pageState === PageState.LoadingSequence && (
                 <motion.div
                   key='loading-sequence'
                   className='absolute inset-0 z-20'
@@ -53,7 +52,7 @@ export default function Page({ searchParams }: { searchParams: Promise<{ mode: s
                 >
                   <LoadingAnimation onComplete={() => setPageState(PageState.IntroSequence)} />
                 </motion.div>
-              )}
+              )} */}
 
               {pageState === PageState.IntroSequence && (
                 <motion.div

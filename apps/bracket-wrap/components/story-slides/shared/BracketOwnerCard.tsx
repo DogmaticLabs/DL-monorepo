@@ -3,16 +3,15 @@ import { motion } from 'motion/react'
 import Image from 'next/image'
 
 interface BracketOwnerCardProps {
-  owner: {
-    name: string
-    bracketName: string
-    avatarUrl: string
-    teamLogo?: string
-  }
+  name: string
+  bracketName: string
+  teamLogo?: string
   label?: string
   iconColor?: string
   delay?: number
-  iconBackground?: boolean
+  teamBackground?: boolean
+  Icon?: React.ReactNode
+  description?: string
 }
 
 /**
@@ -20,12 +19,18 @@ interface BracketOwnerCardProps {
  * across different story slides.
  */
 const BracketOwnerCard: React.FC<BracketOwnerCardProps> = ({
-  owner,
+  name,
+  bracketName,
+  teamLogo,
   label,
   iconColor = 'text-madness-orange',
   delay = 0.5,
-  iconBackground = true,
+  teamBackground = false,
+  Icon,
+  description,
 }) => {
+  Icon = Icon || <Trophy className={`h-5 w-5 ${iconColor}`} />
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -33,24 +38,29 @@ const BracketOwnerCard: React.FC<BracketOwnerCardProps> = ({
       transition={{ duration: 0.5, delay }}
     >
       <div className='py-1 border-white/20'>
-        <h4 className='text-sm font-black text-white/60 mb-1 uppercase tracking-wide'>{label}</h4>
+        <h4 className='text-sm font-extrabold text-white/60 mb-1'>{label}</h4>
         <div className='flex items-center gap-4'>
-          <div className='flex-1 flex items-center gap-x-2'>
-            <Trophy className={`h-5 w-5 ${iconColor}`} />
-            <div className='flex flex-col gap-x-2'>
-              <p className='font-black text-lg text-white truncate'>{owner.bracketName}</p>
-              <p className='text-white/60 truncate font-bold text-sm'>{owner.name}</p>
+          <div className='flex-1 flex items-center gap-x-2 min-w-0'>
+            {Icon}
+            <div className='flex flex-col min-w-0'>
+              <p className='font-black text-lg text-white truncate leading-5'>{bracketName}</p>
+              <p className='text-white/60 truncate font-bold text-sm leading-5'>{name}</p>
+              {description && (
+                <p className='text-white/60 truncate text-sm leading-5'>{description}</p>
+              )}
             </div>
           </div>
-          <Image
-            src={owner.avatarUrl}
-            alt={owner.name}
-            width={36}
-            height={36}
-            className={`w-8 h-8 object-cover rounded-lg ${
-              iconBackground ? 'bg-white border p-[1px]' : ''
-            }`}
-          />
+          {teamLogo && (
+            <Image
+              src={teamLogo}
+              alt={name}
+              width={36}
+              height={36}
+              className={`w-8 h-8 object-cover rounded-lg flex-shrink-0 ${
+                teamBackground ? 'bg-white border p-[1px]' : ''
+              }`}
+            />
+          )}
         </div>
       </div>
     </motion.div>

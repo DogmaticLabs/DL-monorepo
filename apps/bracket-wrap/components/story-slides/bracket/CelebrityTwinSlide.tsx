@@ -1,4 +1,4 @@
-import { Team } from '@/app/api/bracket-data'
+import { CelebrityTwinData, Team } from '@/app/api/bracket-data'
 import { useBracketSlides, useStory } from '@/components/providers'
 import BracketOwnerCard from '@/components/story-slides/shared/BracketOwnerCard'
 import ShareableContent from '@/components/story-slides/shared/ShareableContent'
@@ -6,13 +6,14 @@ import StoryCard from '@/components/story-slides/shared/StoryCard'
 import { useShareContent } from '@/hooks/useShareContent'
 import { useTeams } from '@/hooks/useTeams'
 import { AnimatePresence, motion } from 'motion/react'
+import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import StorySlide from '../../StorySlide'
 import ShareButton from '../ShareButton'
 import TeamInfo from '../shared/TeamInfo'
 
-const GroupBracketTwinsSlide = () => {
-  const [data] = useBracketSlides()
+const CelebrityTwinSlide = () => {
+  const [bracketSlidesData] = useBracketSlides()
   const { isExiting } = useStory()
   const cardRef = useRef<HTMLDivElement>(null)
   const shareableRef = useRef<HTMLDivElement>(null)
@@ -20,44 +21,8 @@ const GroupBracketTwinsSlide = () => {
 
   // Animation states
   const [showContent, setShowContent] = useState(false)
-  const [basketballExpanded, setBasketballExpanded] = useState(false)
+  const { data, shareId } = bracketSlidesData!.wrapped.bracket.celebrityTwin!
   const { data: teams } = useTeams()
-
-  // Placeholder data - would be replaced with actual data in production
-  const twinsData = {
-    person1: {
-      name: 'Michael Chen',
-      bracketName: "Mike's Madness",
-      avatarUrl: '/purdue.png',
-      teamLogo: '/purdue.png',
-      chosenWinner: 'UConn',
-    },
-    person2: {
-      name: 'Jessica Rodriguez',
-      bracketName: "Jess's Journey",
-      avatarUrl: '/uconn.png',
-      teamLogo: '/uconn.png',
-      chosenWinner: 'UConn',
-    },
-    matchingPicks: 58,
-    totalPicks: 63,
-    similarityPercentage: 87,
-    furthestSharedTeam: Object.values(teams ?? {})[0],
-    roundReached: 'Elite Eight',
-  }
-
-  // Handle animation sequence
-  useEffect(() => {
-    const handleCircleAnimationComplete = () => {
-      setBasketballExpanded(true)
-    }
-
-    const timer = setTimeout(() => {
-      handleCircleAnimationComplete()
-    }, 500)
-
-    return () => clearTimeout(timer)
-  }, [])
 
   // Transition to content after the intro text
   useEffect(() => {
@@ -76,9 +41,9 @@ const GroupBracketTwinsSlide = () => {
 
     // Share options
     const shareOptions = {
-      title: `Bracket Twins: ${twinsData.person1.name} & ${twinsData.person2.name}`,
-      text: `Check out these bracket twins with a ${twinsData.similarityPercentage}% match! They have ${twinsData.matchingPicks} identical picks out of ${twinsData.totalPicks}.`,
-      url: 'https://bracketwrap.com',
+      title: `Celebrity Twin: ${bracketSlidesData?.info.bracket.data.member.displayName} & ${data.member.displayName}`,
+      text: `Check out these bracket twins with a ${Math.round(data.weightedSimilarityPercentage)}% match! They have ${data.matchingPicks} identical picks out of 63.`,
+      url: `https://bracketwrap.com/share/${shareId}`,
     }
 
     try {
@@ -105,9 +70,7 @@ const GroupBracketTwinsSlide = () => {
   return (
     <div className='w-full h-dvh overflow-hidden'>
       <StorySlide
-        bgColor={
-          basketballExpanded ? 'bg-[#FF6B00]' : 'bg-gradient-to-br from-indigo-900 to-violet-800'
-        }
+        bgColor={'bg-gradient-to-br from-indigo-900 to-violet-800'}
         footer={
           showContent ? (
             <motion.div
@@ -224,7 +187,7 @@ const GroupBracketTwinsSlide = () => {
                         stiffness: 100,
                       }}
                     >
-                      Here are your group bracket twins 👯‍♀️
+                      Here is your celebrity twin 👯‍♀️
                     </motion.p>
                   </motion.div>
                 </motion.div>
@@ -239,24 +202,30 @@ const GroupBracketTwinsSlide = () => {
                       exit={contentExitAnimation}
                       transition={{ duration: 0.5 }}
                     >
-                      <StoryCard cardRef={cardRef} title={<BracketTwinsTitle />}>
-                        <SimilaritySection twinsData={twinsData} />
-                        <div>
+                      <StoryCard cardRef={cardRef} title={<CelebrityTwinsTitle />} showGroup>
+                        <SimilaritySection twinsData={data} />
+                        <div className='mt-5 mb-2'>
                           <BracketOwnerCard
-                            owner={twinsData.person1}
-                            label={'Twins'}
+                            name={data.member.displayName}
+                            bracketName={data.name}
                             delay={0.4}
-                            iconBackground={false}
-                          />
-                          <BracketOwnerCard
-                            owner={twinsData.person2}
-                            delay={0.6}
-                            iconBackground={false}
+                            teamBackground={false}
+                            Icon={
+                              <div className='w-10 h-10 rounded-full overflow-hidden border border-white/20'>
+                                <Image
+                                  src={data.member.logo || ''}
+                                  alt={data.member.displayName}
+                                  width={36}
+                                  height={36}
+                                />
+                              </div>
+                            }
+                            description={data.member.description}
                           />
                         </div>
                         <FurthestSharedTeam
-                          team={twinsData.furthestSharedTeam as Team}
-                          round={twinsData.roundReached}
+                          team={teams![data.furthestSharedPicks.teamIds[0]!]!}
+                          round={data.furthestSharedPicks.round.name}
                         />
                       </StoryCard>
                     </motion.div>
@@ -284,15 +253,26 @@ const GroupBracketTwinsSlide = () => {
         shareableRef={shareableRef}
         backgroundGradient='linear-gradient(to bottom right, #5D3FD3, #FF6B00)'
       >
-        <StoryCard title={<BracketTwinsTitle />} animated={false}>
-          <SimilaritySection twinsData={twinsData} />
-          <div className=''>
-            <BracketOwnerCard owner={twinsData.person1} label='Twins' iconBackground={false} />
-            <BracketOwnerCard owner={twinsData.person2} iconBackground={false} />
+        <StoryCard title={<CelebrityTwinsTitle />} animated={false} showGroup>
+          <SimilaritySection twinsData={data} />
+          <div className='mt-5 mb-1'>
+            <BracketOwnerCard
+              name={data.member.displayName}
+              bracketName={data.name}
+              teamBackground={false}
+              Icon={
+                <Image
+                  src='https://chui-assets-cdn.espn.com/a47bb42d-8035-45dd-963c-eb8ecd8edb78.jpeg'
+                  alt='Michael Chen'
+                  width={36}
+                  height={36}
+                />
+              }
+            />
           </div>
           <FurthestSharedTeam
-            team={twinsData.furthestSharedTeam as Team}
-            round={twinsData.roundReached}
+            team={teams![data.furthestSharedPicks.teamIds[0]!]!}
+            round={data.furthestSharedPicks.round.name}
           />
         </StoryCard>
       </ShareableContent>
@@ -301,7 +281,7 @@ const GroupBracketTwinsSlide = () => {
 }
 
 // Bracket Twins Title component
-const BracketTwinsTitle = () => {
+const CelebrityTwinsTitle = () => {
   return (
     <motion.div
       className='text-center'
@@ -311,16 +291,16 @@ const BracketTwinsTitle = () => {
     >
       <div className='flex justify-center gap-2'>
         <h2 className='text-4xl font-black text-white tracking-tight leading-none'>
-          Bracket Twins
+          Celebrity Twin
         </h2>
         <span className='text-3xl' role='img' aria-label='twins'>
-          👯
+          🤵
         </span>
       </div>
       <motion.div
         className='h-1 mx-auto mt-2 bg-[#FF6B00]'
         initial={{ width: 0 }}
-        animate={{ width: '19rem' }}
+        animate={{ width: '15rem' }}
         transition={{
           duration: 0.8,
           delay: 0.3,
@@ -332,7 +312,7 @@ const BracketTwinsTitle = () => {
 }
 
 // Similarity section showing the match percentage
-const SimilaritySection: React.FC<{ twinsData: any }> = ({ twinsData }) => {
+const SimilaritySection: React.FC<{ twinsData: CelebrityTwinData }> = ({ twinsData }) => {
   return (
     <motion.div
       className='mb-1'
@@ -342,47 +322,40 @@ const SimilaritySection: React.FC<{ twinsData: any }> = ({ twinsData }) => {
     >
       {/* Similarity Percentage Card */}
       <motion.div
-        className='flex items-end justify-center gap-2 mt-4 rounded-lg px-4 pb-4 pt-3 bg-white/5 backdrop-blur-md'
+        className='flex items-end justify-center gap-2 mt-5'
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
-        <div className='flex flex-col items-center w-full'>
-          <div className='flex items-center justify-end space-x-2'>
-            <div className='flex items-center justify-end'>
+        <div className='flex items-center space-x-4 w-full'>
+          <div className='flex flex-col items-start'>
+            <div className='flex justify-end'>
               <motion.div
                 className='text-5xl font-black text-white'
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
-                {twinsData.similarityPercentage}
+                {Math.round(twinsData.weightedSimilarityPercentage)}
               </motion.div>
               <span className='text-3xl text-white font-extrabold'>%</span>
             </div>
-            <div className='flex flex-col mt-1'>
-              <p className='text-md text-white/60 uppercase tracking-wide font-extrabold leading-4'>
-                Weighted
-              </p>
-              <p className='text-md text-white/60 uppercase tracking-wide font-extrabold leading-4'>
-                Similarity
-              </p>
-            </div>
+            <p className='text-sm text-white/60 tracking-wide font-extrabold leading-4'>
+              Similarity
+            </p>
           </div>
 
           {/* Visual representation of matching picks */}
-          <div className='w-full mt-3'>
+          <div className='w-full'>
             <div className='flex justify-between text-sm font-bold text-white/70 mb-1'>
               <span>Common Picks</span>
-              <span>
-                {twinsData.matchingPicks} of {twinsData.totalPicks}
-              </span>
+              <span>{twinsData.matchingPicks} of 63</span>
             </div>
-            <div className='w-full bg-white/10 h-4 rounded-full overflow-hidden'>
+            <div className='w-full bg-white/10 h-2 rounded-full overflow-hidden'>
               <motion.div
                 className='h-full bg-madness-orange'
                 initial={{ width: 0 }}
-                animate={{ width: `${twinsData.similarityPercentage}%` }}
+                animate={{ width: `${Math.round(twinsData.weightedSimilarityPercentage)}%` }}
                 transition={{ duration: 1.2, delay: 0.6 }}
               />
             </div>
@@ -395,6 +368,7 @@ const SimilaritySection: React.FC<{ twinsData: any }> = ({ twinsData }) => {
 
 // FurthestSharedTeam component showing the furthest team they both picked
 const FurthestSharedTeam: React.FC<{ team: Team; round: string }> = ({ team, round }) => {
+  console.log(team, round)
   return (
     <motion.div
       className='w-full rounded-lg py-4'
@@ -402,7 +376,7 @@ const FurthestSharedTeam: React.FC<{ team: Team; round: string }> = ({ team, rou
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.8 }}
     >
-      <h4 className='text-sm font-black text-white/60 uppercase tracking-wide mb-3'>
+      <h4 className='text-sm font-extrabold text-white/60 tracking-wide mb-2'>
         Furthest Shared Team
       </h4>
       <TeamInfo team={team} tags={[round]} />
@@ -410,4 +384,4 @@ const FurthestSharedTeam: React.FC<{ team: Team; round: string }> = ({ team, rou
   )
 }
 
-export default GroupBracketTwinsSlide
+export default CelebrityTwinSlide

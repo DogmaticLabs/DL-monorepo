@@ -1,11 +1,13 @@
+import { cn } from '@workspace/ui/lib/utils'
 import { motion } from 'motion/react'
 import { ReactNode } from 'react'
-import GroupSlideBanner from '../group/GroupSlideBanner'
+import GroupSlideBanner from './GroupSlideBanner'
 
 interface StoryCardProps {
   children: ReactNode
   title?: ReactNode
-  showBanner?: boolean
+  showGroup?: boolean
+  showBracket?: boolean
   animated?: boolean
   className?: string
   cardRef?: React.RefObject<HTMLDivElement>
@@ -17,7 +19,8 @@ interface StoryCardProps {
 const StoryCard = ({
   children,
   title,
-  showBanner = true,
+  showGroup = false,
+  showBracket = false,
   animated = true,
   className = '',
   cardRef,
@@ -28,11 +31,15 @@ const StoryCard = ({
     transform: 'translateZ(0)',
   }
 
+  const baseCardClassName = cn(
+    'w-full bg-gradient-to-br from-gray-950/90 to-gray-900/80 backdrop-blur-lg rounded-xl pt-6 mb-4 border border-white relative overflow-hidden',
+    className,
+  )
+
   const cardContent = (
     <>
       {/* Subtle glow effect overlay */}
       <div className='absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent pointer-events-none' />
-      <div className="absolute inset-0 bg-[url('/noise-pattern.png')] opacity-5 mix-blend-overlay pointer-events-none" />
 
       {/* Title area if provided */}
       {title}
@@ -41,16 +48,14 @@ const StoryCard = ({
       <div className='px-8'>{children}</div>
 
       {/* Group Banner */}
-      {showBanner && (
-        <motion.div
-          className='scale-[80%] mt-2 border-t border-white/20 pt-4'
-          initial={animated ? { opacity: 0 } : { opacity: 1 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.7 }}
-        >
-          <GroupSlideBanner />
-        </motion.div>
-      )}
+      <motion.div
+        className='mx-8 border-t border-white/20'
+        initial={animated ? { opacity: 0 } : { opacity: 1 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.7 }}
+      >
+        <GroupSlideBanner showGroup={showGroup} showBracket={showBracket} className='' />
+      </motion.div>
     </>
   )
 
@@ -59,7 +64,7 @@ const StoryCard = ({
     return (
       <motion.div
         ref={cardRef}
-        className={`w-full bg-gradient-to-br from-gray-950/80 to-gray-900/90 backdrop-blur-lg rounded-xl pb-2 pt-6 mb-4 border border-white/30 relative overflow-hidden ${className}`}
+        className={baseCardClassName}
         style={cardStyle}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0, x: [-5, 5, -5, 5, 0] }}
@@ -79,11 +84,7 @@ const StoryCard = ({
   }
 
   return (
-    <div
-      ref={cardRef}
-      className={`w-full bg-gradient-to-br from-gray-950/80 to-gray-900/90 backdrop-blur-lg rounded-xl pb-2 pt-6 mb-4 border border-white/30 relative overflow-hidden ${className}`}
-      style={cardStyle}
-    >
+    <div ref={cardRef} className={baseCardClassName} style={cardStyle}>
       {cardContent}
     </div>
   )

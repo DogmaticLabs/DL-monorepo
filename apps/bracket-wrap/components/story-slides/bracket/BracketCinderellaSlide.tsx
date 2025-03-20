@@ -7,21 +7,18 @@ import { useTeams } from '@/hooks/useTeams'
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import ShareButton from '../ShareButton'
-import BracketOwnerCard from '../shared/BracketOwnerCard'
 import TeamInfo from '../shared/TeamInfo'
 
-const GroupCinderellaSlide = () => {
+const BracketCinderellaSlide = () => {
   const [bracketSlidesData] = useBracketSlides()
   const { isExiting } = useStory()
-  const { data: teamsData } = useTeams()
+  const { data: teams } = useTeams()
   const cardRef = useRef<HTMLDivElement>(null)
   const shareableRef = useRef<HTMLDivElement>(null)
   const { isSharing, shareContent } = useShareContent()
 
-  const { data, shareId } = bracketSlidesData!.wrapped.group!.cinderella!
-
-  const teamMeta = data.teams[0]!
-  const team = teamsData![teamMeta.teamId]!
+  const { data, shareId } = bracketSlidesData!.wrapped.bracket.cinderella
+  const team = teams![data.teams[0]!.teamId!]!
 
   // State to control when to show the content
   const [showContent, setShowContent] = useState(false)
@@ -45,8 +42,6 @@ const GroupCinderellaSlide = () => {
 
     // Share options
     const shareOptions = {
-      title: `${team.name} - The Cinderella Story`,
-      text: `Check out ${team.name}, the #${team.seed} seed that made it to the ${data.round.name}!`,
       url: `https://bracketwrap.com/share/${shareId}`,
     }
 
@@ -137,7 +132,7 @@ const GroupCinderellaSlide = () => {
                     }}
                     viewport={{ once: true }}
                   >
-                    Let's meet your group's craziest Cinderella Story 👸
+                    Here's your wildest Cinderella Story 👸
                   </motion.p>
                 </motion.div>
               ) : (
@@ -151,18 +146,13 @@ const GroupCinderellaSlide = () => {
                       exit={contentExitAnimation}
                       transition={{ duration: 0.5 }}
                     >
-                      <StoryCard cardRef={cardRef} title={<CinderellaTitle />} showGroup>
+                      <StoryCard
+                        cardRef={cardRef}
+                        title={<CinderellaTitle />}
+                        showGroup
+                        showBracket
+                      >
                         <TeamInfo team={team} tags={[data.round.name]} className='mb-6 mt-8' />
-                        {/* TODO: Add bracket owner card when data is there */}
-                        <BracketOwnerCard
-                          name={teamMeta.contributingBrackets?.[0]?.member?.displayName ?? ''}
-                          bracketName={teamMeta.contributingBrackets?.[0]?.name ?? ''}
-                          teamLogo={
-                            teamsData?.[teamMeta.contributingBrackets![0]!.winnerId!]!.images
-                              .primary
-                          }
-                          label='Selected By'
-                        />
                       </StoryCard>
                     </motion.div>
                   ) : (
@@ -188,15 +178,8 @@ const GroupCinderellaSlide = () => {
         shareableRef={shareableRef}
         backgroundGradient='linear-gradient(to bottom right, #a855f3, #6366f1)'
       >
-        <StoryCard title={<CinderellaTitle />} animated={false} showGroup>
+        <StoryCard title={<CinderellaTitle />} animated={false} showGroup showBracket>
           <TeamInfo team={team} tags={[data.round.name]} className='mb-6 mt-8' />
-          {/* TODO: Add bracket owner card when data is there */}
-          <BracketOwnerCard
-            name={teamMeta.contributingBrackets?.[0]?.member?.displayName ?? ''}
-            bracketName={teamMeta.contributingBrackets?.[0]?.name ?? ''}
-            teamLogo={teamsData?.[teamMeta.contributingBrackets![0]!.winnerId!]!.images.primary}
-            label='Selected By'
-          />
         </StoryCard>
       </ShareableContent>
     </div>
@@ -214,7 +197,7 @@ const CinderellaTitle: React.FC = () => {
     >
       <div className='flex justify-center gap-2'>
         <h2 className='text-4xl font-black text-white tracking-tight leading-none'>
-          Cinderella Story
+          My Cinderella
         </h2>
         <span className='text-3xl' role='img' aria-label='trophy'>
           👸
@@ -234,4 +217,4 @@ const CinderellaTitle: React.FC = () => {
   )
 }
 
-export default GroupCinderellaSlide
+export default BracketCinderellaSlide

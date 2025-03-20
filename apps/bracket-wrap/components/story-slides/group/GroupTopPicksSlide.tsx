@@ -1,4 +1,4 @@
-import { TeamMap } from '@/app/api/bracket-data'
+import { ChampionStatsData, TeamMap } from '@/app/api/bracket-data'
 import { useBracketSlides, useStory } from '@/components/providers'
 import ShareableContent from '@/components/story-slides/shared/ShareableContent'
 import StoryCard from '@/components/story-slides/shared/StoryCard'
@@ -10,117 +10,13 @@ import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import ShareButton from '../ShareButton'
 
-// Define the type for team pick
-interface TeamPick {
-  name?: string
-  abbreviation?: string
-  rank: number
-  region: {
-    id: number
-    name: string
-  }
-  groupPercentage: number
-  seed: number
-  bracketCount: number
-  teamId: string
-  colors: {
-    primary: string
-    secondary: string
-  }
-}
-
-// Bar Chart Display component
-interface ChampionBarChartProps {
-  championPicks: TeamPick[]
-  teams: TeamMap
-  maxBracketCount: number
-}
-
-const ChampionBarChart = ({ championPicks, teams, maxBracketCount }: ChampionBarChartProps) => {
-  return (
-    <motion.div
-      className='w-full py-4'
-      initial={{ y: 30, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, delay: 0.4 }}
-    >
-      <div className='flex justify-center items-end gap-4'>
-        {championPicks.map((pick, idx) => (
-          <TeamPickBar
-            key={idx}
-            pick={pick}
-            index={idx}
-            teams={teams}
-            maxBracketCount={maxBracketCount}
-          />
-        ))}
-      </div>
-    </motion.div>
-  )
-}
-
 const GroupTopPicksSlide = () => {
-  const [data] = useBracketSlides()
+  const [bracketSlidesData] = useBracketSlides()
   const { isExiting } = useStory()
   const { data: teams } = useTeams()
   const shareableRef = useRef<HTMLDivElement>(null)
   const { isSharing, shareContent } = useShareContent()
-
-  // Pick three random teams from the data
-  const randomTeams = Object.values(teams ?? {})
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 3)
-
-  console.log(randomTeams)
-
-  // Stub data for group's most popular champion picks
-  const championPicks = [
-    {
-      // team: randomTeams[0].name,
-      rank: 1,
-      region: 'East',
-      groupPercentage: 41.8,
-      // seed: 1,
-      bracketCount: 13,
-      // teamId: 'a47c1b32-c12d-11ee-b568-d9cd047f74cf',
-      colors: {
-        primary: '#0c2340',
-        secondary: '#f1f2f3',
-      },
-      teamId: randomTeams[0]?.id,
-      ...randomTeams[0],
-    },
-    {
-      // team: 'Drake',
-      rank: 2,
-      region: 'South',
-      groupPercentage: 23.6,
-      // seed: 2,
-      bracketCount: 6,
-      // teamId: 'a47c1b32-c12d-11ee-b568-d9cd047f74cf',
-      colors: {
-        primary: '#005596',
-        secondary: '#bec0c2',
-      },
-      teamId: randomTeams[1]?.id,
-      ...randomTeams[1],
-    },
-    {
-      // team: 'UNC',
-      rank: 3,
-      region: 'Midwest',
-      groupPercentage: 15.2,
-      // seed: 3,
-      bracketCount: 4,
-      // teamId: 'a47cb771-c12d-11ee-b568-d9cd047f74cf',
-      colors: {
-        primary: '#7bafd4',
-        secondary: '#13294b',
-      },
-      teamId: randomTeams[2]?.id,
-      ...randomTeams[2],
-    },
-  ]
+  const { data, shareId } = bracketSlidesData!.wrapped!.group!.championStats!
 
   // State to control when to show the content
   const [showContent, setShowContent] = useState(false)
@@ -137,18 +33,7 @@ const GroupTopPicksSlide = () => {
   }, [showContent])
 
   // Find the maximum bracket count for scaling
-  const maxBracketCount = Math.max(...championPicks.map(pick => pick.bracketCount))
-
-  // Animation elements configuration - updated with more March Madness themed elements
-  const animationElements = {
-    flashes: [
-      // Flash effect 1
-      { top: '15%', left: '20%', size: '100px', color: 'blue', opacity: 0.3, speed: 'medium' },
-      { top: '10%', right: '10%', size: '80px', color: 'white', opacity: 0.2, speed: 'fast' },
-      { bottom: '10%', left: '10%', size: '120px', color: 'blue', opacity: 0.3, speed: 'slow' },
-      { bottom: '10%', right: '10%', size: '90px', color: 'white', opacity: 0.2, speed: 'medium' },
-    ],
-  }
+  const maxBracketCount = Math.max(...(data?.map(pick => pick.count) ?? []))
 
   // Define exit animations for content
   const contentExitAnimation = {
@@ -166,7 +51,7 @@ const GroupTopPicksSlide = () => {
     const shareOptions = {
       title: 'Top Picks',
       text: `Check out my group's top champion picks!`,
-      url: 'https://bracketwrap.com',
+      url: `https://bracketwrap.com/share/${shareId}`,
     }
 
     try {
@@ -232,7 +117,7 @@ const GroupTopPicksSlide = () => {
                     animate={{ rotateY: 0 }}
                     transition={{ duration: 0.6, delay: 1.0 }}
                   >
-                    12
+                    {bracketSlidesData?.info.group?.data.uniqueChampions}
                   </motion.p>
                   <motion.p
                     className='text-3xl text-center text-white leading-tight font-black mt-4 z-10'
@@ -275,9 +160,9 @@ const GroupTopPicksSlide = () => {
                       exit={contentExitAnimation}
                       transition={{ duration: 0.5 }}
                     >
-                      <StoryCard title={<TopPicksTitle />}>
+                      <StoryCard title={<TopPicksTitle />} showGroup>
                         <ChampionBarChart
-                          championPicks={championPicks as TeamPick[]}
+                          championPicks={data}
                           teams={teams}
                           maxBracketCount={maxBracketCount}
                         />
@@ -306,15 +191,41 @@ const GroupTopPicksSlide = () => {
         shareableRef={shareableRef}
         backgroundGradient='linear-gradient(to bottom right, #0067b1, #000000)'
       >
-        <StoryCard animated={false} title={<TopPicksTitle />}>
-          <ChampionBarChart
-            championPicks={championPicks as TeamPick[]}
-            teams={teams}
-            maxBracketCount={maxBracketCount}
-          />
+        <StoryCard animated={false} title={<TopPicksTitle />} showGroup>
+          <ChampionBarChart championPicks={data} teams={teams} maxBracketCount={maxBracketCount} />
         </StoryCard>
       </ShareableContent>
     </div>
+  )
+}
+
+// Bar Chart Display component
+interface ChampionBarChartProps {
+  championPicks: ChampionStatsData[]
+  teams: TeamMap
+  maxBracketCount: number
+}
+
+const ChampionBarChart = ({ championPicks, teams, maxBracketCount }: ChampionBarChartProps) => {
+  return (
+    <motion.div
+      className='w-full py-4'
+      initial={{ y: 30, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, delay: 0.4 }}
+    >
+      <div className='flex justify-center items-end gap-4'>
+        {championPicks.map((pick, idx) => (
+          <TeamPickBar
+            key={idx}
+            pick={pick}
+            index={idx}
+            teams={teams}
+            maxBracketCount={maxBracketCount}
+          />
+        ))}
+      </div>
+    </motion.div>
   )
 }
 
@@ -350,7 +261,7 @@ const TopPicksTitle = () => {
 
 // Vertical bar chart component for team pick
 interface TeamPickBarProps {
-  pick: TeamPick
+  pick: ChampionStatsData
   index: number
   teams: TeamMap
   maxBracketCount: number
@@ -359,10 +270,10 @@ interface TeamPickBarProps {
 const TeamPickBar = ({ pick, index, teams, maxBracketCount }: TeamPickBarProps) => {
   // Set a fixed height for the tallest bar (in pixels) and scale others proportionally
   const maxBarHeight = 200 // Height in pixels for the bar with most picks
-  const barHeight = Math.max((pick.bracketCount / maxBracketCount) * maxBarHeight, 60) // Minimum 60px height
+  const barHeight = Math.max((pick.count / maxBracketCount) * maxBarHeight, 60) // Minimum 60px height
   // Use team colors from the data
-  const primaryColor = pick.colors.primary
-  const secondaryColor = pick.colors.secondary
+  const primaryColor = teams?.[pick.teamId]?.colors.primary
+  const secondaryColor = teams?.[pick.teamId]?.colors.secondary
   return (
     <motion.div
       className='flex flex-col items-center'
@@ -382,10 +293,8 @@ const TeamPickBar = ({ pick, index, teams, maxBracketCount }: TeamPickBarProps) 
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.7 + index * 0.2 }}
       >
-        <div className='text-2xl leading-none h-5'>{pick.bracketCount}</div>
-        <div className='text-[10px] h-4 text-white/80'>
-          {pick.bracketCount === 1 ? 'pick' : 'picks'}
-        </div>
+        <div className='text-2xl leading-none h-5'>{pick.count}</div>
+        <div className='text-[10px] h-4 text-white/80'>{pick.count === 1 ? 'pick' : 'picks'}</div>
       </motion.div>
 
       {/* Vertical Bar with Team Logo */}
@@ -422,7 +331,7 @@ const TeamPickBar = ({ pick, index, teams, maxBracketCount }: TeamPickBarProps) 
             <div className='w-16 h-16 rounded-lg flex items-center justify-center'>
               <Image
                 src={teams?.[pick.teamId]?.images.secondary || '/placeholder-team.png'}
-                alt={pick.name ?? ''}
+                alt={teams?.[pick.teamId]?.name ?? ''}
                 width={44}
                 height={44}
                 className='w-11 h-11 object-contain'
@@ -433,11 +342,7 @@ const TeamPickBar = ({ pick, index, teams, maxBracketCount }: TeamPickBarProps) 
           {/* Team Rank - Bottom of bar */}
           <div
             className='absolute bottom-[0.5px] left-[0.5px] border-l-0 border-b-0 w-4 h-4 rounded-tr-sm rounded-bl-lg flex items-center justify-center text-white font-bold text-[10px] shadow-md bg-white'
-            style={{
-              // backgroundColor: pick.colors.secondary,
-              // border: `1px solid ${pick.colors.secondary}`,
-              color: pick.colors.primary,
-            }}
+            style={{ color: teams?.[pick.teamId]?.colors.primary }}
           >
             {pick.rank}
           </div>
@@ -445,16 +350,16 @@ const TeamPickBar = ({ pick, index, teams, maxBracketCount }: TeamPickBarProps) 
 
         {/* Team Name */}
         <motion.div
-          className='mt-4 text-center flex flex-col items-center gap-0'
+          className='mt-2 text-center flex flex-col items-center gap-0'
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 1.2 + index * 0.2 }}
         >
           <p className='text-white font-bold text-sm max-w-[96px] overflow-hidden text-ellipsis whitespace-nowrap'>
-            {pick.name}
+            {teams?.[pick.teamId]?.name}
           </p>
-          <p className='text-white/80 text-[10px]'>
-            {pick.region.name} ({pick.seed})
+          <p className='text-white/60 font-extrabold text-[10px]'>
+            {teams?.[pick.teamId]?.region.name} ({teams?.[pick.teamId]?.seed})
           </p>
         </motion.div>
       </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { BracketSlidesData, bracketSlidesMockData } from '@/app/api/bracket-data'
+import { BracketSlidesData } from '@/app/api/bracket-data'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import * as React from 'react'
@@ -65,8 +65,7 @@ type BracketSlidesContextType = {
 const BracketSlidesContext = createContext<BracketSlidesContextType | undefined>(undefined)
 
 export function BracketSlidesProvider({ children }: { children: ReactNode }) {
-  const [bracketSlidesData, setBracketSlidesData] =
-    useState<BracketSlidesData>(bracketSlidesMockData)
+  const [bracketSlidesData, setBracketSlidesData] = useState<BracketSlidesData>()
 
   return (
     <BracketSlidesContext.Provider value={{ bracketSlidesData, setBracketSlidesData }}>
@@ -89,7 +88,7 @@ export const useBracketSlides = (): [
 export function StoryProvider({ children }: { children: ReactNode }) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isExiting, setIsExiting] = useState(false)
-  const totalSlides = 10
+  const totalSlides = 12
 
   const nextSlide = () => {
     if (currentSlide < totalSlides - 1) {

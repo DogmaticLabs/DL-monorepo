@@ -1,5 +1,4 @@
 import { getBracketSlides } from '@/app/api/bracket-data'
-import PageState from '@/app/page-state'
 import useLandingPageState from '@/hooks/useLandingPageState'
 import { useQueryClient } from '@tanstack/react-query'
 import { cn } from '@workspace/ui/lib/utils'
@@ -18,7 +17,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { useBracketSlides } from './providers'
 
-const LandingPage = ({ setPageState }: { setPageState: (state: PageState) => void }) => {
+const LandingPage = ({ onComplete }: { onComplete: () => void }) => {
   const landingPageState = useLandingPageState()
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -63,7 +62,7 @@ const LandingPage = ({ setPageState }: { setPageState: (state: PageState) => voi
         queryFn: () => getBracketSlides(selectedBracket?.id, selectedGroup?.id),
       })
       setBracketSlidesData(res)
-      setPageState(PageState.LoadingSequence)
+      onComplete()
     } catch (error) {
       setError(error instanceof Error ? error.message : 'An unknown error occurred')
       setIsLoading(false)
@@ -72,7 +71,7 @@ const LandingPage = ({ setPageState }: { setPageState: (state: PageState) => voi
 
   return (
     <motion.div
-      className='relative container mx-auto max-w-md inset-0 z-[-1] bg-[#1e293b] flex flex-col min-h-[100dvh]'
+      className='relative container mx-auto max-w-md inset-0 z-[-1] flex flex-col min-h-[100dvh]'
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
