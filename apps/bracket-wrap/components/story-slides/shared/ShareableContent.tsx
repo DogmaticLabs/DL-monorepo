@@ -21,7 +21,7 @@ const ShareableContent = ({
   return (
     <div
       ref={shareableRef}
-      className='relative w-full top-0 left-0 pointer-events-none overflow-hidden'
+      className='relative flex-1 max-w-md top-0 left-0 pointer-events-none overflow-hidden'
       style={{
         background: backgroundGradient,
         padding: '24px',

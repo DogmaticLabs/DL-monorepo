@@ -71,7 +71,7 @@ export const searchGroupsByQuery = async (query: string, year = 2025): Promise<G
   return data
 }
 
-export const getBracketsForGroup = async (groupId: string, year = 2024): Promise<Group> => {
+export const getBracketsForGroup = async (groupId: string, year = 2025): Promise<Group> => {
   const response = await fetch(
     `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/groups/${groupId}?year=${year}`,
   )
@@ -79,9 +79,9 @@ export const getBracketsForGroup = async (groupId: string, year = 2024): Promise
   return data
 }
 
-export const getBracket = async (bracketId: string, year = 2024): Promise<Bracket> => {
+export const getBracket = async (bracketId: string, year = 2025): Promise<Bracket> => {
   const response = await fetch(
-    `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/brackets/${bracketId}/groups`,
+    `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/brackets/${bracketId}/groups?year=${year}`,
   )
   if (!response.ok) throw new Error('Failed to fetch bracket')
 
@@ -89,7 +89,7 @@ export const getBracket = async (bracketId: string, year = 2024): Promise<Bracke
   return data
 }
 
-export const getTeams = async (year = 2024): Promise<TeamMap> => {
+export const getTeams = async (year = 2025): Promise<TeamMap> => {
   const response = await fetch(
     `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/teams?year=${year}`,
   )
@@ -449,8 +449,9 @@ export type BracketSlidesData = {
 export const getBracketSlides = async (
   bracketId: string,
   groupId?: string,
+  year = 2025,
 ): Promise<BracketSlidesData> => {
-  const url = `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/brackets/${bracketId}/wrapped-v2${groupId ? `?group_id=${groupId}` : ''}`
+  const url = `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/brackets/${bracketId}/wrapped-v2?year=${year}${groupId ? `&group_id=${groupId}` : ''}`
   const response = await fetch(url)
   const data = await response.json()
   return data
