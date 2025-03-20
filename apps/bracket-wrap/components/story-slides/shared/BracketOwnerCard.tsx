@@ -12,6 +12,7 @@ interface BracketOwnerCardProps {
   teamBackground?: boolean
   Icon?: React.ReactNode
   description?: string
+  className?: string
 }
 
 /**
@@ -28,6 +29,7 @@ const BracketOwnerCard: React.FC<BracketOwnerCardProps> = ({
   teamBackground = false,
   Icon,
   description,
+  className,
 }) => {
   Icon = Icon || <Trophy className={`h-5 w-5 ${iconColor}`} />
 
@@ -36,6 +38,7 @@ const BracketOwnerCard: React.FC<BracketOwnerCardProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
+      className={className}
     >
       <div className='py-1 border-white/20'>
         <h4 className='text-sm font-extrabold text-white/60 mb-1'>{label}</h4>

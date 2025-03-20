@@ -162,6 +162,7 @@ const GroupCinderellaSlide = () => {
                               .primary
                           }
                           label='Selected By'
+                          className='mb-6'
                         />
                       </StoryCard>
                     </motion.div>
