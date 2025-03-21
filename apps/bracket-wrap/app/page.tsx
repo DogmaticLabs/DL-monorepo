@@ -9,7 +9,6 @@ import './globals.css'
 
 export default function Page({ searchParams }: { searchParams: Promise<{ mode: string }> }) {
   const unwrappedParams = use(searchParams)
-  // const [pageState, setPageState] = useState<PageState>(PageState.IntroSequence)
   const router = useRouter()
 
   const onComplete = () => {
