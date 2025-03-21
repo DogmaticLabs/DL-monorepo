@@ -336,7 +336,7 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({
               >
                 <div className='flex items-start justify-start'>
                   <span className='text-white font-bold text-lg relative leading-4 '>
-                    {Math.round((team.count / groupMemberCount) * 100)}
+                    {Math.round((groupTeam.count / groupMemberCount) * 100)}
                   </span>
                   <span className='text-[10px] leading-3 font-semibold'>%</span>
                 </div>
@@ -357,9 +357,7 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({
             >
               <div className='flex items-start justify-start'>
                 <span className='text-white font-bold text-lg relative leading-4 '>
-                  {Math.round(
-                    (nationalData[index]!.count / bracketSlidesData!.info.global.count!) * 100,
-                  )}
+                  {Math.round((team.count / bracketSlidesData!.info.global.count!) * 100)}
                 </span>
                 <span className='text-[10px] leading-3 font-semibold'>%</span>
               </div>
