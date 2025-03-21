@@ -288,7 +288,7 @@ const BracketChalkScoreSlide = () => {
                               </div>
                             </div>
                             <BracketOwnerCard
-                              name={bracketSlidesData!.info.group!.data.name}
+                              name={bracketSlidesData!.info.bracket!.data.name}
                               bracketName={bracketSlidesData!.info.bracket.data.name}
                               teamLogo={teams?.[championData!.teamId!]?.images?.primary}
                               label=''
@@ -319,7 +319,7 @@ const BracketChalkScoreSlide = () => {
                               </div>
                             </div>
                             <BracketOwnerCard
-                              name={bracketSlidesData!.info.group!.data.name}
+                              name={bracketSlidesData!.info.bracket!.data.name}
                               bracketName={bracketSlidesData!.info.bracket.data.name}
                               teamLogo={teams?.[championData!.teamId!]?.images?.primary}
                               label=''
@@ -374,7 +374,7 @@ const BracketChalkScoreSlide = () => {
                 </div>
               </div>
               <BracketOwnerCard
-                name={bracketSlidesData!.info.group!.data.name}
+                name={bracketSlidesData!.info.bracket!.data.name}
                 bracketName={bracketSlidesData!.info.bracket.data.name}
                 teamLogo={teams?.[championData!.teamId!]?.images?.primary}
                 label=''
@@ -397,7 +397,7 @@ const BracketChalkScoreSlide = () => {
                 </div>
               </div>
               <BracketOwnerCard
-                name={bracketSlidesData!.info.group!.data.name}
+                name={bracketSlidesData!.info.bracket!.data.name}
                 bracketName={bracketSlidesData!.info.bracket.data.name}
                 teamLogo={teams?.[championData!.teamId!]?.images?.primary}
                 label=''

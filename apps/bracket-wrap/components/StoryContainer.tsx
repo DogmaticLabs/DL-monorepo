@@ -1,11 +1,12 @@
 'use client'
 
 import { X } from 'lucide-react'
-import { motion } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useStoryNavigation } from '../hooks/useStoryNavigation'
+import { useUrlParam } from '../hooks/useUrlParams'
 import { useStory } from './providers'
 import StoryProgress from './StoryProgress'
 
@@ -14,16 +15,61 @@ interface StoryContainerProps {
 }
 
 export default function StoryContainer({ children }: StoryContainerProps) {
-  const { currentSlide } = useStory()
+  const { setCurrentSlide, currentSlide, setSlideCount } = useStory()
   const router = useRouter()
+  const [groupId] = useUrlParam<string>('group_id')
+  const [bracketId] = useUrlParam<string>('bracket_id')
+  const [showHint, setShowHint] = React.useState(false)
   useStoryNavigation()
 
   // Convert children to array to access by index
   const slides = React.Children.toArray(children)
 
+  // Update the total slides count whenever children change
+  React.useEffect(() => {
+    if (slides.length > 1) {
+      setSlideCount(slides.length)
+    }
+  }, [slides.length, setSlideCount])
+
+  // Show hint after 4 seconds on the first slide
+  React.useEffect(() => {
+    let hintTimer: NodeJS.Timeout | null = null
+
+    // Only show the hint on the first slide
+    if (currentSlide === 0 && slides.length > 1) {
+      hintTimer = setTimeout(() => {
+        setShowHint(true)
+      }, 6000)
+    } else {
+      // Hide the hint when not on the first slide
+      setShowHint(false)
+    }
+
+    // Clean up timer when component unmounts or slide changes
+    return () => {
+      if (hintTimer) clearTimeout(hintTimer)
+    }
+  }, [currentSlide])
+
+  React.useEffect(() => () => setCurrentSlide(0), [])
+
   const handleClose = (e: React.MouseEvent) => {
     e.stopPropagation()
-    router.push('/')
+
+    // Construct URL with preserved parameters
+    let url = '/'
+    const params = new URLSearchParams()
+
+    if (groupId) params.append('group_id', groupId)
+    if (bracketId) params.append('bracket_id', bracketId)
+
+    // Only add the search params if we have any
+    if (params.toString()) {
+      url += `?${params.toString()}`
+    }
+
+    router.push(url)
   }
 
   return (
@@ -36,6 +82,40 @@ export default function StoryContainer({ children }: StoryContainerProps) {
 
       {/* Top controls bar */}
       <StoryControls handleClose={handleClose} />
+
+      {/* Navigation hint for first slide */}
+      <AnimatePresence>
+        {showHint && (
+          <motion.div
+            className='fixed right-8 bottom-20 -translate-y-1/2 z-30 pointer-events-none'
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className='flex flex-col items-center gap-2'>
+              <div className='relative flex items-center justify-center'>
+                {/* Pulsing outer circle */}
+                <motion.div
+                  className='absolute rounded-full bg-white/30 size-14'
+                  initial={{ scale: 0.8, opacity: 0.5 }}
+                  animate={{
+                    scale: [0.8, 1.2, 0.8],
+                    opacity: [0.3, 0.6, 0.3],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                />
+                {/* Solid inner circle */}
+                <div className='bg-white/40 rounded-full size-12 flex items-center justify-center' />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {slides[currentSlide]}
     </div>
@@ -69,7 +149,7 @@ function StoryControls({ handleClose }: { handleClose: (e: React.MouseEvent) => 
   )
 }
 
-const StoryBackground = () => {
+export const StoryBackground = () => {
   return (
     <div className='absolute inset-0 w-full h-full pt-8'>
       {/* Bracket SVG with masked center for the logo */}
@@ -86,9 +166,7 @@ const StoryBackground = () => {
         }}
       >
         <motion.div
-          className='absolute inset-0 bg-[url("/bracket.svg")] bg-no-repeat animate-bracket-pulse'
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.2 }}
+          className='absolute inset-0 bg-[url("/bracket.svg")] bg-no-repeat animate-bracket-pulse opacity-15'
           transition={{ duration: 1.5, delay: 0.3, ease: 'easeOut' }}
           style={{
             backgroundSize: 'contain',
@@ -108,8 +186,6 @@ const StoryBackground = () => {
       >
         <motion.div
           className='relative w-[200px] h-[200px] flex items-center justify-center'
-          initial={{ scale: 0.8 }}
-          animate={{ scale: 1 }}
           transition={{ duration: 1.2, delay: 0.7, ease: 'easeOut' }}
           style={{
             filter: 'brightness(1) contrast(1)',

@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useState } from 'react'
+import { useBracketSlides } from './providers'
 
 interface IntroSequenceProps {
   onComplete: () => void
@@ -10,6 +11,7 @@ interface IntroSequenceProps {
 export default function IntroSequence({ onComplete }: IntroSequenceProps) {
   const [step, setStep] = useState(0)
   const [isExiting, setIsExiting] = useState(false)
+  const [bracketSlidesData] = useBracketSlides()
 
   useEffect(() => {
     // Auto-progress through the simplified intro sequence
@@ -17,20 +19,22 @@ export default function IntroSequence({ onComplete }: IntroSequenceProps) {
       const timer = setTimeout(() => setStep(1), 2500)
       return () => clearTimeout(timer)
     }
-
     if (step === 1 && !isExiting) {
       const timer = setTimeout(() => {
         setIsExiting(true)
       }, 3000)
       return () => clearTimeout(timer)
     }
-
     if (isExiting) {
       // Wait for exit animations to complete before calling onComplete
-      const timer = setTimeout(() => onComplete(), 1200)
+      const timer = setTimeout(() => {
+        onComplete()
+      }, 1200)
       return () => clearTimeout(timer)
     }
   }, [step, isExiting, onComplete])
+
+  console.log(bracketSlidesData)
 
   return (
     <motion.div
@@ -38,173 +42,21 @@ export default function IntroSequence({ onComplete }: IntroSequenceProps) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5, delay: 0.8 }}
     >
-      {/* Decorative elements - placed outside of AnimatePresence to prevent reset */}
-      {/* Top left bracket */}
-      <AnimatePresence>
-        {!isExiting ? (
-          <motion.div
-            key='bracket-top-left'
-            className='absolute top-[10%] left-[10%] w-16 h-16 border-l-4 border-t-4 border-yellow-400 rounded-tl-lg opacity-70'
-            animate={{
-              rotate: [0, 15, 0],
-              scale: [1, 1.1, 1],
-            }}
-            exit={{
-              x: -300,
-              y: -300,
-              opacity: 0,
-              rotate: -45,
-              transition: { duration: 0.8, ease: 'easeOut' },
-            }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              repeatType: 'reverse',
-            }}
-          />
-        ) : null}
-      </AnimatePresence>
-
-      {/* Bottom right bracket */}
-      <AnimatePresence>
-        {!isExiting ? (
-          <motion.div
-            key='bracket-bottom-right'
-            className='absolute bottom-[15%] right-[15%] w-20 h-20 border-r-4 border-b-4 border-orange-500 rounded-br-lg opacity-70'
-            animate={{
-              rotate: [0, -20, 0],
-              scale: [1, 1.2, 1],
-            }}
-            exit={{
-              x: 300,
-              y: 300,
-              opacity: 0,
-              rotate: 45,
-              transition: { duration: 0.8, ease: 'easeOut' },
-            }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              repeatType: 'reverse',
-              delay: 0.5,
-            }}
-          />
-        ) : null}
-      </AnimatePresence>
-
-      {/* Top right bracket */}
-      <AnimatePresence>
-        {!isExiting ? (
-          <motion.div
-            key='bracket-top-right'
-            className='absolute top-[20%] right-[20%] w-12 h-12 border-r-4 border-t-4 border-pink-400 rounded-tr-lg opacity-70'
-            animate={{
-              rotate: [0, 25, 0],
-              scale: [1, 1.15, 1],
-            }}
-            exit={{
-              x: 300,
-              y: -300,
-              opacity: 0,
-              rotate: 45,
-              transition: { duration: 0.7, ease: 'easeOut' },
-            }}
-            transition={{
-              duration: 4.5,
-              repeat: Infinity,
-              repeatType: 'reverse',
-              delay: 1,
-            }}
-          />
-        ) : null}
-      </AnimatePresence>
-
-      {/* Bottom left bracket */}
-      <AnimatePresence>
-        {!isExiting ? (
-          <motion.div
-            key='bracket-bottom-left'
-            className='absolute bottom-[25%] left-[18%] w-14 h-14 border-l-4 border-b-4 border-purple-400 rounded-bl-lg opacity-70'
-            animate={{
-              rotate: [0, -15, 0],
-              scale: [1, 1.1, 1],
-            }}
-            exit={{
-              x: -300,
-              y: 300,
-              opacity: 0,
-              rotate: -45,
-              transition: { duration: 0.9, ease: 'easeOut' },
-            }}
-            transition={{
-              duration: 5.5,
-              repeat: Infinity,
-              repeatType: 'reverse',
-              delay: 1.5,
-            }}
-          />
-        ) : null}
-      </AnimatePresence>
-
-      {/* Basketball top left */}
-      <AnimatePresence>
-        {!isExiting ? (
-          <motion.div
-            key='basketball-top-left'
-            className='absolute top-[35%] left-[5%] w-8 h-8 rounded-full opacity-80'
-            animate={{
-              y: [0, -20, 0],
-              x: [0, 10, 0],
-            }}
-            exit={{
-              x: -200,
-              y: -200,
-              opacity: 0,
-              scale: 0.5,
-              transition: { duration: 0.6, ease: 'easeOut' },
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              repeatType: 'reverse',
-            }}
-          />
-        ) : null}
-      </AnimatePresence>
-
-      {/* Basketball bottom right */}
-      <AnimatePresence>
-        {!isExiting ? (
-          <motion.div
-            key='basketball-bottom-right'
-            className='absolute bottom-[30%] right-[8%] w-6 h-6 rounded-full opacity-80'
-            animate={{
-              y: [0, 15, 0],
-              x: [0, -8, 0],
-            }}
-            exit={{
-              x: 200,
-              y: 200,
-              opacity: 0,
-              scale: 0.5,
-              transition: { duration: 0.7, ease: 'easeOut' },
-            }}
-            transition={{
-              duration: 3.5,
-              repeat: Infinity,
-              repeatType: 'reverse',
-              delay: 0.7,
-            }}
-          />
-        ) : null}
-      </AnimatePresence>
+      {/* Subtle radial gradient overlay */}
+      <motion.div
+        className='absolute inset-0 bg-radial-gradient from-transparent to-black/30 pointer-events-none'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 1 }}
+      />
 
       {/* Content */}
       <AnimatePresence mode='wait'>
         {step === 0 ? (
           <motion.div
             key='welcome-content'
-            className='absolute inset-0 flex flex-col items-center justify-center px-6'
+            className='absolute inset-0 flex flex-col items-center justify-center px-6 z-10'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={
@@ -226,28 +78,47 @@ export default function IntroSequence({ onComplete }: IntroSequenceProps) {
               transition={{ duration: 0.8 }}
               className='text-center'
             >
+              <motion.div
+                className='relative'
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <motion.div
+                  className='w-full h-1 bg-gradient-to-r from-transparent via-madness-orange to-transparent mb-8'
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  animate={{ scaleX: 1, opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                />
+              </motion.div>
               <motion.h1
-                className='text-5xl md:text-7xl font-bold text-white mb-4'
+                className='text-4xl md:text-7xl font-bold text-white mb-6'
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
               >
                 Welcome to your
               </motion.h1>
               <motion.h1
-                className='text-6xl md:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500'
+                className='text-5xl md:text-8xl font-extrabold text-white bg-madness-orange rounded-lg px-2 py-3 drop-shadow-md'
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
+                transition={{ duration: 0.8, delay: 0.8 }}
               >
                 Bracket Wrap
               </motion.h1>
+              <motion.div
+                className='w-full h-1 bg-gradient-to-r from-transparent via-madness-orange to-transparent mt-8'
+                initial={{ scaleX: 0, opacity: 0 }}
+                animate={{ scaleX: 1, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 1.0 }}
+              />
             </motion.div>
           </motion.div>
         ) : (
           <motion.div
             key='intro-content'
-            className='absolute inset-0 flex flex-col items-center justify-center px-6'
+            className='absolute inset-0 flex flex-col items-center justify-center px-6 z-10'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={
@@ -269,22 +140,29 @@ export default function IntroSequence({ onComplete }: IntroSequenceProps) {
               transition={{ duration: 0.8 }}
               className='text-center max-w-md'
             >
+              <motion.div
+                className='w-16 h-16 mx-auto mb-6 text-4xl flex items-center justify-center'
+                initial={{ opacity: 0, rotateY: 180 }}
+                animate={{ opacity: 1, rotateY: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                🏀
+              </motion.div>
               <motion.h2
-                className='text-3xl md:text-4xl font-bold text-white mb-6'
+                className='text-3xl md:text-4xl font-bold text-white mb-4'
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                Let's take a look at your bracket this year
+                Let's see how your bracket {bracketSlidesData?.info.group ? 'and group' : ''} stack
+                up.
               </motion.h2>
-              {/* <motion.p
-                className='text-xl md:text-2xl text-gray-200'
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                and see what it says about you
-              </motion.p> */}
+              <motion.div
+                className='w-32 h-1 bg-madness-orange mx-auto mt-6 rounded-full'
+                initial={{ width: 0 }}
+                animate={{ width: '8rem' }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+              />
             </motion.div>
           </motion.div>
         )}

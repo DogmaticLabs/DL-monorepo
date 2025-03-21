@@ -87,8 +87,23 @@ const useLandingPageState = () => {
     } else {
       // Handle bracket ID search
       setBracketSearchValue(value)
+
+      // Check if the input is a valid bracket ID directly
       if (isValidBracketId(value)) {
         setBracketId(value)
+      }
+      // Check if the input is an ESPN share link containing entryId
+      else {
+        const entryIdMatch = value.match(
+          /[&?]entryId=([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})/i,
+        )
+        if (entryIdMatch && entryIdMatch[1]) {
+          const extractedBracketId = entryIdMatch[1]
+          if (isValidBracketId(extractedBracketId)) {
+            setBracketId(extractedBracketId)
+            setBracketSearchValue(extractedBracketId) // Update displayed value to extracted ID
+          }
+        }
       }
     }
   }
@@ -154,6 +169,12 @@ const useLandingPageState = () => {
   useEffect(() => {
     if (selectedBracket) handleBracketSelect(selectedBracket)
   }, [selectedBracket])
+
+  useEffect(() => {
+    if (bracketQuery.data && !bracketQuery.data.groups.length) {
+      setGroupId(undefined)
+    }
+  }, [bracketQuery.data])
 
   const toggleSearchMode = () => {
     setBracketId(undefined)

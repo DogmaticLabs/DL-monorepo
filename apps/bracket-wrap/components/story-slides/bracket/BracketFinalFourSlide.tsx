@@ -20,9 +20,9 @@ const BracketFinalFourSlide = () => {
   // State to control when to show the content
   const [showContent, setShowContent] = useState(false)
 
-  const { data: finalFourGroupData, shareId: finalFourGroupShareId } =
-    bracketSlidesData!.wrapped.bracket.finalFourPicksGroup!
-  const { data: finalFourNationalData } = bracketSlidesData!.wrapped.bracket.finalFourPicksNational!
+  const finalFourGroupData = bracketSlidesData!.wrapped.bracket.finalFourPicksGroup
+  const { data: finalFourNationalData, shareId } =
+    bracketSlidesData!.wrapped.bracket.finalFourPicksNational!
 
   // Automatically transition to content after the intro text
   useEffect(() => {
@@ -49,7 +49,7 @@ const BracketFinalFourSlide = () => {
     e.stopPropagation()
 
     const shareOptions = {
-      url: `https://bracketwrap.com/share/${finalFourGroupShareId}`,
+      url: `https://bracketwrap.com/share/${shareId}`,
     }
 
     try {
@@ -151,7 +151,7 @@ const BracketFinalFourSlide = () => {
                     >
                       <StoryCard cardRef={cardRef} title={<FinalFourTitle />} showGroup showBracket>
                         <FinalFourGrid
-                          groupData={finalFourGroupData}
+                          groupData={finalFourGroupData?.data}
                           nationalData={finalFourNationalData}
                         />
                       </StoryCard>
@@ -181,7 +181,10 @@ const BracketFinalFourSlide = () => {
         backgroundGradient='linear-gradient(to bottom right, #2C3E50, #4CA1AF)'
       >
         <StoryCard animated={false} title={<FinalFourTitle />} showGroup showBracket>
-          <FinalFourGrid groupData={finalFourGroupData} nationalData={finalFourNationalData} />
+          <FinalFourGrid
+            groupData={finalFourGroupData?.data}
+            nationalData={finalFourNationalData}
+          />
         </StoryCard>
       </ShareableContent>
     </div>
@@ -221,7 +224,7 @@ const FinalFourTitle = () => {
 
 // 2x2 Grid component for Final Four teams
 interface FinalFourGridProps {
-  groupData: FinalFourPickGroupData[]
+  groupData?: FinalFourPickGroupData[]
   nationalData: FinalFourPickData[]
 }
 
@@ -248,23 +251,25 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({
         transition={{ duration: 0.4, delay: 0.2 }}
       >
         <div className='text-white/60 text-sm font-bold align-bottom col-span-3'>Team</div>
-        <div className='flex items-center gap-1 justify-center col-span-1'>
-          <div className='w-6 h-6 rounded-full flex items-center justify-center bg-madness-orange'>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              viewBox='0 0 24 24'
-              fill='currentColor'
-              className='w-4 h-4 text-white'
-            >
-              <path
-                fillRule='evenodd'
-                d='M8.25 6.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM15.75 9.75a3 3 0 116 0 3 3 0 01-6 0zM2.25 9.75a3 3 0 116 0 3 3 0 01-6 0zM6.31 15.117A6.745 6.745 0 0112 12a6.745 6.745 0 016.709 7.498.75.75 0 01-.372.568A12.696 12.696 0 0112 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 01-.372-.568 6.787 6.787 0 011.019-4.38z'
-                clipRule='evenodd'
-              />
-              <path d='M5.082 14.254a8.287 8.287 0 00-1.308 5.135 9.687 9.687 0 01-1.764-.44l-.115-.04a.563.563 0 01-.373-.487l-.01-.121a3.75 3.75 0 013.57-4.047zM20.226 19.389a8.287 8.287 0 00-1.308-5.135 3.75 3.75 0 013.57 4.047l-.01.121a.563.563 0 01-.373.486l-.115.04c-.567.2-1.156.349-1.764.441z' />
-            </svg>
+        {groupData && (
+          <div className='flex items-center gap-1 justify-center col-span-1'>
+            <div className='w-6 h-6 rounded-full flex items-center justify-center bg-madness-orange'>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                viewBox='0 0 24 24'
+                fill='currentColor'
+                className='w-4 h-4 text-white'
+              >
+                <path
+                  fillRule='evenodd'
+                  d='M8.25 6.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM15.75 9.75a3 3 0 116 0 3 3 0 01-6 0zM2.25 9.75a3 3 0 116 0 3 3 0 01-6 0zM6.31 15.117A6.745 6.745 0 0112 12a6.745 6.745 0 016.709 7.498.75.75 0 01-.372.568A12.696 12.696 0 0112 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 01-.372-.568 6.787 6.787 0 011.019-4.38z'
+                  clipRule='evenodd'
+                />
+                <path d='M5.082 14.254a8.287 8.287 0 00-1.308 5.135 9.687 9.687 0 01-1.764-.44l-.115-.04a.563.563 0 01-.373-.487l-.01-.121a3.75 3.75 0 013.57-4.047zM20.226 19.389a8.287 8.287 0 00-1.308-5.135 3.75 3.75 0 013.57 4.047l-.01.121a.563.563 0 01-.373.486l-.115.04c-.567.2-1.156.349-1.764.441z' />
+              </svg>
+            </div>
           </div>
-        </div>
+        )}
         <div className='flex items-center gap-1 justify-center col-span-1'>
           <div className='w-6 h-6 rounded-full flex items-center justify-center bg-madness-blue mr-2'>
             <span role='img' aria-label='national' className='text-lg'>
@@ -276,7 +281,8 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({
       </motion.div>
 
       {/* Team rows */}
-      {groupData?.map((team, index) => {
+      {nationalData?.map((team, index) => {
+        const groupTeam = groupData?.find(t => t.teamId === team.teamId)
         const teamData = teams?.[team.teamId]
         return (
           <motion.div
@@ -321,24 +327,26 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({
             </div>
 
             {/* Group percentage */}
-            <motion.div
-              className='flex flex-col justify-center items-center'
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
-            >
-              <div className='flex items-start justify-start'>
-                <span className='text-white font-bold text-lg relative leading-4 '>
-                  {Math.round((team.count / groupMemberCount) * 100)}
-                </span>
-                <span className='text-[10px] leading-3 font-semibold'>%</span>
-              </div>
-              <div className='text-white/60 font-bold text-xs relative'>
-                <span className='leading-4'>
-                  {team.rank}/{team.uniqueTeams}
-                </span>
-              </div>
-            </motion.div>
+            {groupTeam && (
+              <motion.div
+                className='flex flex-col justify-center items-center'
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
+              >
+                <div className='flex items-start justify-start'>
+                  <span className='text-white font-bold text-lg relative leading-4 '>
+                    {Math.round((team.count / groupMemberCount) * 100)}
+                  </span>
+                  <span className='text-[10px] leading-3 font-semibold'>%</span>
+                </div>
+                <div className='text-white/60 font-bold text-xs relative'>
+                  <span className='leading-4'>
+                    {groupTeam.rank}/{groupTeam.uniqueTeams}
+                  </span>
+                </div>
+              </motion.div>
+            )}
 
             {/* National percentage */}
             <motion.div
@@ -371,26 +379,28 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({
         transition={{ duration: 0.4, delay: 0.8 }}
       >
         <div className='flex flex-col space-y-1'>
-          <div className='flex items-center gap-2'>
-            <div className='w-5 h-5 rounded-full flex items-center justify-center bg-madness-orange'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                viewBox='0 0 24 24'
-                fill='currentColor'
-                className='w-4 h-4 text-white'
-              >
-                <path
-                  fillRule='evenodd'
-                  d='M8.25 6.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM15.75 9.75a3 3 0 116 0 3 3 0 01-6 0zM2.25 9.75a3 3 0 116 0 3 3 0 01-6 0zM6.31 15.117A6.745 6.745 0 0112 12a6.745 6.745 0 016.709 7.498.75.75 0 01-.372.568A12.696 12.696 0 0112 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 01-.372-.568 6.787 6.787 0 011.019-4.38z'
-                  clipRule='evenodd'
-                />
-                <path d='M5.082 14.254a8.287 8.287 0 00-1.308 5.135 9.687 9.687 0 01-1.764-.44l-.115-.04a.563.563 0 01-.373-.487l-.01-.121a3.75 3.75 0 013.57-4.047zM20.226 19.389a8.287 8.287 0 00-1.308-5.135 3.75 3.75 0 013.57 4.047l-.01.121a.563.563 0 01-.373.486l-.115.04c-.567.2-1.156.349-1.764.441z' />
-              </svg>
+          {groupData && (
+            <div className='flex items-center gap-2'>
+              <div className='w-5 h-5 rounded-full flex items-center justify-center bg-madness-orange'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  viewBox='0 0 24 24'
+                  fill='currentColor'
+                  className='w-4 h-4 text-white'
+                >
+                  <path
+                    fillRule='evenodd'
+                    d='M8.25 6.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM15.75 9.75a3 3 0 116 0 3 3 0 01-6 0zM2.25 9.75a3 3 0 116 0 3 3 0 01-6 0zM6.31 15.117A6.745 6.745 0 0112 12a6.745 6.745 0 016.709 7.498.75.75 0 01-.372.568A12.696 12.696 0 0112 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 01-.372-.568 6.787 6.787 0 011.019-4.38z'
+                    clipRule='evenodd'
+                  />
+                  <path d='M5.082 14.254a8.287 8.287 0 00-1.308 5.135 9.687 9.687 0 01-1.764-.44l-.115-.04a.563.563 0 01-.373-.487l-.01-.121a3.75 3.75 0 013.57-4.047zM20.226 19.389a8.287 8.287 0 00-1.308-5.135 3.75 3.75 0 013.57 4.047l-.01.121a.563.563 0 01-.373.486l-.115.04c-.567.2-1.156.349-1.764.441z' />
+                </svg>
+              </div>
+              <span className='text-xs font-semibold'>
+                % of brackets in your group with this team
+              </span>
             </div>
-            <span className='text-xs font-semibold'>
-              % of brackets in your group with this team
-            </span>
-          </div>
+          )}
           <div className='flex items-center gap-2'>
             <div className='w-5 h-5 rounded-full flex items-center justify-center bg-madness-blue'>
               <span role='img' aria-label='national' className='text-lg'>

@@ -396,7 +396,6 @@ const SimilaritySection: React.FC<{ twinsData: CelebrityTwinData }> = ({ twinsDa
 
 // FurthestSharedTeam component showing the furthest team they both picked
 const FurthestSharedTeam: React.FC<{ team: Team; round: string }> = ({ team, round }) => {
-  console.log(team, round)
   return (
     <motion.div
       className='w-full rounded-lg py-4'

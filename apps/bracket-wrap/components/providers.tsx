@@ -21,6 +21,8 @@ type StoryContextType = {
   goToSlide: (index: number) => void
   isExiting: boolean
   triggerNextSlide: () => void
+  setSlideCount: (count: number) => void
+  setCurrentSlide: (index: number) => void
 }
 
 const StoryContext = createContext<StoryContextType | undefined>(undefined)
@@ -87,12 +89,19 @@ export const useBracketSlides = (): [
 }
 
 export function StoryProvider({ children }: { children: ReactNode }) {
-  let [currentSlide = 0, setCurrentSlide] = useUrlParam<number>('slide', 0, {
-    persistDefault: true,
-  })
+  let [currentSlide = 0, setCurrentSlide] = useUrlParam<number>('slide', 0)
   currentSlide = Number(currentSlide)
   const [isExiting, setIsExiting] = useState(false)
-  const totalSlides = 12
+  const [totalSlides, setTotalSlides] = useState(0)
+  const slidesCountRef = React.useRef<number>(0)
+
+  // Function to set the total slide count
+  const setSlideCount = (count: number) => {
+    if (count !== slidesCountRef.current) {
+      slidesCountRef.current = count
+      setTotalSlides(count)
+    }
+  }
 
   const nextSlide = () => {
     if (currentSlide < totalSlides - 1) {
@@ -134,6 +143,8 @@ export function StoryProvider({ children }: { children: ReactNode }) {
         goToSlide,
         isExiting,
         triggerNextSlide,
+        setSlideCount,
+        setCurrentSlide,
       }}
     >
       {children}

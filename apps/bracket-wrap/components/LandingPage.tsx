@@ -42,19 +42,8 @@ const LandingPage = ({ onComplete }: { onComplete: () => void }) => {
   const queryClient = useQueryClient()
 
   const onSubmit = async () => {
-    console.log('onSubmit', {
-      selectedBracket,
-      selectedGroup,
-      searchMode,
-      searchValue: bracketFilterValue,
-    })
     if (!selectedBracket) return
-    console.log('Starting...', {
-      searchMode,
-      selectedGroup,
-      selectedBracket,
-      searchValue: bracketFilterValue,
-    })
+
     setIsLoading(true)
     try {
       const res = await queryClient.fetchQuery({
@@ -162,7 +151,7 @@ const LandingPage = ({ onComplete }: { onComplete: () => void }) => {
 
             {/* Selected Bracket + Group Details */}
             {bracketId &&
-              groupId &&
+              (!!groupId || !selectedBracket?.groups.length) &&
               !showGroupSelection &&
               !showBracketDropdown &&
               !showGroupDropdown && (
@@ -186,12 +175,6 @@ const LandingPage = ({ onComplete }: { onComplete: () => void }) => {
             } ${cn(selectedBracket && selectedGroup && 'animate-shimmer items-center justify-center border border-[#ff8c35] bg-[linear-gradient(110deg,#ff6b35,45%,#ffb835,55%,#ff6b35)] bg-[length:200%_100%] text-white')}`}
             onClick={() => {
               if (selectedBracket) {
-                console.log('Starting...', {
-                  searchMode,
-                  selectedGroup,
-                  selectedBracket,
-                  searchValue: bracketFilterValue,
-                })
                 onSubmit()
               }
             }}
