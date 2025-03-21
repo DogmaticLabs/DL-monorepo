@@ -2,8 +2,6 @@ import { toPng } from 'html-to-image'
 import { useState } from 'react'
 
 interface ShareOptions {
-  title?: string
-  text?: string
   url: string
   captureOptions?: {
     quality?: number
@@ -87,8 +85,8 @@ export const useShareContent = (): UseShareContentReturn => {
 
       // Create share data
       const shareData: ShareData = {
-        title: options.title,
-        text: options.text,
+        title: 'BracketWrap',
+        text: 'View your bracket wrap now:',
         url: options.url,
       }
 
@@ -112,8 +110,8 @@ export const useShareContent = (): UseShareContentReturn => {
       } else if (navigator.share) {
         // Fallback to sharing without files
         const textOnlyShareData = {
-          title: shareData.title,
-          text: shareData.text,
+          title: 'BracketWrap',
+          text: 'View your bracket wrap:',
           url: shareData.url,
         }
         await navigator.share(textOnlyShareData)

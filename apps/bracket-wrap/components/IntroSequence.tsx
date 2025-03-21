@@ -151,7 +151,7 @@ export default function IntroSequence({ onComplete }: IntroSequenceProps) {
         {!isExiting ? (
           <motion.div
             key='basketball-top-left'
-            className='absolute top-[35%] left-[5%] w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-orange-700 opacity-80'
+            className='absolute top-[35%] left-[5%] w-8 h-8 rounded-full opacity-80'
             animate={{
               y: [0, -20, 0],
               x: [0, 10, 0],
@@ -177,7 +177,7 @@ export default function IntroSequence({ onComplete }: IntroSequenceProps) {
         {!isExiting ? (
           <motion.div
             key='basketball-bottom-right'
-            className='absolute bottom-[30%] right-[8%] w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-orange-700 opacity-80'
+            className='absolute bottom-[30%] right-[8%] w-6 h-6 rounded-full opacity-80'
             animate={{
               y: [0, 15, 0],
               x: [0, -8, 0],
@@ -277,14 +277,14 @@ export default function IntroSequence({ onComplete }: IntroSequenceProps) {
               >
                 Let's take a look at your bracket this year
               </motion.h2>
-              <motion.p
+              {/* <motion.p
                 className='text-xl md:text-2xl text-gray-200'
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
               >
                 and see what it says about you
-              </motion.p>
+              </motion.p> */}
             </motion.div>
           </motion.div>
         )}

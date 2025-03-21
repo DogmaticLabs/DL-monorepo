@@ -62,6 +62,8 @@ const BracketOwnerCard: React.FC<BracketOwnerCardProps> = ({
               className={`w-8 h-8 object-cover rounded-lg flex-shrink-0 ${
                 teamBackground ? 'bg-white border p-[1px]' : ''
               }`}
+              priority
+              unoptimized
             />
           )}
         </div>

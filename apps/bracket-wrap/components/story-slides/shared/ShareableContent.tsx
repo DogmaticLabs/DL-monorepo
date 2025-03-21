@@ -41,6 +41,8 @@ const ShareableContent = ({
           width={64}
           height={64}
           className='size-20 object-contain'
+          priority
+          unoptimized
         />
         <span
           className='text-white/80 text-[10px] -mt-3'

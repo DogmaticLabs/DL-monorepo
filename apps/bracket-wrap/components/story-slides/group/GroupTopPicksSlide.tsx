@@ -26,7 +26,7 @@ const GroupTopPicksSlide = () => {
     if (!showContent) {
       const timer = setTimeout(() => {
         setShowContent(true)
-      }, 4000) // Show content after 4 seconds
+      }, 3500) // Show content after 4 seconds
 
       return () => clearTimeout(timer)
     }
@@ -49,8 +49,6 @@ const GroupTopPicksSlide = () => {
     e.stopPropagation()
 
     const shareOptions = {
-      title: 'Top Picks',
-      text: `Check out my group's top champion picks!`,
       url: `https://bracketwrap.com/share/${shareId}`,
     }
 
@@ -189,7 +187,7 @@ const GroupTopPicksSlide = () => {
       {/* Shareable Content */}
       <ShareableContent
         shareableRef={shareableRef}
-        backgroundGradient='linear-gradient(to bottom right, #0067b1, #000000)'
+        backgroundGradient='linear-gradient(to bottom right, #1e3a8a, #1f2937)'
       >
         <StoryCard animated={false} title={<TopPicksTitle />} showGroup>
           <ChampionBarChart championPicks={data} teams={teams} maxBracketCount={maxBracketCount} />
@@ -335,6 +333,8 @@ const TeamPickBar = ({ pick, index, teams, maxBracketCount }: TeamPickBarProps) 
                 width={44}
                 height={44}
                 className='w-11 h-11 object-contain'
+                priority
+                unoptimized
               />
             </div>
           </motion.div>

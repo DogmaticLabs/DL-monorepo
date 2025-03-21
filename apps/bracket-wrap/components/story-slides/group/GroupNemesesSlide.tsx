@@ -41,8 +41,6 @@ const GroupNemesesSlide = () => {
 
     // Share options
     const shareOptions = {
-      title: `Bracket Nemeses: ${data.member.displayName} vs ${data.nemesisMember.displayName}`,
-      text: `Check out these bracket rivals with a ${Math.round(data.weightedSimilarityPercentage)}% difference! They disagreed on ${data.differentPicks} picks out of 63.`,
       url: `https://bracketwrap.com/share/${shareId}`,
     }
 
@@ -129,7 +127,7 @@ const GroupNemesesSlide = () => {
                   {/* Second line with separate animations for text parts */}
                   <motion.div
                     className='text-3xl font-black text-center text-white leading-tight mt-4 tracking-wide perspective-[1000px]'
-                    initial={{ opacity: 1 }}
+                    initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{
                       duration: 0.6,
@@ -137,36 +135,36 @@ const GroupNemesesSlide = () => {
                       ease: 'easeOut',
                     }}
                   >
-                    {/* "Others" animating from left */}
+                    {/* "Others" animating from left with fade */}
                     <motion.span
                       className='inline-block text-white'
-                      initial={{ x: '-200vw' }}
-                      animate={{ x: 0 }}
+                      initial={{ x: '-50%', opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
                       transition={{
-                        duration: 0.7,
+                        duration: 1.2,
                         delay: 1.1,
-                        ease: 'easeOut',
+                        ease: 'easeInOut',
                       }}
                     >
                       Others{' '}
                     </motion.span>
 
-                    {/* "CLASH" animating from right */}
+                    {/* "CLASH" animating from right with fade */}
                     <motion.span
                       className='relative inline-block px-2 bg-orange-500 rounded-lg ml-2'
-                      initial={{ x: '200vw' }}
-                      animate={{ x: 0 }}
+                      initial={{ x: '50%', opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
                       transition={{
-                        duration: 0.7,
-                        delay: 1.1, // Slightly delayed after "Others"
-                        ease: 'easeOut',
+                        duration: 1.2,
+                        delay: 1.2, // Slightly delayed after "Others"
+                        ease: 'easeInOut',
                       }}
                       // Add the scale animation after both elements are in place
                       whileInView={{
                         scale: [1, 1.2, 1],
                         transition: {
                           duration: 0.6,
-                          delay: 0.3,
+                          delay: 1.0, // Increased delay to start after movement completes
                         },
                       }}
                     >
@@ -187,7 +185,7 @@ const GroupNemesesSlide = () => {
                         stiffness: 100,
                       }}
                     >
-                      Meet your group nemeses ⚔️
+                      Meet your group's nemeses ⚔️
                     </motion.p>
                   </motion.div>
                 </motion.div>
@@ -204,7 +202,7 @@ const GroupNemesesSlide = () => {
                     >
                       <StoryCard cardRef={cardRef} title={<GroupNemesesTitle />} showGroup>
                         <DifferenceSection nemesesData={data} />
-                        <div className='mt-5 mb-2'>
+                        <div className='mt-5 mb-3'>
                           <BracketOwnerCard
                             name={data.member.displayName}
                             bracketName={data.bracketName}
@@ -248,7 +246,7 @@ const GroupNemesesSlide = () => {
       >
         <StoryCard title={<GroupNemesesTitle />} animated={false} showGroup>
           <DifferenceSection nemesesData={data} />
-          <div className='mt-5 mb-1'>
+          <div className='mt-5 pb-3'>
             <BracketOwnerCard
               name={data.member.displayName}
               bracketName={data.bracketName}

@@ -14,51 +14,86 @@ import GroupNemesesSlide from '@/components/story-slides/group/GroupNemesesSlide
 import GroupTopPicksSlide from '@/components/story-slides/group/GroupTopPicksSlide'
 import GroupTwinsSlide from '@/components/story-slides/group/GroupTwinsSlide'
 import StoryContainer from '@/components/StoryContainer'
-import { use } from 'react'
+import { useTeams } from '@/hooks/useTeams'
+import { useUrlParam } from '@/hooks/useUrlParams'
+import { useQueryClient } from '@tanstack/react-query'
+import { useRouter } from 'next/navigation'
+import { use, useEffect } from 'react'
+import { getBracketSlides } from '../api/bracket-data'
 
 export default function WrappedPage({ searchParams }: { searchParams: Promise<{ mode: string }> }) {
   const unwrappedParams = use(searchParams)
 
-  const [bracketSlidesData] = useBracketSlides()
-
-  if (!bracketSlidesData) {
-    return <div>Loading...</div>
-  }
-
   return (
     <SearchParamsProvider params={unwrappedParams}>
       <div id='app-content' className='relative w-full flex flex-col bg-[#1e293b]'>
-        <StoryProvider>
-          <StoryContainer>
-            {/* Group Slides */}
-            <GroupTopPicksSlide />
+        <RequireBracketSlides>
+          <StoryProvider>
+            <StoryContainer>
+              {/* Group Slides */}
+              <GroupTopPicksSlide />
 
-            <GroupCinderellaSlide />
+              <GroupCinderellaSlide />
 
-            <GroupTwinsSlide />
+              <GroupTwinsSlide />
 
-            <GroupNemesesSlide />
+              <GroupNemesesSlide />
 
-            <GroupChalkScoreSlide />
+              <GroupChalkScoreSlide />
 
-            <GroupFinalFourSlide />
+              <GroupFinalFourSlide />
 
-            {/* Bracket Slides */}
+              {/* Bracket Slides */}
 
-            <BracketFinalFourSlide />
+              <BracketFinalFourSlide />
 
-            <BracketTwinSlide />
+              <BracketTwinSlide />
 
-            <CelebrityTwinSlide />
+              <CelebrityTwinSlide />
 
-            <BracketNemesisSlide />
+              <BracketNemesisSlide />
 
-            <BracketCinderellaSlide />
+              <BracketCinderellaSlide />
 
-            <BracketChalkScoreSlide />
-          </StoryContainer>
-        </StoryProvider>
+              <BracketChalkScoreSlide />
+            </StoryContainer>
+          </StoryProvider>
+        </RequireBracketSlides>
       </div>
     </SearchParamsProvider>
   )
+}
+
+const RequireBracketSlides = ({ children }: { children: React.ReactNode }) => {
+  const [bracketSlidesData, setBracketSlidesData] = useBracketSlides()
+  const queryClient = useQueryClient()
+  const [groupId, setGroupId] = useUrlParam<string>('group_id')
+  const [bracketId, setBracketId] = useUrlParam<string>('bracket_id')
+  const teamsData = useTeams()
+  const router = useRouter()
+
+  useEffect(() => {
+    const fetchBracketSlides = async () => {
+      try {
+        if (!bracketId) return router.push('/')
+
+        const res = await queryClient.fetchQuery({
+          queryKey: ['bracketSlidesData', bracketId],
+          queryFn: () => getBracketSlides(bracketId, groupId),
+        })
+        setBracketSlidesData(res)
+      } catch (error) {
+        console.log(error)
+        router.push('/')
+      }
+    }
+
+    fetchBracketSlides()
+  }, [])
+
+  if (!bracketSlidesData || !teamsData) {
+    return null
+  }
+
+  return children
 }

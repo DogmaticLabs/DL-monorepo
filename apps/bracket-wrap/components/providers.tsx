@@ -1,6 +1,7 @@
 'use client'
 
 import { BracketSlidesData } from '@/app/api/bracket-data'
+import { useUrlParam } from '@/hooks/useUrlParams'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import * as React from 'react'
@@ -86,7 +87,10 @@ export const useBracketSlides = (): [
 }
 
 export function StoryProvider({ children }: { children: ReactNode }) {
-  const [currentSlide, setCurrentSlide] = useState(0)
+  let [currentSlide = 0, setCurrentSlide] = useUrlParam<number>('slide', 0, {
+    persistDefault: true,
+  })
+  currentSlide = Number(currentSlide)
   const [isExiting, setIsExiting] = useState(false)
   const totalSlides = 12
 

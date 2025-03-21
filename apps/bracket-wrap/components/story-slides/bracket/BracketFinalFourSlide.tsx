@@ -29,7 +29,7 @@ const BracketFinalFourSlide = () => {
     if (!showContent) {
       const timer = setTimeout(() => {
         setShowContent(true)
-      }, 4000) // Show content after 4 seconds
+      }, 3500) // Show content after 4 seconds
 
       return () => clearTimeout(timer)
     }
@@ -49,8 +49,6 @@ const BracketFinalFourSlide = () => {
     e.stopPropagation()
 
     const shareOptions = {
-      title: 'My Final Four Picks',
-      text: `Check out my Final Four picks for March Madness!`,
       url: `https://bracketwrap.com/share/${finalFourGroupShareId}`,
     }
 
@@ -95,79 +93,50 @@ const BracketFinalFourSlide = () => {
               {!showContent ? (
                 <motion.div
                   key='intro'
-                  className='flex h-full relative items-center'
+                  className='flex flex-col items-center justify-center h-full relative'
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  exit={{ opacity: 0, y: -60 }}
-                  transition={{ duration: 0.6, ease: 'easeOut' }}
+                  exit={{ opacity: 0, scale: 0.8, y: -30 }}
+                  transition={{ duration: 0.8, ease: 'easeOut' }}
                 >
-                  <motion.div className='flex flex-col items-center max-w-sm'>
-                    {/* Title with simple fade-in */}
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.8, ease: 'easeOut' }}
-                      className='mb-8'
-                    >
-                      <h2 className='text-5xl font-black text-white text-center tracking-tight'>
-                        YOUR FINAL FOUR
-                      </h2>
-                    </motion.div>
+                  <motion.p
+                    className='text-3xl font-black text-center text-white leading-tight tracking-wide relative z-10'
+                    initial={{ y: -40, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.7, delay: 0.4, ease: 'easeOut' }}
+                  >
+                    We evaluated your
+                  </motion.p>
 
-                    {/* Simplified brackets animation */}
-                    <div className='relative flex justify-center items-center w-full mb-6'>
-                      <motion.div
-                        className='text-7xl text-white/80 font-black absolute'
-                        initial={{ x: -50, opacity: 0 }}
-                        animate={{ x: -20, opacity: 1 }}
-                        transition={{
-                          duration: 0.5,
-                          delay: 0.2,
-                        }}
-                      >
-                        [
-                      </motion.div>
+                  <motion.p
+                    className='text-5xl font-black uppercase text-center text-white leading-tight tracking-wide rounded-lg bg-madness-orange px-3 py-1 shadow-lg mt-4'
+                    initial={{ rotateY: 90 }}
+                    animate={{ rotateY: 0 }}
+                    transition={{ duration: 0.6, delay: 0.8 }}
+                  >
+                    Final Four
+                  </motion.p>
 
-                      <motion.div
-                        className='flex items-center justify-center size-20 bg-madness-orange rounded-full z-10'
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{
-                          duration: 0.5,
-                          delay: 0.4,
-                        }}
-                      >
-                        <span className='text-3xl'>4️⃣</span>
-                      </motion.div>
-
-                      <motion.div
-                        className='text-7xl text-white/80 font-black absolute'
-                        initial={{ x: 50, opacity: 0 }}
-                        animate={{ x: 20, opacity: 1 }}
-                        transition={{
-                          duration: 0.5,
-                          delay: 0.2,
-                        }}
-                      >
-                        ]
-                      </motion.div>
-                    </div>
-
-                    {/* Subtitle with simple fade-in */}
-                    <motion.div
-                      className='text-center mt-4'
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.6, delay: 0.6 }}
-                    >
-                      <p className='text-xl text-white font-medium'>
-                        Let's see how your picks compare
-                      </p>
-                      <p className='text-xl text-white font-medium mt-2'>
-                        to your group and the nation
-                      </p>
-                    </motion.div>
-                  </motion.div>
+                  <motion.p
+                    className='text-xl font-bold text-center text-white leading-tight z-10 mt-10'
+                    initial={{ y: 30, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{
+                      duration: 0.6,
+                      delay: 1.6,
+                      ease: 'easeOut',
+                    }}
+                    whileInView={{
+                      textShadow: [
+                        '0px 0px 0px rgba(255,255,255,0)',
+                        '0px 0px 8px rgba(255,255,255,0.5)',
+                        '0px 0px 0px rgba(255,255,255,0)',
+                      ],
+                    }}
+                    viewport={{ once: true }}
+                  >
+                    See how your picks stack up 📊
+                  </motion.p>
                 </motion.div>
               ) : (
                 <AnimatePresence mode='wait'>
@@ -209,9 +178,9 @@ const BracketFinalFourSlide = () => {
       {/* Shareable Content */}
       <ShareableContent
         shareableRef={shareableRef}
-        backgroundGradient='linear-gradient(to bottom right, #FF7E5F, #FEB47B)'
+        backgroundGradient='linear-gradient(to bottom right, #2C3E50, #4CA1AF)'
       >
-        <StoryCard animated={false} title={<FinalFourTitle />}>
+        <StoryCard animated={false} title={<FinalFourTitle />} showGroup showBracket>
           <FinalFourGrid groupData={finalFourGroupData} nationalData={finalFourNationalData} />
         </StoryCard>
       </ShareableContent>
@@ -266,7 +235,7 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({
 
   return (
     <motion.div
-      className='mt-4 mb-4 flex flex-col'
+      className='mt-4 pb-4 flex flex-col'
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -312,7 +281,7 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({
         return (
           <motion.div
             key={team.teamId}
-            className='grid grid-cols-5 backdrop-blur-sm rounded-lg py-1 mb-1 -mr-2'
+            className='grid grid-cols-5 backdrop-blur-sm rounded-lg mb-2 -mr-2'
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{
@@ -325,7 +294,7 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({
             {/* Team info */}
             <div className='flex items-center gap-2 col-span-3'>
               <motion.div
-                className='shrink-0 h-10 w-10 rounded-md flex items-center justify-center shadow-md overflow-hidden'
+                className='shrink-0 h-11 w-11 rounded-md flex items-center justify-center shadow-md overflow-hidden'
                 style={{ backgroundColor: teamData?.colors?.primary }}
                 initial={{ scale: 0.8 }}
                 animate={{ scale: 1 }}
@@ -337,6 +306,8 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({
                   width={28}
                   height={28}
                   className='object-contain'
+                  priority
+                  unoptimized
                 />
               </motion.div>
               <div className='flex flex-col'>
@@ -363,7 +334,9 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({
                 <span className='text-[10px] leading-3 font-semibold'>%</span>
               </div>
               <div className='text-white/60 font-bold text-xs relative'>
-                <span className='leading-4'>1/{team.uniqueTeams}</span>
+                <span className='leading-4'>
+                  {team.rank}/{team.uniqueTeams}
+                </span>
               </div>
             </motion.div>
 
@@ -383,7 +356,7 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({
                 <span className='text-[10px] leading-3 font-semibold'>%</span>
               </div>
               <div className='text-white/60 font-bold text-xs relative'>
-                <span className='leading-4'>1/16</span>
+                <span className='leading-4'>{nationalData[index]!.rank}/16</span>
               </div>
             </motion.div>
           </motion.div>

@@ -28,7 +28,7 @@ const GroupChalkScoreSlide = () => {
     if (!showContent) {
       const timer = setTimeout(() => {
         setShowContent(true)
-      }, 4000) // Show content after 4 seconds
+      }, 3500) // Show content after 4 seconds
 
       return () => clearTimeout(timer)
     }
@@ -48,8 +48,6 @@ const GroupChalkScoreSlide = () => {
     e.stopPropagation()
 
     const shareOptions = {
-      title: 'Chalk Score Analysis',
-      text: `Check out the risk-takers and safe-bets in my bracket group!`,
       url: `https://bracketwrap.com/share/${shareId}`,
     }
 
@@ -192,7 +190,7 @@ const GroupChalkScoreSlide = () => {
                     }}
                     viewport={{ once: true }}
                   >
-                    Let's see who stuck to the script and who's taking a gamble. 🎲
+                    Who stuck to the script and who's gambling? 🎲
                   </motion.p>
                 </motion.div>
               ) : (
@@ -305,58 +303,33 @@ const ChalkScoreContent: React.FC<ChalkScoreContentProps> = ({
 }) => {
   return (
     <>
-      {/* Risk Taker (Highest Chalk) */}
-      {animated ? (
-        <motion.div
-          className='mt-4 p-3 rounded-lg border border-white/20 relative'
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-        >
-          <div className='flex justify-between items-center mb-1'>
-            <div className='flex items-center gap-2'>
-              <span className='bg-madness-orange text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center'>
-                🔥
-              </span>
-              <span className='text-sm font-bold text-orange-300'>RISK TAKER</span>
-              <span className='text-xs font-bold text-white/60'>49 Upsets</span>
-            </div>
-            <div className='text-xl font-bold text-white bg-madness-orange absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
-              {data.highestChalk.percentile}
-            </div>
+      <motion.div
+        className='mt-4 p-3 rounded-lg border border-white/20 relative'
+        initial={{ x: -20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+      >
+        <div className='flex justify-between items-center mb-1'>
+          <div className='flex items-center gap-2'>
+            <span className='bg-madness-orange text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center'>
+              🔥
+            </span>
+            <span className='text-sm font-bold text-orange-300'>RISK TAKER</span>
+            <span className='text-xs font-bold text-white/60'>49 Upsets</span>
           </div>
-          <BracketOwnerCard
-            name={data.highestChalk.bracket.member.displayName}
-            bracketName={data.highestChalk.bracket.name}
-            teamLogo={teamsData?.[data.highestChalk.bracket.winnerId!]?.images.primary}
-            iconColor='text-orange-400'
-            delay={0.7}
-            teamBackground={false}
-          />
-        </motion.div>
-      ) : (
-        <div className='mt-4 p-3 rounded-lg border border-white/20 relative'>
-          <div className='flex justify-between items-center mb-1'>
-            <div className='flex items-center gap-2'>
-              <span className='bg-madness-orange text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center'>
-                🔥
-              </span>
-              <span className='text-sm font-bold text-orange-300'>RISK TAKER</span>
-              <span className='text-xs font-bold text-white/60'>49 Upsets</span>
-            </div>
-            <div className='text-xl font-bold text-white bg-madness-orange absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
-              {data.highestChalk.percentile}
-            </div>
+          <div className='text-xl font-bold text-white bg-madness-orange absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
+            {data.highestChalk.percentile}
           </div>
-          <BracketOwnerCard
-            name={data.highestChalk.bracket.member.displayName}
-            bracketName={data.highestChalk.bracket.name}
-            teamLogo={teamsData?.[data.highestChalk.bracket.winnerId!]?.images.primary}
-            iconColor='text-orange-400'
-            teamBackground={false}
-          />
         </div>
-      )}
+        <BracketOwnerCard
+          name={data.highestChalk.bracket.member.displayName}
+          bracketName={data.highestChalk.bracket.name}
+          teamLogo={teamsData?.[data.highestChalk.bracket.winnerId!]?.images.primary}
+          iconColor='text-madness-orange'
+          delay={0.7}
+          teamBackground={false}
+        />
+      </motion.div>
 
       {/* Chalk Score Visualization */}
       <ChalkScoreBar
@@ -367,55 +340,33 @@ const ChalkScoreContent: React.FC<ChalkScoreContentProps> = ({
       />
 
       {/* Safe Bet (Lowest Chalk) */}
-      {animated ? (
-        <motion.div
-          className='mb-4 p-3 rounded-lg border border-white/20 relative'
-          initial={{ x: 20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 1.1 }}
-        >
-          <div className='flex justify-between items-center mb-1'>
-            <div className='flex items-center gap-2'>
-              <span className='bg-blue-600 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center'>
-                🧊
-              </span>
-              <span className='text-sm font-bold text-blue-300'>PLAYING IT SAFE</span>
-              <span className='text-xs font-bold text-white/60'>9 Upsets</span>
-            </div>
-            <div className='text-xl font-bold text-white bg-blue-600 absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
-              {data.lowestChalk.percentile}
-            </div>
+      <motion.div
+        className='mb-4 p-3 rounded-lg border border-white/20 relative'
+        initial={{ x: 20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 1.1 }}
+      >
+        <div className='flex justify-between items-center mb-1'>
+          <div className='flex items-center gap-2'>
+            <span className='bg-blue-600 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center'>
+              🧊
+            </span>
+            <span className='text-sm font-bold text-blue-300'>PLAYING IT SAFE</span>
+            <span className='text-xs font-bold text-white/60'>9 Upsets</span>
           </div>
-          <BracketOwnerCard
-            name={data.lowestChalk.bracket.member.displayName}
-            bracketName={data.lowestChalk.bracket.name}
-            teamLogo={teamsData?.[data.lowestChalk.bracket.winnerId!]?.images.primary}
-            delay={1.3}
-            teamBackground={false}
-          />
-        </motion.div>
-      ) : (
-        <div className='mb-4 p-3 rounded-lg border border-white/20 relative'>
-          <div className='flex justify-between items-center mb-1'>
-            <div className='flex items-center gap-2'>
-              <span className='bg-blue-600 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center'>
-                🧊
-              </span>
-              <span className='text-sm font-bold text-blue-300'>PLAYING IT SAFE</span>
-              <span className='text-xs font-bold text-white/60'>9 Upsets</span>
-            </div>
-            <div className='text-xl font-bold text-white bg-blue-600 absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
-              {data.lowestChalk.percentile}
-            </div>
+          <div className='text-xl font-bold text-white bg-blue-600 absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
+            {data.lowestChalk.percentile}
           </div>
-          <BracketOwnerCard
-            name={data.lowestChalk.bracket.member.displayName}
-            bracketName={data.lowestChalk.bracket.name}
-            teamLogo={teamsData?.[data.lowestChalk.bracket.winnerId!]?.images.primary}
-            teamBackground={false}
-          />
         </div>
-      )}
+        <BracketOwnerCard
+          name={data.lowestChalk.bracket.member.displayName}
+          bracketName={data.lowestChalk.bracket.name}
+          teamLogo={teamsData?.[data.lowestChalk.bracket.winnerId!]?.images.primary}
+          delay={1.3}
+          teamBackground={false}
+          iconColor='text-blue-500'
+        />
+      </motion.div>
     </>
   )
 }

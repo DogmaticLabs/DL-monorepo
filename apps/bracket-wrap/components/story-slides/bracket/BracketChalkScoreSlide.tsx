@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import ShareButton from '../ShareButton'
 import BracketOwnerCard from '../shared/BracketOwnerCard'
+import ShareableContent from '../shared/ShareableContent'
 
 const BracketChalkScoreSlide = () => {
   const [bracketSlidesData] = useBracketSlides()
@@ -28,7 +29,7 @@ const BracketChalkScoreSlide = () => {
     if (!showContent) {
       const timer = setTimeout(() => {
         setShowContent(true)
-      }, 4000) // Show content after 4 seconds
+      }, 3500) // Show content after 4 seconds
 
       return () => clearTimeout(timer)
     }
@@ -100,56 +101,144 @@ const BracketChalkScoreSlide = () => {
                   exit={{ opacity: 0, scale: 0.8, y: -30 }}
                   transition={{ duration: 0.8, ease: 'easeOut' }}
                 >
-                  <motion.p
-                    className='text-2xl font-black text-center text-white leading-tight tracking-wide relative z-10'
-                    initial={{ y: -40, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.7, delay: 0.4, ease: 'easeOut' }}
-                  >
-                    Some brackets play it{' '}
-                    <motion.span
-                      className='uppercase rounded-lg bg-blue-600 px-2 py-1 shadow-lg inline-block'
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ duration: 0.5, delay: 0.5, type: 'spring', stiffness: 100 }}
-                    >
-                      SAFE
-                    </motion.span>
-                  </motion.p>
-
-                  <motion.p
-                    className='text-2xl font-black text-center text-white leading-tight tracking-wide relative z-10 mt-4'
-                    initial={{ y: -40, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.7, delay: 1.2, ease: 'easeOut' }}
-                  >
-                    while others{' '}
-                    <motion.span
-                      className='uppercase rounded-lg bg-madness-orange px-2 py-1 shadow-lg inline-block'
-                      initial={{ scale: 0.8, opacity: 0 }}
+                  {/* Dice rolling animation */}
+                  <div className='absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none'>
+                    <motion.div
+                      className='absolute text-[100px] opacity-10'
+                      initial={{ scale: 3, rotate: 0, y: -200, x: -100 }}
                       animate={{
                         scale: 1,
-                        opacity: 1,
-                        rotate: [0, -10, 10, -10, 10, 0], // Keyframes for the shake effect
+                        rotate: 360,
+                        y: 100,
+                        x: 100,
                       }}
                       transition={{
-                        duration: 0.5,
-                        delay: 1.3,
-                        ease: 'easeInOut', // A smoother easing for the shake
+                        duration: 2.5,
+                        delay: 0.3,
+                        ease: 'easeInOut',
                       }}
                     >
-                      SHAKE
-                    </motion.span>{' '}
-                    things up
-                  </motion.p>
+                      🎲
+                    </motion.div>
+                    <motion.div
+                      className='absolute text-[80px] opacity-10'
+                      initial={{ scale: 2, rotate: 180, y: 200, x: 100 }}
+                      animate={{
+                        scale: 0.8,
+                        rotate: -180,
+                        y: -50,
+                        x: -150,
+                      }}
+                      transition={{
+                        duration: 2.8,
+                        delay: 0.5,
+                        ease: 'easeInOut',
+                      }}
+                    >
+                      🎲
+                    </motion.div>
+                  </div>
+
+                  <motion.div
+                    className='mb-8'
+                    initial={{ opacity: 0, y: -30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.4 }}
+                  >
+                    <motion.p
+                      className='text-3xl font-black text-center text-white leading-tight tracking-wide'
+                      initial={{ scale: 0.9 }}
+                      animate={{ scale: 1 }}
+                      transition={{ duration: 0.5, delay: 0.7 }}
+                    >
+                      We checked your
+                    </motion.p>
+                    <motion.div
+                      className='relative'
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.7, delay: 1.0 }}
+                    >
+                      <motion.p
+                        className='text-5xl font-black uppercase text-center text-white tracking-wide mt-2 bg-madness-orange rounded-lg px-3 py-1'
+                        animate={{
+                          x: [0, -4, 4, -4, 4, 0],
+                          transition: {
+                            duration: 0.5,
+                            delay: 1.8,
+                            times: [0, 0.2, 0.4, 0.6, 0.8, 1],
+                          },
+                        }}
+                      >
+                        Risk Tolerance
+                      </motion.p>
+                    </motion.div>
+                  </motion.div>
+
+                  {/* Risk slider animation */}
+                  <motion.div
+                    className='relative w-[220px] h-12 mt-3 mb-6'
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 1.4 }}
+                  >
+                    <motion.div
+                      className='absolute w-full h-2 bg-gradient-to-r from-blue-600 to-madness-orange rounded-full'
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ duration: 0.8, delay: 1.5, ease: 'easeOut' }}
+                    />
+                    <motion.div
+                      className='absolute left-0 w-12 h-12 -top-5 flex items-center justify-center'
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3, delay: 1.7 }}
+                    >
+                      <span className='text-lg'>🧊</span>
+                      <motion.p
+                        className='text-xs font-bold absolute -bottom-6 text-blue-400'
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3, delay: 1.8 }}
+                      >
+                        SAFE
+                      </motion.p>
+                    </motion.div>
+                    <motion.div
+                      className='absolute right-0 w-12 h-12 -top-5 flex items-center justify-center'
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3, delay: 1.7 }}
+                    >
+                      <span className='text-lg'>🔥</span>
+                      <motion.p
+                        className='text-xs font-bold absolute -bottom-6 text-orange-400'
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3, delay: 1.8 }}
+                      >
+                        RISKY
+                      </motion.p>
+                    </motion.div>
+                    <motion.div
+                      className='absolute w-6 h-6 bg-white rounded-full -top-2'
+                      initial={{ left: '0%', opacity: 0 }}
+                      animate={{ left: '50%', opacity: 1 }}
+                      transition={{
+                        left: { duration: 1.5, delay: 2.0, ease: [0.34, 1.56, 0.64, 1] },
+                        opacity: { duration: 0.3, delay: 1.9 },
+                      }}
+                      style={{ translateX: '-50%' }}
+                    />
+                  </motion.div>
 
                   <motion.p
-                    className='text-xl font-bold text-center text-white leading-tight z-10 mt-[80px]'
+                    className='text-xl font-bold text-center text-white leading-tight z-10 mt-6'
                     initial={{ y: 30, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{
                       duration: 0.6,
-                      delay: 2.4,
+                      delay: 2.8,
                       ease: 'easeOut',
                     }}
                     whileInView={{
@@ -161,7 +250,7 @@ const BracketChalkScoreSlide = () => {
                     }}
                     viewport={{ once: true }}
                   >
-                    Let's see how risky you played it 🎲
+                    Let's see how you played it 🎲
                   </motion.p>
                 </motion.div>
               ) : (
@@ -262,6 +351,82 @@ const BracketChalkScoreSlide = () => {
           </div>
         </div>
       </StorySlide>
+
+      {/* Shareable Content - Moved outside the main component flow */}
+      <ShareableContent
+        shareableRef={shareableRef}
+        backgroundGradient='linear-gradient(to bottom right, #1f2937, #065f46)'
+      >
+        <StoryCard title={<ChalkScoreTitle animated={false} />} animated={false} showBracket>
+          {/* Risk Taker (Low Chalk) */}
+          {isRisky ? (
+            <div className='mt-4 p-3 rounded-lg border border-white/20 relative'>
+              <div className='flex justify-between items-center mb-1'>
+                <div className='flex items-center gap-2'>
+                  <span className='bg-madness-orange text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center'>
+                    🔥
+                  </span>
+                  <span className='text-sm font-bold text-orange-300'>RISK TAKER</span>
+                  <span className='text-xs font-bold text-white/60'>49 Upsets</span>
+                </div>
+                <div className='text-xl font-bold text-white bg-madness-orange absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
+                  {Math.round(data.percentile)}
+                </div>
+              </div>
+              <BracketOwnerCard
+                name={bracketSlidesData!.info.group!.data.name}
+                bracketName={bracketSlidesData!.info.bracket.data.name}
+                teamLogo={teams?.[championData!.teamId!]?.images?.primary}
+                label=''
+                iconColor='text-orange-400'
+                teamBackground={false}
+              />
+            </div>
+          ) : (
+            <div className='pb-4 p-3 rounded-lg border border-white/20 relative'>
+              <div className='flex justify-between items-center mb-1'>
+                <div className='flex items-center gap-2'>
+                  <span className='bg-blue-600 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center'>
+                    🧊
+                  </span>
+                  <span className='text-sm font-bold text-blue-300'>PLAYING IT SAFE</span>
+                  <span className='text-xs font-bold text-white/60'>9 Upsets</span>
+                </div>
+                <div className='text-xl font-bold text-white bg-blue-600 absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
+                  {Math.round(data.percentile)}
+                </div>
+              </div>
+              <BracketOwnerCard
+                name={bracketSlidesData!.info.group!.data.name}
+                bracketName={bracketSlidesData!.info.bracket.data.name}
+                teamLogo={teams?.[championData!.teamId!]?.images?.primary}
+                label=''
+                iconColor='text-blue-400'
+                teamBackground={false}
+              />
+            </div>
+          )}
+          {/* Static Bar */}
+          <div className='mt-6 pb-6'>
+            <div className='h-6 w-full bg-gradient-to-r from-blue-700 to-madness-orange rounded-full relative'>
+              <div
+                className='absolute top-0 h-6 bg-white border-r border-l border-white rounded-full'
+                style={{ left: `${Math.round(data.percentile)}%` }}
+              />
+              <div
+                className={
+                  isRisky
+                    ? 'absolute -top-6 transform -translate-x-[42%] text-orange-500'
+                    : 'absolute -top-6 transform -translate-x-[42%] text-madness-blue'
+                }
+                style={{ left: `${Math.round(data.percentile)}%` }}
+              >
+                ▼
+              </div>
+            </div>
+          </div>
+        </StoryCard>
+      </ShareableContent>
     </div>
   )
 }

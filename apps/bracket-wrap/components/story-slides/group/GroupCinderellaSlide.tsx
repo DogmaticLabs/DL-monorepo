@@ -31,7 +31,7 @@ const GroupCinderellaSlide = () => {
     if (!showContent) {
       const timer = setTimeout(() => {
         setShowContent(true)
-      }, 4000) // Show content after 4 seconds, matching the GroupTopPicksSlide timing
+      }, 3500) // Show content after 4 seconds, matching the GroupTopPicksSlide timing
 
       return () => clearTimeout(timer)
     }
@@ -88,7 +88,7 @@ const GroupCinderellaSlide = () => {
           ) : null
         }
       >
-        <div className='relative flex flex-col w-full h-full overflow-hidden'>
+        <div className='relative flex flex-col w-full h-full'>
           {/* Content container with padding */}
           <div className='flex flex-col items-center justify-center gap-6 w-full px-8 py-6 flex-1'>
             <AnimatePresence mode='wait'>
@@ -120,7 +120,7 @@ const GroupCinderellaSlide = () => {
                   </motion.p>
 
                   <motion.p
-                    className='text-xl font-bold text-center text-white leading-tight z-10 mt-[80px]'
+                    className='text-xl font-bold text-center text-white leading-tight z-10 mt-10'
                     initial={{ y: 30, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{

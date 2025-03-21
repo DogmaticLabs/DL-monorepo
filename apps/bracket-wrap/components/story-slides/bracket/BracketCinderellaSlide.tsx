@@ -28,7 +28,7 @@ const BracketCinderellaSlide = () => {
     if (!showContent) {
       const timer = setTimeout(() => {
         setShowContent(true)
-      }, 4000) // Show content after 4 seconds, matching the GroupTopPicksSlide timing
+      }, 3500) // Show content after 4 seconds, matching the GroupTopPicksSlide timing
 
       return () => clearTimeout(timer)
     }
@@ -96,31 +96,101 @@ const BracketCinderellaSlide = () => {
                   exit={{ opacity: 0, scale: 0.8, y: -30 }}
                   transition={{ duration: 0.8, ease: 'easeOut' }}
                 >
+                  {/* Animated sparkles */}
+                  <motion.div
+                    className='absolute top-1/4 right-1/4 w-4 h-4 rounded-full bg-white/80 blur-[1px] z-0'
+                    animate={{
+                      opacity: [0, 1, 0],
+                      scale: [0, 1.2, 0],
+                      y: [0, -15, -30],
+                    }}
+                    transition={{
+                      duration: 2.5,
+                      repeat: 1,
+                      repeatType: 'loop',
+                      times: [0, 0.5, 1],
+                      delay: 0.2,
+                    }}
+                  />
+                  <motion.div
+                    className='absolute bottom-1/4 left-1/3 w-3 h-3 rounded-full bg-white/80 blur-[1px] z-0'
+                    animate={{
+                      opacity: [0, 1, 0],
+                      scale: [0, 1.2, 0],
+                      y: [0, -15, -30],
+                    }}
+                    transition={{
+                      duration: 2.2,
+                      repeat: 1,
+                      repeatType: 'loop',
+                      times: [0, 0.5, 1],
+                      delay: 0.8,
+                    }}
+                  />
+
                   <motion.p
                     className='text-3xl font-black text-center text-white leading-tight tracking-wide relative z-10'
                     initial={{ y: -40, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.7, delay: 0.4, ease: 'easeOut' }}
                   >
-                    Everyone loves an
+                    In your bracket
                   </motion.p>
 
                   <motion.p
-                    className='text-5xl font-black uppercase text-center text-white leading-tight tracking-wide rounded-lg bg-[#ff6b00] px-3 py-1 shadow-lg mt-4'
-                    initial={{ rotateY: 90 }}
-                    animate={{ rotateY: 0 }}
-                    transition={{ duration: 0.6, delay: 0.8 }}
+                    className='text-3xl font-black text-center text-white leading-tight tracking-wide relative z-10 mt-2'
+                    initial={{ y: -40, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.7, delay: 0.8, ease: 'easeOut' }}
                   >
-                    Underdog
+                    we found a story worth telling
                   </motion.p>
 
+                  {/* Clock animation - midnight */}
+                  <motion.div
+                    className='relative mt-4 mb-2 flex items-center justify-center bg-madness-orange rounded-full'
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 1.2 }}
+                  >
+                    <motion.div
+                      className='flex items-center justify-center w-14 h-14 rounded-full border-2 border-white/70'
+                      initial={{ scale: 0.8 }}
+                      animate={{ scale: 1 }}
+                      transition={{ duration: 0.4, delay: 1.3 }}
+                    >
+                      <motion.div
+                        className='absolute h-5 w-[2px] bg-white origin-bottom'
+                        initial={{ rotate: 0 }}
+                        animate={{ rotate: 360 }}
+                        transition={{
+                          duration: 2,
+                          delay: 1.4,
+                          ease: 'easeInOut',
+                        }}
+                        style={{ transformOrigin: 'center bottom' }}
+                      />
+                      <motion.div
+                        className='absolute h-4 w-[2px] bg-white origin-bottom'
+                        initial={{ rotate: -90 }}
+                        animate={{ rotate: 270 }}
+                        transition={{
+                          duration: 2,
+                          delay: 1.4,
+                          ease: 'easeInOut',
+                        }}
+                        style={{ transformOrigin: 'center bottom' }}
+                      />
+                    </motion.div>
+                  </motion.div>
+
                   <motion.p
-                    className='text-xl font-bold text-center text-white leading-tight z-10 mt-[80px]'
+                    className='text-xl font-bold text-center text-white leading-tight z-10 mt-8'
                     initial={{ y: 30, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{
                       duration: 0.6,
-                      delay: 1.8,
+                      delay: 2.4,
                       ease: 'easeOut',
                     }}
                     whileInView={{
@@ -132,7 +202,7 @@ const BracketCinderellaSlide = () => {
                     }}
                     viewport={{ once: true }}
                   >
-                    Here's your wildest Cinderella Story 👸
+                    See your Cinderella pick ✨
                   </motion.p>
                 </motion.div>
               ) : (
@@ -179,7 +249,7 @@ const BracketCinderellaSlide = () => {
         backgroundGradient='linear-gradient(to bottom right, #a855f3, #6366f1)'
       >
         <StoryCard title={<CinderellaTitle />} animated={false} showGroup showBracket>
-          <TeamInfo team={team} tags={[data.round.name]} className='mb-6 mt-8' />
+          <TeamInfo team={team} tags={[data.round.name]} className='pb-6 pt-8' />
         </StoryCard>
       </ShareableContent>
     </div>
@@ -206,7 +276,7 @@ const CinderellaTitle: React.FC = () => {
       <motion.div
         className='h-1 bg-cinderella mx-auto mt-2 bg-madness-orange'
         initial={{ width: 0 }}
-        animate={{ width: '19rem' }}
+        animate={{ width: '17rem' }}
         transition={{
           duration: 0.8,
           delay: 0.3,

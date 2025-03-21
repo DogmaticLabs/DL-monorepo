@@ -17,7 +17,13 @@ export default function Page({ searchParams }: { searchParams: Promise<{ mode: s
   // Handle navigation to /wrapped when StorySequence state is set
   useEffect(() => {
     if (pageState === PageState.StorySequence) {
-      router.push('/wrapped')
+      // Get current search params and preserve them
+      const searchParams = new URLSearchParams(window.location.search)
+      const searchString = searchParams.toString()
+
+      // Navigate with preserved search params
+      const destination = searchString ? `/wrapped?${searchString}` : '/wrapped'
+      router.push(destination)
     }
   }, [pageState, router])
 
@@ -40,20 +46,7 @@ export default function Page({ searchParams }: { searchParams: Promise<{ mode: s
           )}
 
           {[PageState.LoadingSequence, PageState.IntroSequence].includes(pageState) && (
-            <div className='w-full h-dvh bg-gradient-to-br from-blue-700 via-purple-700 to-orange-700'>
-              {/* {pageState === PageState.LoadingSequence && (
-                <motion.div
-                  key='loading-sequence'
-                  className='absolute inset-0 z-20'
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <LoadingAnimation onComplete={() => setPageState(PageState.IntroSequence)} />
-                </motion.div>
-              )} */}
-
+            <div className='w-full h-dvh'>
               {pageState === PageState.IntroSequence && (
                 <motion.div
                   key='intro-sequence'

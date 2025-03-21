@@ -32,7 +32,7 @@ const StoryCard = ({
   }
 
   const baseCardClassName = cn(
-    'w-full bg-gradient-to-br from-gray-950/90 to-gray-900/80 backdrop-blur-lg rounded-xl pt-6 mb-4 border border-white relative overflow-hidden',
+    'flex-1 w-full max-w-sm min-w-[24rem] mx-auto bg-gradient-to-br from-gray-950/90 to-gray-900/80 backdrop-blur-lg rounded-xl pt-6 mb-4 border border-white relative overflow-hidden',
     className,
   )
 

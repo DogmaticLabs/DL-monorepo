@@ -1,6 +1,7 @@
 'use client'
 
 import { X } from 'lucide-react'
+import { motion } from 'motion/react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React from 'react'
@@ -72,8 +73,11 @@ const StoryBackground = () => {
   return (
     <div className='absolute inset-0 w-full h-full pt-8'>
       {/* Bracket SVG with masked center for the logo */}
-      <div
+      <motion.div
         className='absolute inset-0'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.2, ease: 'easeOut' }}
         style={{
           maskImage:
             'radial-gradient(circle at center, transparent 0%, transparent 60px, black 120px)',
@@ -81,22 +85,32 @@ const StoryBackground = () => {
             'radial-gradient(circle at center, transparent 0%, transparent 60px, black 120px)',
         }}
       >
-        <div
+        <motion.div
           className='absolute inset-0 bg-[url("/bracket.svg")] bg-no-repeat animate-bracket-pulse'
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.2 }}
+          transition={{ duration: 1.5, delay: 0.3, ease: 'easeOut' }}
           style={{
             backgroundSize: 'contain',
             backgroundPosition: 'center',
             filter: 'invert(0.8) brightness(0.8) sepia(0.5) hue-rotate(170deg) saturate(4)',
-            opacity: 0.2,
             mixBlendMode: 'screen',
           }}
         />
-      </div>
+      </motion.div>
 
       {/* Logo centered on the bracket - now visible through the "hole" */}
-      <div className='absolute inset-0 flex items-center justify-center pointer-events-none'>
-        <div
+      <motion.div
+        className='absolute inset-0 flex items-center justify-center pointer-events-none'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
+      >
+        <motion.div
           className='relative w-[200px] h-[200px] flex items-center justify-center'
+          initial={{ scale: 0.8 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.2, delay: 0.7, ease: 'easeOut' }}
           style={{
             filter: 'brightness(1) contrast(1)',
           }}
@@ -111,12 +125,15 @@ const StoryBackground = () => {
               mixBlendMode: 'soft-light',
             }}
           />
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Add a radial gradient to the center of the bracket */}
-      <div
+      <motion.div
         className='absolute inset-0'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.2, delay: 0.2, ease: 'easeOut' }}
         style={{
           background:
             'radial-gradient(circle at center, rgba(40,40,40,0.5) 5%, rgba(0,0,0,0) 100%)',

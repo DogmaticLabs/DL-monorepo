@@ -56,10 +56,17 @@ const GroupSlideBanner = ({
       )}
       {showBracket && (
         <div
-          className={`${showGroup ? 'flex-1 max-w-[50%] border-l border-white/20' : ''} flex px-2 py-2 space-x-1 items-center justify-between`}
+          className={`${showGroup ? 'flex-1 max-w-[50%] border-l border-white/20' : ''} flex px-2 my-2 space-x-1 items-center justify-between`}
         >
           <div className='rounded-full shrink-0 size-6 flex items-center justify-center'>
-            <Image src='/uconn.png' alt='Group Slide Banner Icon' width={20} height={20} />
+            <Image
+              src='/uconn.png'
+              alt='Group Slide Banner Icon'
+              width={20}
+              height={20}
+              priority
+              unoptimized
+            />
           </div>
           <div className='flex flex-col flex-1 min-w-0'>
             <span className='text-white font-semibold text-xs leading-4 whitespace-nowrap overflow-hidden text-ellipsis'>

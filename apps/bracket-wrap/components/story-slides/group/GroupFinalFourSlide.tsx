@@ -33,7 +33,7 @@ const GroupFinalFourSlide = ({ groupId }: GroupFinalFourSlideProps) => {
     if (!showContent) {
       const timer = setTimeout(() => {
         setShowContent(true)
-      }, 4000) // Show content after 4 seconds
+      }, 3500) // Show content after 4 seconds
 
       return () => clearTimeout(timer)
     }
@@ -53,8 +53,6 @@ const GroupFinalFourSlide = ({ groupId }: GroupFinalFourSlideProps) => {
     e.stopPropagation()
 
     const shareOptions = {
-      title: 'Final Four Picks',
-      text: `Check out my group's most popular Final Four picks!`,
       url: `https://bracketwrap.com/share/${shareId}`,
     }
 
@@ -105,22 +103,7 @@ const GroupFinalFourSlide = ({ groupId }: GroupFinalFourSlideProps) => {
                   exit={{ opacity: 0, y: -60 }}
                   transition={{ duration: 0.6, ease: 'easeOut' }}
                 >
-                  {/* Decorative basketball lines in background */}
-                  <motion.div
-                    className='absolute w-40 h-40 rounded-full border-2 border-dashed border-white/20 z-0'
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{
-                      opacity: [0, 0.4, 0.4, 0],
-                      scale: [0.5, 1.5, 1.5, 2],
-                      rotate: [0, 90, 180, 270],
-                    }}
-                    transition={{
-                      duration: 6,
-                      times: [0, 0.3, 0.7, 1],
-                      repeat: Infinity,
-                      repeatType: 'loop',
-                    }}
-                  />
+                  {/* Remove the decorative basketball lines - they're excessive */}
 
                   <motion.div
                     className='flex flex-col items-center'
@@ -128,134 +111,70 @@ const GroupFinalFourSlide = ({ groupId }: GroupFinalFourSlideProps) => {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5 }}
                   >
-                    {/* First line appearing with a reveal from left to right */}
-                    <div className='overflow-hidden'>
-                      <motion.p
-                        className='text-3xl font-black text-center text-white leading-tight tracking-wide relative z-10'
-                        initial={{ x: '-100%' }}
-                        animate={{ x: 0 }}
-                        transition={{
-                          duration: 0.7,
-                          ease: [0.16, 1, 0.3, 1],
-                          delay: 0.2,
-                        }}
-                      >
-                        Your group selected
-                      </motion.p>
-                    </div>
-
-                    {/* Number with highlight effect */}
-                    <motion.div
-                      className='relative mt-6 mb-4'
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.3, delay: 0.8 }}
+                    {/* First line with simple fade in */}
+                    <motion.p
+                      className='text-3xl font-black text-center text-white leading-tight tracking-wide relative z-10'
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.6,
+                        ease: 'easeOut',
+                        delay: 0.2,
+                      }}
                     >
-                      {/* Moving highlight effect */}
-                      <motion.div
-                        className='absolute -inset-4 bg-gradient-to-r from-purple-500/0 via-white/30 to-blue-500/0 rounded-xl z-0 blur-md'
-                        animate={{
-                          x: ['-100%', '100%'],
-                        }}
-                        transition={{
-                          duration: 1.5,
-                          ease: 'easeInOut',
-                          delay: 1,
-                          repeat: 2,
-                          repeatType: 'mirror',
-                        }}
-                      />
+                      Your group selected
+                    </motion.p>
 
-                      <motion.div
-                        className='relative'
-                        initial={{ y: 30, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{
-                          type: 'spring',
-                          damping: 12,
-                          stiffness: 100,
-                          delay: 0.9,
-                        }}
+                    {/* Number with clean highlight */}
+                    <motion.div
+                      className='mt-6 mb-4'
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.6, delay: 0.4 }}
+                    >
+                      <motion.p
+                        className='text-5xl font-black uppercase text-center text-white leading-tight tracking-wide rounded-lg bg-[#ff6b00] px-5 py-2 shadow-lg relative z-10'
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.4, delay: 0.5 }}
                       >
-                        <motion.p
-                          className='text-5xl font-black uppercase text-center text-white leading-tight tracking-wide rounded-lg bg-[#ff6b00] px-5 py-2 shadow-lg relative z-10'
-                          animate={{
-                            y: [0, -3, 0, -3, 0],
-                          }}
-                          transition={{
-                            duration: 1.5,
-                            delay: 1.2,
-                            ease: 'easeInOut',
-                          }}
-                        >
-                          {data.reduce((acc, curr) => acc + curr.uniqueTeams, 0)}
-                        </motion.p>
-                      </motion.div>
+                        {data.reduce((acc, curr) => acc + curr.uniqueTeams, 0)}
+                      </motion.p>
                     </motion.div>
 
-                    {/* Second text line with fade-slide reveal */}
-                    <div className='overflow-hidden'>
-                      <motion.p
-                        className='text-3xl text-center text-white leading-tight font-black z-10'
-                        initial={{ y: 40, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{
-                          duration: 0.5,
-                          delay: 1.5,
-                          ease: 'easeOut',
-                        }}
-                      >
-                        different teams in the Final Four
-                      </motion.p>
-                    </div>
+                    {/* Second text line with simple reveal */}
+                    <motion.p
+                      className='text-3xl text-center text-white leading-tight font-black z-10'
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.6,
+                        delay: 1.0,
+                        ease: 'easeOut',
+                      }}
+                    >
+                      different teams in the Final Four
+                    </motion.p>
                   </motion.div>
 
-                  {/* Final prompt with staggered letter reveal */}
+                  {/* Final prompt with cleaner animation */}
                   <motion.div
                     className='mt-[80px] relative z-10 flex items-center'
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.4, delay: 2.2 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 1.8 }}
                   >
-                    <motion.p
-                      className='text-xl font-bold text-center text-white'
-                      initial={{ opacity: 0.6, filter: 'blur(4px)' }}
-                      animate={{ opacity: 1, filter: 'blur(0px)' }}
-                      transition={{ duration: 0.6, delay: 2.3 }}
-                    >
+                    <motion.p className='text-xl font-bold text-center text-white'>
                       Here are the most popular selections
                     </motion.p>
 
-                    <motion.div
-                      className='ml-2 relative'
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 2.8 }}
+                    <motion.span
+                      className='ml-2 inline-block'
+                      animate={{ rotate: [0, -10, 10, -5, 0] }}
+                      transition={{ duration: 0.8, delay: 1.8 }}
                     >
-                      <motion.div
-                        className='absolute -inset-1 bg-orange-500/40 rounded-full blur-sm'
-                        animate={{
-                          scale: [1, 1.5, 1],
-                        }}
-                        transition={{
-                          duration: 1.2,
-                          repeat: Infinity,
-                          repeatType: 'mirror',
-                        }}
-                      />
-                      <motion.span
-                        initial={{ y: 20 }}
-                        animate={{ y: 0 }}
-                        transition={{
-                          type: 'spring',
-                          damping: 5,
-                          stiffness: 100,
-                          delay: 2.8,
-                        }}
-                      >
-                        🏀
-                      </motion.span>
-                    </motion.div>
+                      🏀
+                    </motion.span>
                   </motion.div>
                 </motion.div>
               ) : (
@@ -295,9 +214,9 @@ const GroupFinalFourSlide = ({ groupId }: GroupFinalFourSlideProps) => {
       {/* Shareable Content */}
       <ShareableContent
         shareableRef={shareableRef}
-        backgroundGradient='linear-gradient(to bottom right, #FF7E5F, #FEB47B)'
+        backgroundGradient='linear-gradient(to bottom right, #b33939, #005f73)'
       >
-        <StoryCard animated={false} title={<FinalFourTitle />}>
+        <StoryCard animated={false} title={<FinalFourTitle />} showGroup>
           <FinalFourGrid teams={data} teamsData={teams!} />
         </StoryCard>
       </ShareableContent>
@@ -348,7 +267,7 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({ teams }: FinalFourGridPro
 
   return (
     <motion.div
-      className='grid grid-cols-2 mt-6 mb-4'
+      className='grid grid-cols-2 mt-6 pb-4'
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -424,6 +343,8 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({ teams }: FinalFourGridPro
                     width={60}
                     height={60}
                     className='object-contain'
+                    priority
+                    unoptimized
                   />
                 </motion.div>
 

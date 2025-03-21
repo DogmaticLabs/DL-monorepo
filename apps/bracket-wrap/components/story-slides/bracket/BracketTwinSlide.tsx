@@ -41,8 +41,6 @@ const BracketTwinSlide = () => {
 
     // Share options
     const shareOptions = {
-      title: `Bracket Twins: ${bracketSlidesData!.info.bracket.data.member.displayName} & ${data.member.displayName}`,
-      text: `Check out these bracket twins with a ${Math.round(data.weightedSimilarityPercentage)}% match! They have ${data.matchingPicks} identical picks out of 63.`,
       url: `https://bracketwrap.com/share/${shareId}`,
     }
 
@@ -95,101 +93,90 @@ const BracketTwinSlide = () => {
               {!showContent ? (
                 <motion.div
                   key='intro'
-                  className='flex flex-col items-center justify-center h-full'
+                  className='flex flex-col items-center justify-center h-full relative'
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0, scale: 0.8, y: -30 }}
                   transition={{ duration: 0.8, ease: 'easeOut' }}
                 >
-                  {/* First line with letter-by-letter reveal */}
-                  <div className='overflow-hidden'>
-                    <motion.div
-                      initial={{ y: 0 }}
-                      animate={{ y: 0 }}
-                      className='flex items-center justify-center'
-                    >
-                      {'Some do their research...'.split('').map((letter, index) => (
-                        <motion.span
-                          key={`first-${index}`}
-                          className='text-3xl font-black text-white tracking-wide inline-block'
-                          initial={{ y: 100, opacity: 0, rotateY: 90 }}
-                          animate={{ y: 0, opacity: 1, rotateY: 0 }}
-                          transition={{
-                            duration: 0.4,
-                            delay: 0.1 + index * 0.03,
-                            ease: 'backOut',
-                          }}
-                        >
-                          {letter === ' ' ? '\u00A0' : letter}
-                        </motion.span>
-                      ))}
-                    </motion.div>
-                  </div>
+                  <motion.p
+                    className='text-3xl font-black text-center text-white leading-tight tracking-wide relative z-10'
+                    initial={{ y: -40, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.7, delay: 0.4, ease: 'easeOut' }}
+                  >
+                    We searched far and wide
+                  </motion.p>
+                  <motion.p
+                    className='text-3xl font-black text-center text-white leading-tight tracking-wide relative z-10'
+                    initial={{ y: -40, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.7, delay: 0.8, ease: 'easeOut' }}
+                  >
+                    to find your
+                  </motion.p>
 
-                  {/* Second line with separate animations for text parts */}
                   <motion.div
-                    className='text-3xl font-black text-center text-white leading-tight mt-4 tracking-wide perspective-[1000px]'
-                    initial={{ opacity: 1 }}
-                    animate={{ opacity: 1 }}
+                    className='flex items-center gap-2 mt-4'
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
                     transition={{
-                      duration: 0.6,
-                      delay: 1.1,
-                      ease: 'easeOut',
+                      type: 'spring',
+                      stiffness: 120,
+                      damping: 30,
+                      delay: 1.6,
+                      duration: 1.2,
                     }}
                   >
-                    {/* "Others just" animating from left */}
-                    <motion.span
-                      className='inline-block text-white'
-                      initial={{ x: '-200vw' }}
-                      animate={{ x: 0 }}
-                      transition={{
-                        duration: 0.7,
-                        delay: 1.1,
-                        ease: 'easeOut',
-                      }}
-                    >
-                      Others just{' '}
-                    </motion.span>
-
-                    {/* "COPY" animating from right */}
-                    <motion.span
-                      className='relative inline-block px-2 bg-orange-500 rounded-lg ml-2'
-                      initial={{ x: '200vw' }}
-                      animate={{ x: 0 }}
-                      transition={{
-                        duration: 0.7,
-                        delay: 1.1, // Slightly delayed after "Others just"
-                        ease: 'easeOut',
-                      }}
-                      // Add the scale animation after both elements are in place
-                      whileInView={{
-                        scale: [1, 1.2, 1],
-                        transition: {
-                          duration: 0.6,
-                          delay: 0.3,
-                        },
-                      }}
-                    >
-                      COPY
-                    </motion.span>
-                  </motion.div>
-
-                  {/* Third line with bouncing entrance */}
-                  <motion.div className='overflow-hidden mt-8'>
                     <motion.p
-                      className='text-xl font-black text-center text-white tracking-wide'
-                      initial={{ y: 50, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
+                      className='text-5xl font-black uppercase text-center text-white leading-tight tracking-wide rounded-lg bg-[#ff6b00] px-3 py-1 shadow-lg'
+                      initial={{ y: 20 }}
+                      animate={{ y: 0 }}
                       transition={{
-                        duration: 0.5,
-                        delay: 2.4,
-                        type: 'spring',
-                        stiffness: 100,
+                        duration: 0.8,
+                        delay: 1.7,
                       }}
+                      whileInView={{
+                        boxShadow: [
+                          '0 4px 6px rgba(0,0,0,0.1)',
+                          '0 4px 16px rgba(255,107,0,0.6)',
+                          '0 4px 6px rgba(0,0,0,0.1)',
+                        ],
+                      }}
+                      viewport={{ once: true }}
                     >
-                      Here is your bracket twin 👯‍♀️
+                      Doppelgänger
                     </motion.p>
+                    <motion.span
+                      className='text-4xl'
+                      initial={{ rotate: -30, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      transition={{ duration: 0.8, delay: 1.9 }}
+                    >
+                      👯
+                    </motion.span>
                   </motion.div>
+
+                  <motion.p
+                    className='text-xl font-bold text-center text-white leading-tight z-10 mt-6'
+                    initial={{ y: 30, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{
+                      duration: 0.6,
+                      delay: 2.6,
+                      ease: 'easeOut',
+                    }}
+                    whileInView={{
+                      textShadow: [
+                        '0px 0px 0px rgba(255,255,255,0)',
+                        '0px 0px 8px rgba(255,255,255,0.5)',
+                        '0px 0px 0px rgba(255,255,255,0)',
+                      ],
+                    }}
+                    viewport={{ once: true }}
+                  >
+                    Meet your twin flame 🔥
+                  </motion.p>
                 </motion.div>
               ) : (
                 <AnimatePresence mode='wait'>
