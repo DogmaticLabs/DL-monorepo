@@ -85,7 +85,7 @@ export default function StoryContainer({ children }: StoryContainerProps) {
       <AnimatePresence>
         {showHint && (
           <motion.div
-            className='fixed right-8 bottom-20 -translate-y-1/2 z-30 pointer-events-none'
+            className='fixed right-8 bottom-10 -translate-y-1/2 z-30 pointer-events-none'
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0 }}
