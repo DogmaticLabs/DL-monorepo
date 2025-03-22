@@ -197,7 +197,6 @@ const GroupCinderellaSlide = () => {
             bracketName={teamMeta.contributingBrackets?.[0]?.name ?? ''}
             teamLogo={teamsData?.[teamMeta.contributingBrackets![0]!.winnerId!]!.images.primary}
             label='Selected By'
-            className='mb-6'
           />
         </StoryCard>
       </ShareableContent>
