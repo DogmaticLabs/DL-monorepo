@@ -319,10 +319,10 @@ const GroupDropdown = ({
         {groups?.map(group => (
           <div
             key={group.id}
-            className={`p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors flex justify-between items-center ${
+            className={`p-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors flex justify-between items-center ${
               group.name.toLowerCase() === groupSearchValue.toLowerCase() ? 'bg-gray-50' : ''
-            }`}
-            onClick={() => handleGroupSelect(group)}
+            } ${group.size >= 1000 ? 'opacity-50 cursor-default' : 'cursor-pointer'}`}
+            onClick={() => group.size <= 1000 && handleGroupSelect(group)}
           >
             <div className='flex flex-col'>
               <div className='flex items-center'>
@@ -338,6 +338,9 @@ const GroupDropdown = ({
                   {group.public ? 'Public' : 'Private'}
                 </span>
                 <span className='text-xs text-gray-600 ml-2'>{group.size} members</span>
+                {group.size >= 1000 && (
+                  <span className='text-xs text-madness-orange ml-2'>Group is too large</span>
+                )}
               </div>
               <div className='mt-1'>
                 <span className='text-[10px] text-gray-400'>ID: {group.id}</span>
@@ -442,33 +445,35 @@ const GroupSelectionForBracket = (landingPageState: ReturnType<typeof useLanding
           </div>
         </div>
         <div className='max-h-[264px] overflow-y-auto'>
-          {selectedBracket?.groups.map(group => (
-            <div
-              key={group.id!}
-              className='p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors'
-              onClick={() => handleGroupSelect(group)}
-            >
-              <div className='flex flex-col'>
-                <div className='flex items-center'>
-                  <Users className='h-5 w-5 text-gray-500 mr-2' />
-                  <span className='font-medium text-gray-900'>{group.name}</span>
-                </div>
-                <div className='flex items-center mt-2'>
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs ${
-                      group.public ? 'bg-[#ff6b35] text-white' : 'bg-gray-100 text-gray-600'
-                    }`}
-                  >
-                    {group.public ? 'Public' : 'Private'}
-                  </span>
-                  <span className='text-xs text-gray-600 ml-2'>{group.size} members</span>
-                </div>
-                <div className='mt-1'>
-                  <span className='text-[8px] text-gray-400'>ID: {group.id}</span>
+          {selectedBracket?.groups
+            .filter(group => group.size <= 1000)
+            .map(group => (
+              <div
+                key={group.id!}
+                className='p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors'
+                onClick={() => handleGroupSelect(group)}
+              >
+                <div className='flex flex-col'>
+                  <div className='flex items-center'>
+                    <Users className='h-5 w-5 text-gray-500 mr-2' />
+                    <span className='font-medium text-gray-900'>{group.name}</span>
+                  </div>
+                  <div className='flex items-center mt-2'>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs ${
+                        group.public ? 'bg-[#ff6b35] text-white' : 'bg-gray-100 text-gray-600'
+                      }`}
+                    >
+                      {group.public ? 'Public' : 'Private'}
+                    </span>
+                    <span className='text-xs text-gray-600 ml-2'>{group.size} members</span>
+                  </div>
+                  <div className='mt-1'>
+                    <span className='text-[8px] text-gray-400'>ID: {group.id}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </>
