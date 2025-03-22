@@ -236,7 +236,11 @@ const CelebrityTwinSlide = () => {
                             Icon={
                               <div className='w-10 h-10 rounded-full overflow-hidden border border-white/20'>
                                 <Image
-                                  src={data.member.logo || ''}
+                                  src={
+                                    data.member.id
+                                      ? `/celeb-imgs/${data.member.id}.png`
+                                      : '/placeholder-team.png'
+                                  }
                                   alt={data.member.displayName}
                                   width={36}
                                   height={36}
@@ -287,7 +291,7 @@ const CelebrityTwinSlide = () => {
               Icon={
                 <div className='w-10 h-10 rounded-full overflow-hidden border border-white/20'>
                   <Image
-                    src={data.member.logo || ''}
+                    src={data.member.id ? `/celeb-imgs/${data.member.id}.png` : ''}
                     alt={data.member.displayName}
                     width={36}
                     height={36}
