@@ -327,7 +327,7 @@ const FinalFourGrid: React.FC<FinalFourGridProps> = ({ teams }: FinalFourGridPro
               >
                 {/* Team logo */}
                 <motion.div
-                  className='size-28 flex items-center justify-center'
+                  className='size-24 flex items-center justify-center'
                   initial={{ scale: 0.6, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{

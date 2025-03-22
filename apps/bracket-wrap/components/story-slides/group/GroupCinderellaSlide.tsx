@@ -45,8 +45,6 @@ const GroupCinderellaSlide = () => {
 
     // Share options
     const shareOptions = {
-      title: `${team.name} - The Cinderella Story`,
-      text: `Check out ${team.name}, the #${team.seed} seed that made it to the ${data.round.name}!`,
       url: `https://bracketwrap.com/share/${shareId}`,
     }
 
