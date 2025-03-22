@@ -324,7 +324,11 @@ const ChalkScoreContent: React.FC<ChalkScoreContentProps> = ({
         <BracketOwnerCard
           name={data.highestChalk.bracket.member.displayName}
           bracketName={data.highestChalk.bracket.name}
-          teamLogo={teamsData?.[data.highestChalk.bracket.winnerId!]?.images.primary}
+          teamLogo={
+            teamsData?.[data.highestChalk.bracket.winnerId!]?.id
+              ? `/team-logos/${teamsData?.[data.highestChalk.bracket.winnerId!]?.id}-primary.png`
+              : '/placeholder-team.png'
+          }
           iconColor='text-madness-orange'
           delay={0.7}
           teamBackground={false}
@@ -361,7 +365,11 @@ const ChalkScoreContent: React.FC<ChalkScoreContentProps> = ({
         <BracketOwnerCard
           name={data.lowestChalk.bracket.member.displayName}
           bracketName={data.lowestChalk.bracket.name}
-          teamLogo={teamsData?.[data.lowestChalk.bracket.winnerId!]?.images.primary}
+          teamLogo={
+            teamsData?.[data.lowestChalk.bracket.winnerId!]?.id
+              ? `/team-logos/${teamsData?.[data.lowestChalk.bracket.winnerId!]?.id}-primary.png`
+              : '/placeholder-team.png'
+          }
           delay={1.3}
           teamBackground={false}
           iconColor='text-blue-500'

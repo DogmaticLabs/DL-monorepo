@@ -201,14 +201,22 @@ const GroupTwinsSlide = () => {
                           <BracketOwnerCard
                             name={data.member.displayName}
                             bracketName={data.bracketName}
-                            teamLogo={teams?.[data.bracketWinnerId!]?.images.primary}
+                            teamLogo={
+                              teams?.[data.bracketWinnerId!]?.id
+                                ? `/team-logos/${teams?.[data.bracketWinnerId!]?.id}-primary.png`
+                                : '/placeholder-team.png'
+                            }
                             delay={0.4}
                             teamBackground={false}
                           />
                           <BracketOwnerCard
                             name={data.twinMember.displayName}
                             bracketName={data.twinBracketName}
-                            teamLogo={teams?.[data.twinWinnerId!]?.images.primary}
+                            teamLogo={
+                              teams?.[data.twinWinnerId!]?.id
+                                ? `/team-logos/${teams?.[data.twinWinnerId!]?.id}-primary.png`
+                                : '/placeholder-team.png'
+                            }
                             delay={0.6}
                             teamBackground={false}
                           />
@@ -249,14 +257,22 @@ const GroupTwinsSlide = () => {
             <BracketOwnerCard
               name={data.member.displayName}
               bracketName={data.bracketName}
-              teamLogo={teams?.[data.bracketWinnerId!]?.images.primary}
+              teamLogo={
+                teams?.[data.bracketWinnerId!]?.id
+                  ? `/team-logos/${teams?.[data.bracketWinnerId!]?.id}-primary.png`
+                  : '/placeholder-team.png'
+              }
               delay={0.4}
               teamBackground={false}
             />
             <BracketOwnerCard
               name={data.twinMember.displayName}
               bracketName={data.twinBracketName}
-              teamLogo={teams?.[data.twinWinnerId!]?.images.primary}
+              teamLogo={
+                teams?.[data.twinWinnerId!]?.id
+                  ? `/team-logos/${teams?.[data.twinWinnerId!]?.id}-primary.png`
+                  : '/placeholder-team.png'
+              }
               delay={0.6}
               teamBackground={false}
             />

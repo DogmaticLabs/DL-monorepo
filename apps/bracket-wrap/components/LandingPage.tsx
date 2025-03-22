@@ -376,7 +376,11 @@ const BracketHeader = ({
       <div className='flex items-start min-w-0'>
         {selectedBracket.winnerId && (
           <Image
-            src={teams[selectedBracket.winnerId]?.images.primary || '/placeholder-team.png'}
+            src={
+              teams[selectedBracket.winnerId]?.id
+                ? `/team-logos/${teams[selectedBracket.winnerId]?.id}-primary.png`
+                : '/placeholder-team.png'
+            }
             alt='Winner'
             width={28}
             height={28}
@@ -535,7 +539,11 @@ const BracketDropdown = ({
                 <div className='flex items-center'>
                   {bracket.winnerId && (
                     <Image
-                      src={teams[bracket.winnerId]?.images.primary || '/placeholder-team.png'}
+                      src={
+                        teams[bracket.winnerId]?.id
+                          ? `/team-logos/${teams[bracket.winnerId]?.id}-primary.png`
+                          : '/placeholder-team.png'
+                      }
                       alt='Team Logo'
                       width={32}
                       height={32}
@@ -564,7 +572,11 @@ const SelectedBracket = ({
       <div className='flex items-start justify-between mb-1'>
         <div className='flex items-start min-w-0 pr-3'>
           <Image
-            src={teams[selectedBracket.winnerId]?.images.primary || '/placeholder-team.png'}
+            src={
+              teams[selectedBracket.winnerId]?.id
+                ? `/team-logos/${teams[selectedBracket.winnerId]?.id}-secondary.png`
+                : '/placeholder-team.png'
+            }
             alt='Winner'
             className='h-7 w-7 mr-2 -mt-1'
             width={28}

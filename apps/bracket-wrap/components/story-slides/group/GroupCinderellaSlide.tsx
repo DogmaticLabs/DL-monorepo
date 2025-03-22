@@ -195,7 +195,11 @@ const GroupCinderellaSlide = () => {
           <BracketOwnerCard
             name={teamMeta.contributingBrackets?.[0]?.member?.displayName ?? ''}
             bracketName={teamMeta.contributingBrackets?.[0]?.name ?? ''}
-            teamLogo={teamsData?.[teamMeta.contributingBrackets![0]!.winnerId!]!.images.primary}
+            teamLogo={
+              teamsData?.[teamMeta.contributingBrackets![0]!.winnerId!]?.id
+                ? `/team-logos/${teamsData?.[teamMeta.contributingBrackets![0]!.winnerId!]?.id}-primary.png`
+                : '/placeholder-team.png'
+            }
             label='Selected By'
           />
         </StoryCard>

@@ -206,14 +206,22 @@ const GroupNemesesSlide = () => {
                           <BracketOwnerCard
                             name={data.member.displayName}
                             bracketName={data.bracketName}
-                            teamLogo={teams?.[data.bracketWinnerId!]?.images.primary}
+                            teamLogo={
+                              teams?.[data.bracketWinnerId!]?.id
+                                ? `/team-logos/${teams?.[data.bracketWinnerId!]?.id}-primary.png`
+                                : '/placeholder-team.png'
+                            }
                             delay={0.4}
                             teamBackground={false}
                           />
                           <BracketOwnerCard
                             name={data.nemesisMember.displayName}
                             bracketName={data.nemesisBracketName}
-                            teamLogo={teams?.[data.nemesisWinnerId!]?.images.primary}
+                            teamLogo={
+                              teams?.[data.nemesisWinnerId!]?.id
+                                ? `/team-logos/${teams?.[data.nemesisWinnerId!]?.id}-primary.png`
+                                : '/placeholder-team.png'
+                            }
                             delay={0.6}
                             teamBackground={false}
                           />
@@ -250,14 +258,22 @@ const GroupNemesesSlide = () => {
             <BracketOwnerCard
               name={data.member.displayName}
               bracketName={data.bracketName}
-              teamLogo={teams?.[data.bracketWinnerId!]?.images.primary}
+              teamLogo={
+                teams?.[data.bracketWinnerId!]?.id
+                  ? `/team-logos/${teams?.[data.bracketWinnerId!]?.id}-primary.png`
+                  : '/placeholder-team.png'
+              }
               delay={0.4}
               teamBackground={false}
             />
             <BracketOwnerCard
               name={data.nemesisMember.displayName}
               bracketName={data.nemesisBracketName}
-              teamLogo={teams?.[data.nemesisWinnerId!]?.images.primary}
+              teamLogo={
+                teams?.[data.nemesisWinnerId!]?.id
+                  ? `/team-logos/${teams?.[data.nemesisWinnerId!]?.id}-primary.png`
+                  : '/placeholder-team.png'
+              }
               delay={0.6}
               teamBackground={false}
             />

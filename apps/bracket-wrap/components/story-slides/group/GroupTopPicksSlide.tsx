@@ -328,7 +328,11 @@ const TeamPickBar = ({ pick, index, teams, maxBracketCount }: TeamPickBarProps) 
           >
             <div className='w-16 h-16 rounded-lg flex items-center justify-center'>
               <Image
-                src={teams?.[pick.teamId]?.images.secondary || '/placeholder-team.png'}
+                src={
+                  teams?.[pick.teamId]?.id
+                    ? `/team-logos/${teams?.[pick.teamId]?.id}-secondary.png`
+                    : '/placeholder-team.png'
+                }
                 alt={teams?.[pick.teamId]?.name ?? ''}
                 width={44}
                 height={44}
