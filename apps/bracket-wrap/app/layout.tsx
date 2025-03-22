@@ -39,10 +39,10 @@ export const metadata: Metadata = {
     siteName: 'Bracket Wrap',
     images: [
       {
-        url: 'https://bracket-wrap.com/og-image.jpg', // You'll need to create this image
-        width: 1200,
-        height: 630,
-        alt: 'Bracket Wrap - Basketball Tournament Analysis',
+        url: '/logo.png', // Using the logo.png file from the public directory
+        width: 800,
+        height: 800,
+        alt: 'Bracket Wrap Logo',
       },
     ],
   },
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Bracket Wrap',
     description: 'View your March Madness Bracket Wrap. 🏀',
-    images: ['https://bracket-wrap.com/twitter-image.jpg'], // You'll need to create this image
+    images: ['/logo.png'], // Using the logo.png file from the public directory
     creator: '@bracketwrap', // Update with your Twitter handle
   },
   appleWebApp: {

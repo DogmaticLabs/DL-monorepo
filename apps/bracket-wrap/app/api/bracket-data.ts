@@ -64,24 +64,20 @@ export type Team = {
 export type TeamMap = Record<string, Team>
 
 export const searchGroupsByQuery = async (query: string, year = 2025): Promise<Group[]> => {
-  const response = await fetch(
-    `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/groups/search?q=${query}&year=${year}`,
-  )
+  const response = await fetch(`https://api.bracketwrap.com/groups/search?q=${query}&year=${year}`)
   const data = await response.json()
   return data
 }
 
 export const getBracketsForGroup = async (groupId: string, year = 2025): Promise<Group> => {
-  const response = await fetch(
-    `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/groups/${groupId}?year=${year}`,
-  )
+  const response = await fetch(`https://api.bracketwrap.com/groups/${groupId}?year=${year}`)
   const data = await response.json()
   return data
 }
 
 export const getBracket = async (bracketId: string, year = 2025): Promise<Bracket> => {
   const response = await fetch(
-    `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/brackets/${bracketId}/groups?year=${year}`,
+    `https://api.bracketwrap.com/brackets/${bracketId}/groups?year=${year}`,
   )
   if (!response.ok) throw new Error('Failed to fetch bracket')
 
@@ -90,9 +86,7 @@ export const getBracket = async (bracketId: string, year = 2025): Promise<Bracke
 }
 
 export const getTeams = async (year = 2025): Promise<TeamMap> => {
-  const response = await fetch(
-    `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/teams?year=${year}`,
-  )
+  const response = await fetch(`https://api.bracketwrap.com/teams?year=${year}`)
   const data = await response.json()
   return data
 }
@@ -451,7 +445,7 @@ export const getBracketSlides = async (
   groupId?: string,
   year = 2025,
 ): Promise<BracketSlidesData> => {
-  const url = `https://bracket-wrap-git-main-ryan-marcus-projects.vercel.app/brackets/${bracketId}/wrapped-v2?year=${year}${groupId ? `&group_id=${groupId}` : ''}`
+  const url = `https://api.bracketwrap.com/brackets/${bracketId}/wrapped-v2?year=${year}${groupId ? `&group_id=${groupId}` : ''}`
   const response = await fetch(url)
   const data = await response.json()
   return data
