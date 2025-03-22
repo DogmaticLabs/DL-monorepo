@@ -315,7 +315,9 @@ const ChalkScoreContent: React.FC<ChalkScoreContentProps> = ({
               🔥
             </span>
             <span className='text-sm font-bold text-orange-300'>RISK TAKER</span>
-            <span className='text-xs font-bold text-white/60'>49 Upsets</span>
+            <span className='text-xs font-bold text-white/60'>
+              {data.highestChalk.upsetsCount} Upsets
+            </span>
           </div>
           <div className='text-xl font-bold text-white bg-madness-orange absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
             {data.highestChalk.percentile}
@@ -356,7 +358,9 @@ const ChalkScoreContent: React.FC<ChalkScoreContentProps> = ({
               🧊
             </span>
             <span className='text-sm font-bold text-blue-300'>PLAYING IT SAFE</span>
-            <span className='text-xs font-bold text-white/60'>9 Upsets</span>
+            <span className='text-xs font-bold text-white/60'>
+              {data.lowestChalk.upsetsCount} Upsets
+            </span>
           </div>
           <div className='text-xl font-bold text-white bg-blue-600 absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
             {data.lowestChalk.percentile}
