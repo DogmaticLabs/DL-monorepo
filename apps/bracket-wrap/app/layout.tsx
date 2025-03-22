@@ -95,7 +95,7 @@ export default function RootLayout({
           `}
         </Script>
       </head>
-      <body className={`font-sans antialiased`}>
+      <body className={`font-sans antialiased bg-[#1e293b]`}>
         <Providers>{children}</Providers>
       </body>
     </html>
