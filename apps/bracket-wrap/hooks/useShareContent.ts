@@ -108,7 +108,7 @@ export const useShareContent = (): UseShareContentReturn => {
       // Create share data
       const shareData: ShareData = {
         title: 'BracketWrap',
-        text: 'View your bracket wrap now',
+        text: 'View your bracket wrap now:',
         url: options?.url,
       }
 
