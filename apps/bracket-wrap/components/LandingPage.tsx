@@ -593,7 +593,9 @@ const SelectedBracket = ({
             <User className='h-4 w-4 text-[#94a3b8] mr-2' />
             <span className='text-sm text-[#94a3b8]'>{selectedBracket.member.displayName}</span>
           </div>
-          <p className='text-[8px] text-[#6b7280] truncate mt-3'>ID: {selectedBracket.id}</p>
+          {window.innerHeight > 700 && (
+            <p className='text-[8px] text-[#6b7280] truncate mt-3'>ID: {selectedBracket.id}</p>
+          )}
         </div>
         <button
           onClick={() => {
@@ -603,7 +605,7 @@ const SelectedBracket = ({
               bracketFilterInputRef?.current?.focus()
             }, 0)
           }}
-          className='px-3 py-2 bg-[#3d4a61] hover:bg-[#4d5a71] text-white text-xs rounded-full transition-colors shrink-0 ml-4'
+          className='px-3 py-1 bg-[#3d4a61] hover:bg-[#4d5a71] text-white text-xs rounded-full transition-colors shrink-0 ml-4'
         >
           Change Bracket
         </button>
@@ -650,7 +652,9 @@ const SelectedGroup = ({
             </span>
             <span className='text-xs text-[#94a3b8] ml-2'>{selectedGroup.size} members</span>
           </div>
-          <p className='text-[8px] text-[#6b7280] truncate mt-3'>ID: {selectedGroup.id}</p>
+          {window.innerHeight > 700 && (
+            <p className='text-[8px] text-[#6b7280] truncate mt-3'>ID: {selectedGroup.id}</p>
+          )}
         </div>
         {(selectedBracket?.groups?.length ?? 0) > 1 && (
           <button
@@ -661,7 +665,7 @@ const SelectedGroup = ({
                 groupFilterInputRef?.current?.focus()
               }, 0)
             }}
-            className='px-3 py-2 bg-[#3d4a61] hover:bg-[#4d5a71] text-white text-xs rounded-full transition-colors shrink-0 ml-4'
+            className='px-3 py-1 bg-[#3d4a61] hover:bg-[#4d5a71] text-white text-xs rounded-full transition-colors shrink-0 ml-4'
           >
             Switch Group
           </button>
