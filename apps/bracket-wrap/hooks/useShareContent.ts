@@ -60,8 +60,16 @@ export const useShareContent = (): UseShareContentReturn => {
         captureOpts.backgroundColor = 'transparent'
       }
 
+      await toPng(elementRef?.current, captureOpts)
+      await toPng(elementRef?.current, captureOpts)
+      await toPng(elementRef?.current, captureOpts)
       // Capture the element as a PNG
-      const dataUrl = await toPng(elementRef?.current, captureOpts)
+      const dataUrl = await toPng(elementRef?.current, {
+        ...captureOpts,
+        onImageErrorHandler: error => {
+          console.error('Error capturing element:', error)
+        },
+      })
 
       // Convert data URL to blob
       const response = await fetch(dataUrl)
