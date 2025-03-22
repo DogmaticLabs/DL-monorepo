@@ -129,7 +129,7 @@ const BracketTwinSlide = () => {
                     }}
                   >
                     <motion.p
-                      className='text-5xl font-black uppercase text-center text-white leading-tight tracking-wide rounded-lg bg-[#ff6b00] px-3 py-1 shadow-lg'
+                      className='text-3xl font-black uppercase text-center text-white leading-tight tracking-wide rounded-lg bg-[#ff6b00] px-3 py-1 shadow-lg'
                       initial={{ y: 20 }}
                       animate={{ y: 0 }}
                       transition={{

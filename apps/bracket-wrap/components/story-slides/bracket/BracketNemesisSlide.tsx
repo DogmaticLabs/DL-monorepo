@@ -98,7 +98,7 @@ const BracketNemesisSlide = () => {
                   transition={{ duration: 0.8, ease: 'easeOut' }}
                 >
                   {/* Lightning flash effect */}
-                  <motion.div
+                  {/* <motion.div
                     className='absolute top-0 left-0 right-0 bottom-0 pointer-events-none z-0 opacity-0'
                     initial={{ opacity: 0 }}
                     animate={{
@@ -116,7 +116,7 @@ const BracketNemesisSlide = () => {
                       delay: 0.3,
                       times: [0, 0.1, 0.3, 0.5, 1],
                     }}
-                  />
+                  /> */}
 
                   <motion.p
                     className='text-3xl font-black text-center text-white leading-tight tracking-wide relative z-10'
@@ -133,7 +133,7 @@ const BracketNemesisSlide = () => {
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.7, delay: 0.8, ease: 'easeOut' }}
                   >
-                    see eye to eye
+                    see eye to eye 👀
                   </motion.p>
 
                   {/* Versus slash lines */}

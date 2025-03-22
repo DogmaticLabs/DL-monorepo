@@ -12,11 +12,22 @@ export default function Page({ searchParams }: { searchParams: Promise<{ mode: s
   const router = useRouter()
 
   const onComplete = () => {
-    // Get current search params and preserve them
-    const searchParams = new URLSearchParams(window.location.search)
-    const searchString = searchParams.toString()
+    console.log('onComplete')
+    // Create a new URLSearchParams object
+    const currentParams = new URLSearchParams(window.location.search)
+    const filteredParams = new URLSearchParams()
 
-    // Navigate with preserved search params
+    // Only preserve group_id and bracket_id
+    if (currentParams.has('group_id')) {
+      filteredParams.append('group_id', currentParams.get('group_id')!)
+    }
+
+    if (currentParams.has('bracket_id')) {
+      filteredParams.append('bracket_id', currentParams.get('bracket_id')!)
+    }
+
+    // Construct the destination URL with only the filtered params
+    const searchString = filteredParams.toString()
     const destination = searchString ? `/wrapped?${searchString}` : '/wrapped'
     router.push(destination)
   }

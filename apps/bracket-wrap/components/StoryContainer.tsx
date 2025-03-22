@@ -52,8 +52,6 @@ export default function StoryContainer({ children }: StoryContainerProps) {
     }
   }, [currentSlide])
 
-  React.useEffect(() => () => setCurrentSlide(0), [])
-
   const handleClose = (e: React.MouseEvent) => {
     e.stopPropagation()
 
@@ -69,7 +67,7 @@ export default function StoryContainer({ children }: StoryContainerProps) {
       url += `?${params.toString()}`
     }
 
-    router.push(url)
+    window.location.href = url
   }
 
   return (

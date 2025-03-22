@@ -131,7 +131,7 @@ const CelebrityTwinSlide = () => {
                     }}
                   >
                     <motion.p
-                      className='text-5xl font-black uppercase text-center text-white leading-tight tracking-wide rounded-lg bg-[#ff6b00] px-3 py-1 shadow-lg'
+                      className='text-4xl font-black uppercase text-center text-white leading-tight tracking-wide rounded-lg bg-[#ff6b00] px-3 py-1 shadow-lg'
                       whileInView={{
                         boxShadow: [
                           '0 4px 6px rgba(0,0,0,0.1)',

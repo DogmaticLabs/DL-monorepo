@@ -7,6 +7,7 @@ import BracketCinderellaSlide from '@/components/story-slides/bracket/BracketCin
 import BracketFinalFourSlide from '@/components/story-slides/bracket/BracketFinalFourSlide'
 import BracketNemesisSlide from '@/components/story-slides/bracket/BracketNemesisSlide'
 import BracketTwinSlide from '@/components/story-slides/bracket/BracketTwinSlide'
+import BracketWrapUpSlide from '@/components/story-slides/bracket/BracketWrapUpSlide'
 import CelebrityTwinSlide from '@/components/story-slides/bracket/CelebrityTwinSlide'
 import GroupChalkScoreSlide from '@/components/story-slides/group/GroupChalkScoreSlide'
 import GroupCinderellaSlide from '@/components/story-slides/group/GroupCinderellaSlide'
@@ -75,7 +76,10 @@ const RequireBracketSlides = ({ children }: { children: React.ReactNode }) => {
 
 const BracketWrapStory = () => {
   const { wrapped } = useBracketSlides()[0]!
-  const [introSequenceComplete, setIntroSequenceComplete] = useState(false)
+  const [currentSlide] = useUrlParam<number>('slide')
+  const [introSequenceComplete, setIntroSequenceComplete] = useState(
+    !Number.isNaN(Number(currentSlide)),
+  )
 
   return (
     <StoryProvider>
@@ -112,6 +116,8 @@ const BracketWrapStory = () => {
           {wrapped.bracket.cinderella && <BracketCinderellaSlide />}
 
           {wrapped.bracket.chalkScore && <BracketChalkScoreSlide />}
+
+          <BracketWrapUpSlide />
         </StoryContainer>
       )}
     </StoryProvider>

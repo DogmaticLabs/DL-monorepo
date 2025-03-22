@@ -160,7 +160,7 @@ const BracketChalkScoreSlide = () => {
                       transition={{ duration: 0.7, delay: 1.0 }}
                     >
                       <motion.p
-                        className='text-5xl font-black uppercase text-center text-white tracking-wide mt-2 bg-madness-orange rounded-lg px-3 py-1'
+                        className='text-4xl font-black uppercase text-center text-white tracking-wide mt-2 bg-madness-orange rounded-lg px-3 py-1'
                         animate={{
                           x: [0, -4, 4, -4, 4, 0],
                           transition: {

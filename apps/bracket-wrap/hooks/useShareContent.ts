@@ -16,9 +16,12 @@ interface ShareOptions {
 
 interface UseShareContentReturn {
   isSharing: boolean
-  shareContent: (elementRef: React.RefObject<HTMLElement>, options: ShareOptions) => Promise<void>
+  shareContent: (
+    elementRefOrOptions?: React.RefObject<HTMLElement> | ShareOptions,
+    options?: ShareOptions,
+  ) => Promise<void>
   captureElementAsImage: (
-    elementRef: React.RefObject<HTMLElement>,
+    elementRef?: React.RefObject<HTMLElement>,
     options?: ShareOptions,
   ) => Promise<Blob | null>
 }
@@ -36,10 +39,10 @@ export const useShareContent = (): UseShareContentReturn => {
    * Automatically optimizes for Twitter to prevent JPG conversion
    */
   const captureElementAsImage = async (
-    elementRef: React.RefObject<HTMLElement>,
+    elementRef?: React.RefObject<HTMLElement>,
     options?: ShareOptions,
   ): Promise<Blob | null> => {
-    if (!elementRef.current) return null
+    if (!elementRef?.current) return null
 
     try {
       // Default capture options
@@ -58,7 +61,7 @@ export const useShareContent = (): UseShareContentReturn => {
       }
 
       // Capture the element as a PNG
-      const dataUrl = await toPng(elementRef.current, captureOpts)
+      const dataUrl = await toPng(elementRef?.current, captureOpts)
 
       // Convert data URL to blob
       const response = await fetch(dataUrl)
@@ -73,12 +76,31 @@ export const useShareContent = (): UseShareContentReturn => {
    * Shares content using the Web Share API with fallbacks
    */
   const shareContent = async (
-    elementRef: React.RefObject<HTMLElement>,
-    options: ShareOptions,
+    elementRefOrOptions?: React.RefObject<HTMLElement> | ShareOptions,
+    optionsParam?: ShareOptions,
   ): Promise<void> => {
     try {
       // Set sharing state
       setIsSharing(true)
+
+      // Determine if first param is elementRef or options
+      let elementRef: React.RefObject<HTMLElement> | undefined
+      let options: ShareOptions | undefined
+
+      if (elementRefOrOptions && 'current' in elementRefOrOptions) {
+        // First param is elementRef
+        elementRef = elementRefOrOptions
+        options = optionsParam
+      } else {
+        // First param is options
+        elementRef = undefined
+        options = elementRefOrOptions as ShareOptions
+      }
+
+      // Make sure we have options
+      if (!options) {
+        throw new Error('Share options are required')
+      }
 
       // Capture the element as an image if a ref is provided
       const imageBlob = elementRef ? await captureElementAsImage(elementRef, options) : null
@@ -86,8 +108,8 @@ export const useShareContent = (): UseShareContentReturn => {
       // Create share data
       const shareData: ShareData = {
         title: 'BracketWrap',
-        text: 'View your bracket wrap now:',
-        url: options.url,
+        text: 'View your bracket wrap now',
+        url: options?.url,
       }
 
       // Add image file if available

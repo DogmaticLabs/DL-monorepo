@@ -43,7 +43,7 @@ const LandingPage = ({ onComplete }: { onComplete: () => void }) => {
 
   const onSubmit = async () => {
     if (!selectedBracket) return
-
+    console.log('onSubmit', selectedBracket, selectedGroup)
     setIsLoading(true)
     try {
       const res = await queryClient.fetchQuery({

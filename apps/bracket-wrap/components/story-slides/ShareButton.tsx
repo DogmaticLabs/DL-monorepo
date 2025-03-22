@@ -1,14 +1,19 @@
+import { cn } from '@workspace/ui/lib/utils'
 import { motion } from 'motion/react'
 
 // Reusable ShareButton component
 const ShareButton: React.FC<{
   isSharing: boolean
   handleShare: (e: React.MouseEvent<HTMLButtonElement>) => void
-}> = ({ isSharing, handleShare }) => {
+  className?: string
+}> = ({ isSharing, handleShare, className }) => {
   return (
     <motion.button
       onClick={handleShare}
-      className='flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-madness-blue/60 to-madness-blue rounded-full text-white font-bold shadow-lg hover:shadow-xl transition-all relative overflow-hidden group'
+      className={cn(
+        'flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-madness-blue/60 to-madness-blue rounded-full text-white font-bold shadow-lg hover:shadow-xl transition-all relative overflow-hidden group',
+        className,
+      )}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       disabled={isSharing}
