@@ -390,7 +390,7 @@ const BracketHeader = ({
         <div className='min-w-0 flex-1'>
           <h3 className='text-white font-medium break-words'>{selectedBracket.name}</h3>
           <p className='text-sm text-[#94a3b8] mt-0.5'>{selectedBracket.member.displayName}</p>
-          <p className='text-[10px] text-[#6b7280] truncate'>ID: {selectedBracket.id}</p>
+          <p className='text-[8px] text-[#6b7280] truncate'>ID: {selectedBracket.id}</p>
         </div>
       </div>
       <button
@@ -464,7 +464,7 @@ const GroupSelectionForBracket = (landingPageState: ReturnType<typeof useLanding
                   <span className='text-xs text-gray-600 ml-2'>{group.size} members</span>
                 </div>
                 <div className='mt-1'>
-                  <span className='text-[10px] text-gray-400'>ID: {group.id}</span>
+                  <span className='text-[8px] text-gray-400'>ID: {group.id}</span>
                 </div>
               </div>
             </div>
@@ -593,7 +593,7 @@ const SelectedBracket = ({
             <User className='h-4 w-4 text-[#94a3b8] mr-2' />
             <span className='text-sm text-[#94a3b8]'>{selectedBracket.member.displayName}</span>
           </div>
-          <p className='text-[10px] text-[#6b7280] truncate mt-3'>ID: {selectedBracket.id}</p>
+          <p className='text-[8px] text-[#6b7280] truncate mt-3'>ID: {selectedBracket.id}</p>
         </div>
         <button
           onClick={() => {
@@ -650,7 +650,7 @@ const SelectedGroup = ({
             </span>
             <span className='text-xs text-[#94a3b8] ml-2'>{selectedGroup.size} members</span>
           </div>
-          <p className='text-[10px] text-[#6b7280] truncate mt-3'>ID: {selectedGroup.id}</p>
+          <p className='text-[8px] text-[#6b7280] truncate mt-3'>ID: {selectedGroup.id}</p>
         </div>
         {(selectedBracket?.groups?.length ?? 0) > 1 && (
           <button
