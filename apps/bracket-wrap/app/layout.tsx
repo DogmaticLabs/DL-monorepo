@@ -7,8 +7,13 @@ import './globals.css'
 // Define metadata for the application
 export const metadata: Metadata = {
   title: 'Bracket Wrap',
-  description: 'Your bracket analysis and insights',
+  description: 'View your March Madness Bracket Wrap. 🏀',
   // You can add more metadata properties here
+  keywords:
+    'basketball, bracket, tournament, March Madness, bracket wrap predictions, bracket wrap insights',
+  authors: [{ name: 'Bracket Wrap Team' }],
+  creator: 'Bracket Wrap',
+  publisher: 'Bracket Wrap',
   icons: {
     icon: [
       {
@@ -16,13 +21,49 @@ export const metadata: Metadata = {
         type: 'image/svg+xml',
       },
     ],
+    apple: [
+      {
+        url: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🏀</text></svg>',
+        rel: 'apple-touch-icon',
+        sizes: '180x180',
+        type: 'image/svg+xml',
+      },
+    ],
   },
-  // openGraph: { ... },
-  // twitter: { ... },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://bracket-wrap.com',
+    title: 'Bracket Wrap',
+    description: 'View your March Madness Bracket Wrap. 🏀',
+    siteName: 'Bracket Wrap',
+    images: [
+      {
+        url: 'https://bracket-wrap.com/og-image.jpg', // You'll need to create this image
+        width: 1200,
+        height: 630,
+        alt: 'Bracket Wrap - Basketball Tournament Analysis',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Bracket Wrap',
+    description: 'View your March Madness Bracket Wrap. 🏀',
+    images: ['https://bracket-wrap.com/twitter-image.jpg'], // You'll need to create this image
+    creator: '@bracketwrap', // Update with your Twitter handle
+  },
   appleWebApp: {
     statusBarStyle: 'black-translucent',
     capable: true,
+    title: 'Bracket Wrap',
   },
+  formatDetection: {
+    telephone: false,
+  },
+  themeColor: '#4F46E5', // Update with your primary brand color
+  applicationName: 'Bracket Wrap',
+  category: 'sports',
 }
 
 // Define viewport configuration separately
