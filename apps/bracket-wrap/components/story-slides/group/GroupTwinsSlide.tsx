@@ -173,14 +173,7 @@ const GroupTwinsSlide = () => {
                       }}
                       transition={{ duration: 0.8, delay: 2.2, repeat: 0 }}
                     >
-                      Let's meet your group's bracket twins
-                      <motion.span
-                        className='ml-2 inline-block'
-                        animate={{ rotate: [0, -10, 10, -5, 0] }}
-                        transition={{ duration: 0.8, delay: 2.5 }}
-                      >
-                        👯‍♀️
-                      </motion.span>
+                      Let's meet your group's bracket twins 👯‍♀️
                     </motion.div>
                   </motion.div>
                 </motion.div>

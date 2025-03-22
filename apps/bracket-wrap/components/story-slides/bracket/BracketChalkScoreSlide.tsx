@@ -281,7 +281,9 @@ const BracketChalkScoreSlide = () => {
                                 <span className='text-sm font-bold text-orange-300'>
                                   RISK TAKER
                                 </span>
-                                <span className='text-xs font-bold text-white/60'>49 Upsets</span>
+                                <span className='text-xs font-bold text-white/60'>
+                                  {data.upsetsCount} Upsets
+                                </span>
                               </div>
                               <div className='text-xl font-bold text-white bg-madness-orange absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
                                 {Math.round(data.percentile)}
@@ -312,7 +314,9 @@ const BracketChalkScoreSlide = () => {
                                 <span className='text-sm font-bold text-blue-300'>
                                   PLAYING IT SAFE
                                 </span>
-                                <span className='text-xs font-bold text-white/60'>9 Upsets</span>
+                                <span className='text-xs font-bold text-white/60'>
+                                  {data.upsetsCount} Upsets
+                                </span>
                               </div>
                               <div className='text-xl font-bold text-white bg-blue-600 absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
                                 {Math.round(data.percentile)}
@@ -330,7 +334,14 @@ const BracketChalkScoreSlide = () => {
                           </motion.div>
                         )}
                         {/* Chalk Score Visualization */}
-                        <ChalkScoreBar chalky={Math.round(data.percentile)} isRisky={isRisky} />
+                        <ChalkScoreBar
+                          chalky={Math.round(data.percentile)}
+                          isRisky={isRisky}
+                          groupAverage={
+                            bracketSlidesData!.wrapped.group?.chalkScores.data.averageChalk
+                              .percentile
+                          }
+                        />
                       </StoryCard>
                     </motion.div>
                   ) : (
@@ -367,7 +378,7 @@ const BracketChalkScoreSlide = () => {
                     🔥
                   </span>
                   <span className='text-sm font-bold text-orange-300'>RISK TAKER</span>
-                  <span className='text-xs font-bold text-white/60'>49 Upsets</span>
+                  <span className='text-xs font-bold text-white/60'>{data.upsetsCount} Upsets</span>
                 </div>
                 <div className='text-xl font-bold text-white bg-madness-orange absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
                   {Math.round(data.percentile)}
@@ -390,7 +401,7 @@ const BracketChalkScoreSlide = () => {
                     🧊
                   </span>
                   <span className='text-sm font-bold text-blue-300'>PLAYING IT SAFE</span>
-                  <span className='text-xs font-bold text-white/60'>9 Upsets</span>
+                  <span className='text-xs font-bold text-white/60'>{data.upsetsCount} Upsets</span>
                 </div>
                 <div className='text-xl font-bold text-white bg-blue-600 absolute top-0 right-0 rounded-lg rounded-tl-none rounded-br-none px-2 py-1'>
                   {Math.round(data.percentile)}
@@ -486,9 +497,10 @@ const ChalkScoreTitle = ({ animated = true }: ChalkScoreTitleProps) => {
 interface ChalkScoreBarProps {
   chalky: number
   isRisky: boolean
+  groupAverage?: number
 }
 
-const ChalkScoreBar = ({ chalky, isRisky }: ChalkScoreBarProps) => {
+const ChalkScoreBar = ({ chalky, isRisky, groupAverage }: ChalkScoreBarProps) => {
   return (
     <motion.div
       className='mt-6 mb-6'
@@ -510,6 +522,13 @@ const ChalkScoreBar = ({ chalky, isRisky }: ChalkScoreBarProps) => {
           animate={{ opacity: 1, height: '100%' }}
           transition={{ duration: 0.3, delay: 1.2 }}
         />
+        {/* Group Average Marker */}
+        {groupAverage && (
+          <div
+            className='absolute top-0 bottom-0 border-l border-white/40 border-dashed'
+            style={{ left: `${groupAverage}%` }}
+          />
+        )}
         <motion.div
           className={cn(
             'absolute -top-6 transform -translate-x-[42%]',

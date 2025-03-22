@@ -214,7 +214,7 @@ const GroupFinalFourSlide = ({ groupId }: GroupFinalFourSlideProps) => {
       {/* Shareable Content */}
       <ShareableContent
         shareableRef={shareableRef}
-        backgroundGradient='linear-gradient(to bottom right, #b33939, #005f73)'
+        backgroundGradient='linear-gradient(to bottom right, #2c3e50, #8e44ad)'
       >
         <StoryCard animated={false} title={<FinalFourTitle />} showGroup>
           <FinalFourGrid teams={data} teamsData={teams!} />

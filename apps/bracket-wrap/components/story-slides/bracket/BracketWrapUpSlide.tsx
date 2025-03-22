@@ -1,19 +1,15 @@
 import { useBracketSlides, useStory } from '@/components/providers'
 import StorySlide from '@/components/StorySlide'
 import { useShareContent } from '@/hooks/useShareContent'
-import { HomeIcon } from 'lucide-react'
 import { motion } from 'motion/react'
 import Image from 'next/image'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useRef } from 'react'
+import { useSearchParams } from 'next/navigation'
 import ShareButton from '../ShareButton'
 
 const BracketWrapUpSlide = () => {
   const [bracketSlidesData] = useBracketSlides()
-  const { isExiting } = useStory()
-  const shareableRef = useRef<HTMLDivElement>(null)
+  const { setCurrentSlide } = useStory()
   const { isSharing, shareContent } = useShareContent()
-  const router = useRouter()
   const searchParams = useSearchParams()
 
   // Get shareId for sharing functionality
@@ -46,9 +42,31 @@ const BracketWrapUpSlide = () => {
     }
   }
 
+  // Handle start over functionality
+  const handleStartOver = () => {
+    setCurrentSlide(0)
+  }
+
   return (
     <div className='w-full h-dvh overflow-hidden'>
-      <StorySlide bgColor='bg-gradient-to-br from-purple-950 to-blue-950'>
+      <StorySlide
+        bgColor='bg-gradient-to-br from-purple-950 to-blue-950'
+        footer={
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            onClick={e => e.stopPropagation()}
+            className='flex justify-center'
+          >
+            <ShareButton
+              isSharing={isSharing}
+              handleShare={handleShare}
+              className='!mt-0 opacity-100 bg-opacity-100 bg-madness-blue'
+            />
+          </motion.div>
+        }
+      >
         <div className='relative flex flex-col w-full h-full overflow-hidden'>
           {/* Radial gradient overlay for depth */}
           <div className='absolute inset-0 bg-radial-gradient from-transparent to-black/50 pointer-events-none' />
@@ -96,10 +114,10 @@ const BracketWrapUpSlide = () => {
                 </p>
               </motion.div>
 
-              <div className='flex justify-center items-center space-x-4'>
+              <div className='flex justify-center flex-row items-center space-x-4'>
                 {/* Navigation buttons */}
                 <motion.div
-                  className='flex flex-col sm:flex-row justify-center'
+                  className='flex justify-center gap-2'
                   initial={{ y: 40, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.6, delay: 0.6 }}
@@ -108,22 +126,14 @@ const BracketWrapUpSlide = () => {
                     onClick={handleHomeNavigation}
                     className='bg-white text-blue-950 font-bold text-lg px-6 py-[10px] rounded-full shadow-lg hover:bg-gray-100 transition duration-200 flex items-center justify-center gap-2'
                   >
-                    <HomeIcon />
-                    Home
+                    <span>🏠</span> Home
                   </button>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.5 }}
-                  onClick={e => e.stopPropagation()}
-                  className='flex justify-center'
-                >
-                  <ShareButton
-                    isSharing={isSharing}
-                    handleShare={handleShare}
-                    className='!mt-0 opacity-100 bg-opacity-100 bg-madness-blue'
-                  />
+                  <button
+                    onClick={handleStartOver}
+                    className='bg-white text-blue-950 font-bold text-lg px-6 py-[10px] rounded-full shadow-lg transition duration-200 flex items-center justify-center gap-2'
+                  >
+                    <span>🔄</span> Start Over
+                  </button>
                 </motion.div>
               </div>
             </motion.div>

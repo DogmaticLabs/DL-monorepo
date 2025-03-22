@@ -3,6 +3,7 @@
 import IntroSequence from '@/components/IntroSequence'
 import { SearchParamsProvider, StoryProvider, useBracketSlides } from '@/components/providers'
 import BracketChalkScoreSlide from '@/components/story-slides/bracket/BracketChalkScoreSlide'
+import BracketChampionSlide from '@/components/story-slides/bracket/BracketChampionSlide'
 import BracketCinderellaSlide from '@/components/story-slides/bracket/BracketCinderellaSlide'
 import BracketFinalFourSlide from '@/components/story-slides/bracket/BracketFinalFourSlide'
 import BracketNemesisSlide from '@/components/story-slides/bracket/BracketNemesisSlide'
@@ -90,33 +91,31 @@ const BracketWrapStory = () => {
         </>
       ) : (
         <StoryContainer key={1}>
-          {/* Group Slides */}
+          {wrapped.bracket.championPickNational && <BracketChampionSlide />}
+
           {wrapped.group && <GroupTopPicksSlide />}
-
-          {wrapped.group && <GroupCinderellaSlide />}
-
-          {wrapped.group && <GroupTwinsSlide />}
-
-          {wrapped.group && <GroupNemesesSlide />}
-
-          {wrapped.group && <GroupChalkScoreSlide />}
-
-          {wrapped.group && <GroupFinalFourSlide />}
-
-          {/* Bracket Slides */}
-
-          {wrapped.bracket.finalFourPicksNational && <BracketFinalFourSlide />}
 
           {wrapped.bracket.twinBracket && <BracketTwinSlide />}
 
-          {wrapped.bracket.celebrityTwin && <CelebrityTwinSlide />}
+          {wrapped.group && <GroupChalkScoreSlide />}
+
+          {wrapped.bracket.finalFourPicksNational && <BracketFinalFourSlide />}
+
+          {wrapped.group && <GroupFinalFourSlide />}
 
           {wrapped.bracket.nemesisBracket && <BracketNemesisSlide />}
 
-          {wrapped.bracket.cinderella && <BracketCinderellaSlide />}
+          {wrapped.group && <GroupTwinsSlide />}
 
           {wrapped.bracket.chalkScore && <BracketChalkScoreSlide />}
 
+          {wrapped.group && <GroupCinderellaSlide />}
+
+          {wrapped.bracket.celebrityTwin && <CelebrityTwinSlide />}
+
+          {wrapped.group && <GroupNemesesSlide />}
+
+          {wrapped.bracket.cinderella && <BracketCinderellaSlide />}
           <BracketWrapUpSlide />
         </StoryContainer>
       )}
