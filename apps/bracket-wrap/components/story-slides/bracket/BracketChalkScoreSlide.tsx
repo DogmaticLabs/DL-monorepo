@@ -302,9 +302,9 @@ const BracketChalkScoreSlide = () => {
                         ) : (
                           <motion.div
                             className='mb-4 p-3 rounded-lg border border-white/20 relative'
-                            initial={{ x: 20, opacity: 0 }}
+                            initial={{ x: -20, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
-                            transition={{ duration: 0.5, delay: 1.1 }}
+                            transition={{ duration: 0.5, delay: 0.5 }}
                           >
                             <div className='flex justify-between items-center mb-1'>
                               <div className='flex items-center gap-2'>
@@ -328,7 +328,7 @@ const BracketChalkScoreSlide = () => {
                               teamLogo={teams?.[championData!.teamId!]?.images?.primary}
                               label=''
                               iconColor='text-blue-400'
-                              delay={1.3}
+                              delay={0.7}
                               teamBackground={false}
                             />
                           </motion.div>
@@ -394,7 +394,7 @@ const BracketChalkScoreSlide = () => {
               />
             </div>
           ) : (
-            <div className='pb-4 p-3 rounded-lg border border-white/20 relative'>
+            <div className='mt-4 p-3 rounded-lg border border-white/20 relative'>
               <div className='flex justify-between items-center mb-1'>
                 <div className='flex items-center gap-2'>
                   <span className='bg-blue-600 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center'>

@@ -434,6 +434,7 @@ export type BracketSlidesData = {
           id: string
           displayName: string
         }
+        winnerId: string
       }
       shareId: string
     }

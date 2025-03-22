@@ -1,5 +1,6 @@
 import { useBracketSlides } from '@/components/providers'
 import { cn } from '@workspace/ui/lib/utils'
+import { User } from 'lucide-react'
 import Image from 'next/image'
 
 interface GroupBannerProps {
@@ -20,6 +21,7 @@ const GroupSlideBanner = ({
 
   const bracketName = bracketSlidesData?.info.bracket?.data.name
   const bracketMember = bracketSlidesData?.info.bracket?.data.member.displayName
+  const bracketWinnerId = bracketSlidesData?.info.bracket.data.winnerId
   showBracket = showBracket || (showGroup && !groupName)
 
   return (
@@ -58,16 +60,20 @@ const GroupSlideBanner = ({
         <div
           className={`${showGroup ? 'flex-1 max-w-[50%] border-l border-white/20' : ''} flex px-2 my-2 space-x-1 items-center justify-between`}
         >
-          <div className='rounded-full shrink-0 size-6 flex items-center justify-center'>
-            <Image
-              src='/uconn.png'
-              alt='Group Slide Banner Icon'
-              width={20}
-              height={20}
-              priority
-              unoptimized
-            />
-          </div>
+          {bracketWinnerId ? (
+            <div className='rounded-full shrink-0 size-6 flex items-center justify-center'>
+              <Image
+                src={`/team-logos/${bracketWinnerId}-secondary.png`}
+                alt='Group Slide Banner Icon'
+                width={20}
+                height={20}
+                priority
+                unoptimized
+              />
+            </div>
+          ) : (
+            <User className='w-4 h-4 text-white' />
+          )}
           <div className='flex flex-col flex-1 min-w-0'>
             <span className='text-white font-semibold text-xs leading-4 whitespace-nowrap overflow-hidden text-ellipsis'>
               {bracketName}
