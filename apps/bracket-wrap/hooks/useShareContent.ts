@@ -1,3 +1,4 @@
+import { useBracketSlides } from '@/components/providers'
 import { toPng } from 'html-to-image'
 import { useState } from 'react'
 
@@ -33,6 +34,7 @@ interface UseShareContentReturn {
  */
 export const useShareContent = (): UseShareContentReturn => {
   const [isSharing, setIsSharing] = useState(false)
+  const [bracketSlidesData] = useBracketSlides()
 
   /**
    * Captures an HTML element as an image
@@ -116,7 +118,7 @@ export const useShareContent = (): UseShareContentReturn => {
       // Create share data
       const shareData: ShareData = {
         title: 'BracketWrap',
-        text: 'View your bracket wrap now!',
+        text: `View your bracket wrap${bracketSlidesData?.info.group ? ` for ${bracketSlidesData?.info.group.data.name}` : ''} now! `,
         url: options?.url,
       }
 
