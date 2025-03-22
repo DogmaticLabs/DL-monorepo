@@ -4,11 +4,11 @@ import Script from 'next/script'
 import { Providers } from '@/components/providers'
 import '@workspace/ui/globals.css'
 import './globals.css'
+
 // Define metadata for the application
 export const metadata: Metadata = {
   title: 'Bracket Wrap',
   description: 'View your March Madness Bracket Wrap. 🏀',
-  // You can add more metadata properties here
   keywords:
     'basketball, bracket, tournament, March Madness, bracket wrap predictions, bracket wrap insights',
   authors: [{ name: 'Bracket Wrap Team' }],
@@ -33,29 +33,28 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://bracket-wrap.com',
+    url: 'https://bracketwrap.com',
     title: 'Bracket Wrap',
     description: 'View your March Madness Bracket Wrap. 🏀',
     siteName: 'Bracket Wrap',
     images: [
       {
-        url: '/logo-bg.png', // Using absolute URL for better compatibility
+        url: 'https://bracketwrap.com/logo-bg.png',
         width: 800,
         height: 800,
         alt: 'Bracket Wrap Logo',
-        type: 'image/png', // Specify image type
+        type: 'image/png',
       },
     ],
-    // Added for better WhatsApp preview support
     determiner: 'the',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Bracket Wrap',
     description: 'View your March Madness Bracket Wrap. 🏀',
-    images: ['/logo-bg.png'], // Using absolute URL
+    images: ['https://bracketwrap.com/logo-bg.png'],
     creator: '@bracketwrap',
-    site: '@bracketwrap', // Added site handle
+    site: '@bracketwrap',
   },
   appleWebApp: {
     statusBarStyle: 'black-translucent',
@@ -68,13 +67,15 @@ export const metadata: Metadata = {
   themeColor: '#4F46E5',
   applicationName: 'Bracket Wrap',
   category: 'sports',
-  // Additional itemprop for enhanced image previews
   other: {
-    'og:image:secure_url': '/logo-bg.png',
+    'og:image:secure_url': 'https://bracketwrap.com/logo-bg.png',
     'og:image:width': '800',
     'og:image:height': '800',
     'og:image:alt': 'Bracket Wrap Logo',
     'og:updated_time': new Date().toISOString(),
+    'twitter:image:alt': 'Bracket Wrap Logo',
+    canonical: 'https://bracketwrap.com',
+    // Optionally, you could add 'fb:app_id': 'YOUR_FACEBOOK_APP_ID'
   },
 }
 
@@ -107,7 +108,7 @@ export default function RootLayout({
           `}
         </Script>
       </head>
-      <body className={`font-sans antialiased bg-[#1e293b]`}>
+      <body className='font-sans antialiased bg-[#1e293b]'>
         <Providers>{children}</Providers>
       </body>
     </html>
