@@ -13,7 +13,7 @@ const nextConfig = {
     return [
       {
         source: '/share/:shortCode',
-        destination: 'https://bracketwrap.com/share/:shortCode',
+        destination: 'https://api.bracketwrap.com/share/:shortCode',
       },
     ]
   },
