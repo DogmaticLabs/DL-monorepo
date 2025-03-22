@@ -34,7 +34,7 @@ const BracketWrapUpSlide = () => {
 
   // Handle navigation to home while preserving group_id if present
   const handleHomeNavigation = () => {
-    const groupId = searchParams.get('group_id')
+    const groupId = searchParams?.get('group_id')
     if (groupId) {
       window.location.href = `/?group_id=${groupId}`
     } else {
