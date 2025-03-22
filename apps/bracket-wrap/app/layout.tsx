@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     siteName: 'Bracket Wrap',
     images: [
       {
-        url: '/logo.png', // Using the logo.png file from the public directory
+        url: '/logo-bg.png', // Using the logo.png file from the public directory
         width: 800,
         height: 800,
         alt: 'Bracket Wrap Logo',
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Bracket Wrap',
     description: 'View your March Madness Bracket Wrap. 🏀',
-    images: ['/logo.png'], // Using the logo.png file from the public directory
+    images: ['/logo-bg.png'], // Using the logo.png file from the public directory
     creator: '@bracketwrap', // Update with your Twitter handle
   },
   appleWebApp: {
