@@ -17,10 +17,7 @@ const BracketWrapUpSlide = () => {
   const searchParams = useSearchParams()
 
   // Get shareId for sharing functionality
-  const shareId =
-    bracketSlidesData?.wrapped.bracket.finalFourPicksNational?.shareId ||
-    bracketSlidesData?.wrapped.bracket.chalkScore?.shareId ||
-    bracketSlidesData?.info.bracket?.data.id
+  const shareId = bracketSlidesData?.info.group?.shareId ?? bracketSlidesData?.info.bracket?.shareId
 
   // Handle share functionality
   const handleShare = async (e: React.MouseEvent<HTMLButtonElement>) => {
