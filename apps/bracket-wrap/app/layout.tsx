@@ -39,19 +39,23 @@ export const metadata: Metadata = {
     siteName: 'Bracket Wrap',
     images: [
       {
-        url: '/logo-bg.png', // Using the logo.png file from the public directory
+        url: '/logo-bg.png', // Using absolute URL for better compatibility
         width: 800,
         height: 800,
         alt: 'Bracket Wrap Logo',
+        type: 'image/png', // Specify image type
       },
     ],
+    // Added for better WhatsApp preview support
+    determiner: 'the',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Bracket Wrap',
     description: 'View your March Madness Bracket Wrap. 🏀',
-    images: ['/logo-bg.png'], // Using the logo.png file from the public directory
-    creator: '@bracketwrap', // Update with your Twitter handle
+    images: ['/logo-bg.png'], // Using absolute URL
+    creator: '@bracketwrap',
+    site: '@bracketwrap', // Added site handle
   },
   appleWebApp: {
     statusBarStyle: 'black-translucent',
@@ -61,9 +65,17 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false,
   },
-  themeColor: '#4F46E5', // Update with your primary brand color
+  themeColor: '#4F46E5',
   applicationName: 'Bracket Wrap',
   category: 'sports',
+  // Additional itemprop for enhanced image previews
+  other: {
+    'og:image:secure_url': '/logo-bg.png',
+    'og:image:width': '800',
+    'og:image:height': '800',
+    'og:image:alt': 'Bracket Wrap Logo',
+    'og:updated_time': new Date().toISOString(),
+  },
 }
 
 // Define viewport configuration separately
