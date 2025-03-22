@@ -251,7 +251,7 @@ const ChalkScoreTitle = ({ animated = true }: ChalkScoreTitleProps) => {
       <div className='text-center mb-3'>
         <div className='flex justify-center gap-2'>
           <h2 className='text-4xl font-black text-white tracking-tight leading-none'>
-            Chalk Score
+            Risk Index
           </h2>
           <span className='text-3xl' role='img' aria-label='dice'>
             🎲
