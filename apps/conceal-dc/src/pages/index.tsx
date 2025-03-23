@@ -5,7 +5,7 @@ import { Appointment, getDailyAppointments, getRecentAppointments } from '@/lib/
 import { Alert, AlertDescription } from '@workspace/ui/components/alert'
 import { Button } from '@workspace/ui/components/button'
 import { Card, CardContent } from '@workspace/ui/components/card'
-import { format, parseISO } from 'date-fns'
+import { format, formatDistanceToNow, parseISO, differenceInDays } from 'date-fns'
 import {
   AlertTriangle,
   BellIcon,
@@ -39,7 +39,7 @@ export default function Home({
   return (
     <MainLayout noHeader>
       <OnboardingTour open={showTour} onOpenChange={setShowTour} />
-      <div className='min-h-screen bg-red-500'>
+      <div className='min-h-screen'>
         {/* Hero Section */}
         <div className='relative isolate overflow-hidden'>
           <div className='mx-auto max-w-7xl px-6 pb-12 lg:pb-32 pt-12 lg:pt-24 sm:pb-40 sm:pt-32 lg:px-8 min-h-[60vh] flex items-center'>
@@ -48,10 +48,10 @@ export default function Home({
                 <ShieldCheck className='h-20 w-20 text-primary' />
               </div>
               <h1 className='text-4xl font-bold tracking-tight sm:text-6xl text-foreground mb-4'>
-                Washington D.C. Concealed Carry Appointment Assistant
+                Conceal DC
               </h1>
               <p className='text-xl leading-8 text-muted-foreground mb-12'>
-                Streamline your CCL application process. Get instant notifications when earlier
+                Streamline your CCW application process. Get instant notifications when earlier
                 appointments become available.
               </p>
               <div className='flex flex-col sm:flex-row gap-4 justify-center'>
@@ -74,15 +74,19 @@ export default function Home({
 
         {/* Next Available Section */}
         <div className='bg-muted/50'>
-          <div className='mx-auto max-w-7xl px-6 py-12 sm:py-16 lg:px-8'>
+          <div className='mx-auto max-w-7xl px-6 py-10 sm:py-16 lg:px-8'>
             <div className='mx-auto max-w-2xl text-center'>
-              <h2 className='text-2xl font-semibold mb-2'>Next Available Appointment</h2>
-              <p className='text-3xl font-bold text-primary mb-6'>
-                {format(parseISO(nextAppointment), 'MMMM d, yyyy')}
-              </p>
-              <p className='text-muted-foreground'>
-                Don&apos;t want to wait? Enable notifications to get alerted when earlier slots open
-                up.
+              <h2 className='text-2xl font-semibold mb-4'>Next Available Appointment</h2>
+              <div className='mb-6'>
+                <p className='text-4xl font-bold text-primary mb-2'>
+                  {format(parseISO(nextAppointment), 'MMMM d, yyyy')}
+                </p>
+                <p className='text-lg'>
+                  <span className='font-bold'>{differenceInDays(parseISO(nextAppointment), new Date())}</span> days from today
+                </p>
+              </div>
+              <p >
+                Don&apos;t want to wait? Enable notifications to get alerted when earlier slots open up.
               </p>
             </div>
           </div>
@@ -93,7 +97,7 @@ export default function Home({
           <div className='mx-auto max-w-2xl text-center mb-16'>
             <h2 className='text-3xl font-bold mb-4'>Why Use Our Service?</h2>
             <p className='text-muted-foreground'>
-              We help streamline your CCL application process with real-time updates and
+              We help streamline your CCW application process with real-time updates and
               notifications.
             </p>
           </div>
@@ -147,7 +151,7 @@ export default function Home({
 
         {/* Recent Activity Section */}
         <div className='bg-muted/50'>
-          <div className='mx-auto max-w-7xl px-6 pt-16 pb-8 sm:py-24 lg:px-8'>
+          <div className='mx-auto max-w-7xl px-6 pt-12 pb-8 sm:py-18 lg:px-8'>
             <div className='mx-auto max-w-2xl text-center mb-12'>
               <h2 className='text-3xl font-bold mb-4'>Recent Activity</h2>
               <p className='text-muted-foreground'>
@@ -161,21 +165,20 @@ export default function Home({
         </div>
 
         {/* Disclaimer */}
-        <div className='my-12'>
-          <Alert className=''>
-            <AlertTriangle className='h-4 w-4' />
-            <AlertDescription>
-              Please note: This service only monitors appointment availability and sends
-              notifications. You will still need to book your actual appointment through the{' '}
+        <div className='mx-auto max-w-3xl px-6 py-8'>
+          <Alert variant="default" className='bg-card'>
+            <AlertTriangle className='h-6 w-6 stroke-orange-400' />
+            <AlertDescription className='text-sm ml-2'>
+              This service monitors appointment availability and sends notifications. You will still need to visit the official{' '}
               <Link
                 href='https://go.nemoqappointment.com/Booking/Booking/Index/dc876re9gh'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='hover:underline text-blue-500'
+                className='inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-primary hover:bg-blue-100 transition-colors'
               >
-                official DC MPD Portal
-              </Link>{' '}
-              when a suitable time becomes available.
+                DC Metropolitcan Police Department Portal ↗
+              </Link>
+               {` to book your appointment.`}
             </AlertDescription>
           </Alert>
         </div>

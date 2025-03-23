@@ -12,7 +12,7 @@ const About = () => {
             <div className='flex justify-center mb-6'>
               <ShieldCheckIcon className='h-16 w-16 text-primary' />
             </div>
-            <h1 className='text-4xl font-bold mb-4'>Fast-Track Your CCL Appointment</h1>
+            <h1 className='text-4xl font-bold mb-4'>Fast-Track Your CCW Appointment</h1>
             <p className='text-lg text-muted-foreground'>
               Helping DC secure earlier concealed carry license appointments when they become
               available.
@@ -20,7 +20,7 @@ const About = () => {
           </div>
 
           {/* Mission Section */}
-          <Card>
+          {/* <Card>
             <CardContent className='pt-6'>
               <h2 className='text-2xl font-semibold mb-4'>Our Mission</h2>
               <p className='text-muted-foreground leading-relaxed'>
@@ -30,7 +30,7 @@ const About = () => {
                 allowing you to potentially advance your application timeline by weeks or months.
               </p>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* What We Do Section */}
           <Card>
@@ -50,7 +50,7 @@ const About = () => {
             </CardContent>
           </Card>
 
-          {/* Why Choose Us Section */}
+          {/* Why Choose Us Section
           <Card>
             <CardContent className='pt-6'>
               <h2 className='text-2xl font-semibold mb-4'>Why Choose Us</h2>
@@ -78,7 +78,7 @@ const About = () => {
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Commitment Section */}
           <Card>
@@ -88,7 +88,7 @@ const About = () => {
                 We&apos;re committed to providing a reliable service that helps reduce appointment
                 waiting times while fully respecting the MPD&apos;s scheduling system and
                 procedures. Our goal is simple: help you secure the earliest possible appointment
-                date for your CCL application.
+                date for your CCW application.
               </p>
             </CardContent>
           </Card>

@@ -1,9 +1,44 @@
 import { Appointment } from '@/lib/api/appointments'
-import { format, formatDistanceToNow, getISOWeek, getYear } from 'date-fns'
+import { format, formatDistanceToNow, getISOWeek, getYear, subHours } from 'date-fns'
 import { Clock } from 'lucide-react'
 import { Link } from './catalyst/link'
 
+interface StatusChange {
+  date: string
+  time: string
+  status: string
+  lastChanged: number
+  previousStatus?: string
+}
+
 const RecentEvents = ({ events }: { events: Appointment[] }) => {
+  // Get timestamp for 24 hours ago
+  const twentyFourHoursAgo = Math.floor(subHours(new Date(), 24).getTime() / 1000)
+
+  // Flatten and transform all status changes from history, filtering out old ones
+  const allStatusChanges: StatusChange[] = events.flatMap(appointment => {
+    const changes: StatusChange[] = []
+    
+    // Process each history item
+    appointment.history.forEach((historyItem, index) => {
+      // Skip changes older than 24 hours
+      if (historyItem.timestamp < twentyFourHoursAgo) return
+
+      changes.push({
+        date: appointment.date,
+        time: appointment.time,
+        status: historyItem.status,
+        lastChanged: historyItem.timestamp,
+        previousStatus: index > 0 ? appointment.history?.[index - 1]?.status : undefined
+      })
+    })
+    
+    return changes
+  })
+
+  // Sort all status changes by timestamp, most recent first
+  const sortedChanges = allStatusChanges.sort((a, b) => b.lastChanged - a.lastChanged)
+
   return (
     <div className='rounded-lg flex flex-col gap-y-4 border-y py-8 justify-center max-w-full overflow-hidden'>
       <h5 className='flex items-center gap-2 font-semibold text-center justify-center'>
@@ -11,16 +46,21 @@ const RecentEvents = ({ events }: { events: Appointment[] }) => {
         Recent Updates
       </h5>
 
-      <div className='animate-scroll-fast lg:animate-scroll grid grid-flow-col auto-cols-max gap-x-4 max-w-full'>
-        {events.map((update, index) => (
-          <StatusUpdate key={index} update={update} />
-        ))}
+      <div className='overflow-hidden relative'>
+        <div className='animate-scroll inline-flex gap-x-4 whitespace-nowrap'>
+          {sortedChanges.map((update, index) => (
+            <StatusUpdate key={index} update={update} isFirst={index === 0} />
+          ))}
+          {sortedChanges.map((update, index) => (
+            <StatusUpdate key={`duplicate-${index}`} update={update} isFirst={index === 0} />
+          ))}
+        </div>
       </div>
     </div>
   )
 }
 
-function StatusUpdate({ update }: { update: Appointment }) {
+function StatusUpdate({ update, isFirst }: { update: StatusChange; isFirst?: boolean }) {
   const borderColor = {
     open: '#10B981', // Green
     booked: '#EF4444', // Red
@@ -38,23 +78,17 @@ function StatusUpdate({ update }: { update: Appointment }) {
       .join(' ')
   }
 
-  // Extract previous and current statuses
+  // Get status transition text
   const getStatusTransition = () => {
-    const currentStatus = update.history?.at(-1)?.status || update.status
-    const prevStatus = update.history?.at(-2)?.status
-
-    if (!prevStatus) {
-      return capitalize(currentStatus)
+    if (!update.previousStatus) {
+      return capitalize(update.status)
     }
-    return `${capitalize(prevStatus)} → ${capitalize(currentStatus)}`
+    return `${capitalize(update.previousStatus)} → ${capitalize(update.status)}`
   }
 
   // Format relative time from last_changed
   const getRelativeTime = () => {
-    if (update.lastChanged > 0) {
-      return formatDistanceToNow(new Date(update.lastChanged * 1000), { addSuffix: true })
-    }
-    return 'Unknown time'
+    return formatDistanceToNow(new Date(update.lastChanged * 1000), { addSuffix: true })
   }
 
   // Format datetime
@@ -81,9 +115,12 @@ function StatusUpdate({ update }: { update: Appointment }) {
   return (
     <Link href={getWeekUrl()} className='block'>
       <div
-        className='border-l-4 pl-3 py-2 w-40 shadow-md shrink-0'
+        className='border-l-4 pl-3 py-2 w-40 shadow-md shrink-0 relative'
         style={{ borderColor: selectedBorderColor }}
       >
+        {isFirst && (
+          <div className='absolute top-2 right-2 w-2 h-2 rounded-full bg-blue-500 animate-pulse' />
+        )}
         <div className='flex flex-col justify-between items-start'>
           <div>
             <p className='font-medium'>{formattedDate()}</p>
