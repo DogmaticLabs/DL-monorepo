@@ -55,12 +55,8 @@ export default {
       },
       keyframes: {
         scroll: {
-          '0%': {
-            transform: 'translateX(calc(20%))',
-          },
-          '100%': {
-            transform: 'translateX(calc(-100%))',
-          },
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(calc(-50%))' }
         },
         'accordion-down': {
           from: {
@@ -84,7 +80,7 @@ export default {
         },
       },
       animation: {
-        scroll: 'scroll 40s linear infinite',
+        scroll: 'scroll 20s linear infinite',
         'scroll-fast': 'scroll 10s linear infinite',
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
