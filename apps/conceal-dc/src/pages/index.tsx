@@ -176,7 +176,7 @@ export default function Home({
                 rel='noopener noreferrer'
                 className='inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-primary hover:bg-blue-100 transition-colors'
               >
-                DC Metropolitcan Police Department Portal ↗
+                DC MPD Portal ↗
               </Link>
                {` to book your appointment.`}
             </AlertDescription>
